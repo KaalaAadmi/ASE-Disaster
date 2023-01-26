@@ -81,8 +81,9 @@ import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loade
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
+import axios from "axios";
 import { markerData } from "../assets/data";
-import { disasterData } from "../assets/data";
+// import { disasterData } from "../assets/data";
 
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
@@ -91,29 +92,39 @@ const REACT_APP_MAPBOX_TOKEN =
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
 const Map = (props) => {
-  // Creating all the report markers -- for coordinator 
-  function createReportMarker() {
-    console.log(typeof markerData);
-    for (var i = 0; i < markerData.length; i++) {
-      const report = new mapboxgl.Marker({ color: "red" })
-        .setLngLat([markerData[i].longitude, markerData[i].latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setText(markerData[i].description)
-        )
-        .addTo(map.current);
-    }
-  }
-
-  // Creating all the disaster markers -- for both coordinator and general public
+  const [disasterData, setDisasterData] = React.useState();
+  React.useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(
+          "http://127.0.0.1:8000/api/v1/all-disaster-data"
+        );
+        // console.log(res.data)
+        setDisasterData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+  // function createReportMarker() {
+  //   console.log(typeof markerData);
+  //   for (var i = 0; i < data.length; i++) {
+  //     const report = new mapboxgl.Marker({ color: "red" })
+  //       .setLngLat([data[i].longitude, data[i].latitude])
+  //       .setPopup(
+  //         new mapboxgl.Popup({ offset: 25 }).setText(data[i].detail)
+  //       )
+  //       .addTo(map.current);
+  //   }
+  // }
   function createDisasterMarker() {
     console.log(typeof disasterData);
     for (var i = 0; i < disasterData.length; i++) {
       const disaster = new mapboxgl.Marker({ color: "yellow" })
         .setLngLat([disasterData[i].longitude, disasterData[i].latitude])
         .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setText(
-            disasterData[i].description
-          )
+          new mapboxgl.Popup({ offset: 25 }).setText(disasterData[i].detail)
         )
         .addTo(map.current);
     }
@@ -122,11 +133,11 @@ const Map = (props) => {
   const [viewState, setViewState] = React.useState({
     latitude: 0,
     longitude: 0,
-    zoom: 13 // make this 16 for production
+    zoom: 13, // make this 16 for production
   });
   const [marker, setMarker] = React.useState({
     latitude: props.latitude,
-    longitude: props.longitude
+    longitude: props.longitude,
     // center: [props.latitude, props.longitude],
   });
 
@@ -137,12 +148,12 @@ const Map = (props) => {
         setViewState((prev) => ({
           ...prev,
           latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+          longitude: position.coords.longitude,
           // center: [position.coords.longitude, position.coords.latitude],
         }));
         setMarker({
           latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+          longitude: position.coords.longitude,
           // center: [position.coords.longitude, position.coords.latitude],
         });
       });
@@ -162,7 +173,7 @@ const Map = (props) => {
         style: "mapbox://styles/mapbox/dark-v9",
         center: [viewState.longitude, viewState.latitude],
         zoom: viewState.zoom,
-        pitch: 50
+        pitch: 50,
       });
 
       // Add NavigationControl to the map
@@ -172,11 +183,11 @@ const Map = (props) => {
       // Add GeoLocateControl to the map
       const geoLocate = new mapboxgl.GeolocateControl({
         positionOptions: {
-          enableHighAccuracy: true
+          enableHighAccuracy: true,
         },
         trackUserLocation: true,
         showUserHeading: true,
-        showAccuracyCircle: false
+        showAccuracyCircle: false,
       });
       map.current.addControl(geoLocate);
 
@@ -184,7 +195,7 @@ const Map = (props) => {
       const directions = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
         unit: "metric",
-        profile: "mapbox/walking"
+        profile: "mapbox/walking",
       });
 
       // Add origin and destination to the map direction
@@ -192,7 +203,7 @@ const Map = (props) => {
         directions.setOrigin([marker.longitude, marker.latitude]);
         directions.setDestination([-6.25819, 53.344415]);
       });
-      // map.current.addControl(directions, "top-left");
+      map.current.addControl(directions, "top-left");
 
       // Add the user location marker
       const origin = new mapboxgl.Marker()
@@ -209,11 +220,7 @@ const Map = (props) => {
       //     .setLngLat([item.longitude, item.latitude])
       //     .addTo(map.current);
       // });
-
-      // Add the report markers
-      createReportMarker();
-
-      // Add the disaster markers
+      // createReportMarker();
       createDisasterMarker();
     }
   }, [viewState.latitude, viewState.longitude]);
