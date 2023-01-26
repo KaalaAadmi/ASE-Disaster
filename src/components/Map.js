@@ -225,21 +225,31 @@ const Map = (props) => {
     }
   }, [viewState.latitude, viewState.longitude]);
 
-  return (
-    <div>
-      {viewState.latitude && viewState.longitude && (
-        <>
-          {/* Add lower div to display the current position of the user --> for testing use */}
-          <div className="sidebar">
-            You current location: <br /> Longitude: {marker.longitude} |
-            Latitude: {marker.latitude}
-          </div>
-          {/* Add the map to the screen */}
-          <div ref={mapContainer} className="map-container" />
-        </>
-      )}
-    </div>
-  );
+  if ((viewState.latitude && viewState.longitude))
+  {
+    return (
+      <div>
+        {
+          <>
+            {/* Add lower div to display the current position of the user --> for testing use */}
+            <div className="sidebar">
+              You current location: <br /> Longitude: {marker.longitude} |
+              Latitude: {marker.latitude}
+            </div>
+            {/* Add the map to the screen */}
+            <div ref={mapContainer} className="map-container" />
+          </>
+        } 
+
+      </div>
+      
+    );
+  }
+  else {
+    return (
+      <div><h1>Give location permission</h1></div>
+    )
+  }
 };
 
 export default Map;
