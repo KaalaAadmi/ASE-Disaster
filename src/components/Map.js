@@ -99,7 +99,7 @@ const Map = (props) => {
         const res = await axios.get(
           "http://127.0.0.1:8000/api/v1/all-disaster-data"
         );
-        // console.log(res.data)
+        console.log(res.data)
         setDisasterData(res.data);
       } catch (error) {
         console.log(error);
@@ -203,7 +203,7 @@ const Map = (props) => {
         directions.setOrigin([marker.longitude, marker.latitude]);
         directions.setDestination([-6.25819, 53.344415]);
       });
-      map.current.addControl(directions, "top-left");
+      // map.current.addControl(directions, "top-left");
 
       // Add the user location marker
       const origin = new mapboxgl.Marker()
@@ -231,7 +231,7 @@ const Map = (props) => {
         <>
           {/* Add lower div to display the current position of the user --> for testing use */}
           <div className="sidebar">
-            You current location: <br /> Longitude: {marker.longitude} |
+            Your current location: <br /> Longitude: {marker.longitude} |
             Latitude: {marker.latitude}
           </div>
           {/* Add the map to the screen */}

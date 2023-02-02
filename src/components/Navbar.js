@@ -15,6 +15,9 @@ export default function Navbar() {
         <li>
           <CustomLink to="/maps">Map</CustomLink>
         </li>
+        <li>
+          <CustomLink to="/disaster-response">Disaster-Interpretation</CustomLink>
+        </li>
       </ul>
     </nav>
   );

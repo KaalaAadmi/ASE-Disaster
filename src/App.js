@@ -5,6 +5,7 @@ import News from "./components/News";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
+import DisasterResponse from "./components/DisasterResponse";
 
 function App() {
   const [location, setLocation] = React.useState({
@@ -24,6 +25,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
+          <Route path="/disaster-response" element={ <DisasterResponse />} />
           <Route
             path="/maps"
             element={
