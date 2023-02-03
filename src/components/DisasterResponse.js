@@ -2,22 +2,19 @@ import React, { useState } from 'react';
 import axios from "axios";
 
 const DisasterResponse = (props) => {
-  const [inputValue, setInputValue] = React.useState();
-  const [apiResponse, setApiResponse] = React.useState();
+  const [requestData, setRequestData] = useState('');
+  const [responseData, setResponseData] = useState(null);
 
   const handleChange = (event) => {
-    setInputValue(event.target.value);
+    setRequestData(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+
+  const handleClick = async () => {
     try {
-    //   const response = await fetch(`http://127.0.0.1:8000/api/v1/getDisasterResponse`);
-      const response = await axios.get(
-        "http://127.0.0.1:8000/api/v1/all-disaster-data"
-      );
-      // const data = await response.json();
-      setApiResponse(response.data);
+      const data = { string: requestData };
+      const response = await axios.post('http://127.0.0.1:8000/api/v1/getDisasterResponse', data);
+      setResponseData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -25,15 +22,9 @@ const DisasterResponse = (props) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleChange}
-        />
-        <button type="submit">Submit</button>
-      </form>
-      <p>{apiResponse}</p>
+      <input type="text" value={requestData} onChange={handleChange} />
+      <button onClick={handleClick}>Interpret Message!</button>
+      {responseData && <p>{JSON.stringify(responseData)}</p>}
     </div>
   );
 };
