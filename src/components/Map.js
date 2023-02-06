@@ -83,6 +83,9 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
 import axios from "axios";
 import { markerData } from "../assets/data";
+//import clearances from "./clearances";
+import turf from "turf";
+
 // import { disasterData } from "../assets/data";
 
 // mapbox token
@@ -157,6 +160,7 @@ const Map = (props) => {
     longitude: props.longitude,
     // center: [props.latitude, props.longitude],
   });
+	
 
   // Getting the actual user location through gps
   React.useEffect(() => {
@@ -215,6 +219,54 @@ const Map = (props) => {
       map.current.on("load", function () {
         directions.setOrigin([marker.longitude, marker.latitude]);
         directions.setDestination([-6.25819, 53.344415]);
+		
+		const clearances = {
+			  type: 'FeatureCollection',
+			  features: [
+				{
+				  type: 'Feature',
+				  geometry: {
+					type: 'Point',
+					coordinates: [viewState.longitude, marker.latitude]
+				  },
+				  properties: {
+					clearance: "13' 2"
+				  }
+				},
+				{
+				  type: 'Feature',
+				  geometry: {
+					type: 'Point',
+					coordinates: [viewState.longitude+0.02, marker.latitude+0.002]
+				  },
+				  properties: {
+					clearance: "13' 2"
+				  }
+				}
+			  ]
+			};
+
+		const obstacle = turf.buffer(clearances, 0.25, 'kilometers');
+		console.log(obstacle)
+
+		const bbox = [0, 0, 0, 0];
+		const polygon = turf.bboxPolygon(bbox);
+	
+		map.current.addLayer({
+			id: 'clearances',
+			type: 'fill',
+			source: {
+			  type: 'geojson',
+			  data: obstacle
+			},
+			layout: {},
+			paint: {
+			  'fill-color': '#f03b20',
+			  'fill-opacity': 0.5,
+			  'fill-outline-color': '#f03b20'
+			}
+		  });
+  
       });
       // map.current.addControl(directions, "top-left");
 
