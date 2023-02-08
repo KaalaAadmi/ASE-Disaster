@@ -227,7 +227,7 @@ const Map = (props) => {
 				  type: 'Feature',
 				  geometry: {
 					type: 'Point',
-					coordinates: [viewState.longitude, marker.latitude]
+					coordinates: [marker.longitude, marker.latitude]
 				  },
 				  properties: {
 					clearance: "13' 2"
@@ -237,7 +237,7 @@ const Map = (props) => {
 				  type: 'Feature',
 				  geometry: {
 					type: 'Point',
-					coordinates: [viewState.longitude+0.02, marker.latitude+0.002]
+					coordinates: [marker.longitude+0.02, marker.latitude+0.002]
 				  },
 				  properties: {
 					clearance: "13' 2"
