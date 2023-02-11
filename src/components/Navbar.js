@@ -9,15 +9,9 @@ export default function Navbar() {
         Site Name
       </Link>
       <ul>
-        <li>
-          <CustomLink to="/news">News</CustomLink>
-        </li>
-        <li>
-          <CustomLink to="/maps">Map</CustomLink>
-        </li>
-        <li>
-          <CustomLink to="/disaster-response">Disaster-Interpretation</CustomLink>
-        </li>
+        <CustomLink to="/news">News</CustomLink>
+        <CustomLink to="/maps">Map</CustomLink>
+        <CustomLink to="/disaster-response">Disaster-Interpretation</CustomLink>
       </ul>
     </nav>
   );

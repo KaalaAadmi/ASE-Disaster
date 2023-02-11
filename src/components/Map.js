@@ -23,8 +23,7 @@
 //     if (!props.latitude && !props.longitude) {
 //       navigator.geolocation.getCurrentPosition((position) => {
 //         setViewState({
-//           latitude: position.coords.latitude,
-//           longitude: position.coords.longitude
+//           latitude: position.coords.latitude,/           longitude: position.coords.longitude
 //           // center: [position.coords.longitude, position.coords.latitude],
 //         });
 //         setMarker({
@@ -57,7 +56,7 @@
 //       >
 //         <Marker
 //           longitude={marker.longitude}
-//           latitude={marker.latitude}
+//           latitude={marker.latituden
 //           anchor="bottom"
 //           color="lightblue"
 //         />
@@ -75,10 +74,11 @@
 //     </div>
 //   );
 // }
-import {counter, maxAttempts, emoji, collision, detail, reports , addCard, noRoutes} from "./reroute";
+// import {counter, maxAttempts, emoji, collision, detail, reports , addCard, noRoutes} from "./reroute";
+import {addCard, noRoutes} from "./reroute";
 import polyline from '@mapbox/polyline';
-import bbox from "turf";
-import polygon from "turf";
+// import bbox from "turf";
+// import polygon from "turf";
 import React, { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
@@ -87,7 +87,7 @@ import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up 
 import axios from "axios";
 import { markerData } from "../assets/data";
 //import clearances from "./clearances";
-import turf from "turf";
+import * as turf from "@turf/turf";
 import "./reroute.css";
 // import { disasterData } from "../assets/data";
 
@@ -225,6 +225,12 @@ const Map = (props) => {
 		
 		map.current.addControl(directions_rr, 'top-right');
 		
+    let counter = 0;
+    const maxAttempts = 50;
+    let emoji = '';
+    let collision = '';
+    let detail = '';
+    const reports = document.getElementById('reports');
 		const clearances = {
         type: 'FeatureCollection',
         features: [
@@ -251,7 +257,7 @@ const Map = (props) => {
         ]
       };
 		console.log(clearances)
-		const obstacle = turf.buffer(clearances, 0.25, 'kilometers');
+		const obstacle = turf.buffer(clearances, 0.500, {"unit":'kilometers'});
 		console.log(obstacle)
 		let bbox = [0, 0, 0, 0];
 		let polygon = turf.bboxPolygon(bbox);
@@ -259,7 +265,7 @@ const Map = (props) => {
 		
       // Add origin and destination to the map direction
       map.current.on("load", function () {
-        directions_rr.setOrigin([marker.longitude, marker.latitude]);
+        //directions_rr.setOrigin([marker.longitude, marker.latitude]);
         //directions.setDestination([-6.25819, 53.344415]);
 	
 
@@ -439,7 +445,7 @@ const Map = (props) => {
               You current location: <br /> Longitude: {marker.longitude} |
               Latitude: {marker.latitude}
             </div>
-			<div class="sidebarRR">
+			<div className="sidebarRR">
 			  <h1>Reports</h1>
 			  <div id="reports"></div>
 			</div>
