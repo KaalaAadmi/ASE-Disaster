@@ -390,7 +390,7 @@ const Map = (props) => {
 				counter = counter + 1;
 				// As the attempts increase, expand the search area
 				// by a factor of the attempt count
-				polygon = turf.transformScale(polygon, counter * 0.01);
+				polygon = turf.transformScale(polygon, counter * 0.1);
 				bbox = turf.bbox(polygon);
 				collision = 'is bad.';
 				detail = `takes ${(route.duration / 60).toFixed(
