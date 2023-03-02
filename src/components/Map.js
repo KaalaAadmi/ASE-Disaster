@@ -1,80 +1,3 @@
-// import React from "react";
-// import Map, { Marker, GeolocateControl, NavigationControl } from "react-map-gl";
-
-// import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
-
-// const MAPBOX_TOKEN =
-//   "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
-
-// export default function Maps(props) {
-//   // Setting the map and marker states
-//   const [viewState, setViewState] = React.useState({
-//     latitude: 0,
-//     longitude: 0,
-//     zoom: 16
-//   });
-//   const [marker, setMarker] = React.useState({
-//     latitude: props.latitude,
-//     longitude: props.longitude
-//     // center: [props.latitude, props.longitude],
-//   });
-//   // Getting the actual user location through gps
-//   React.useEffect(() => {
-//     if (!props.latitude && !props.longitude) {
-//       navigator.geolocation.getCurrentPosition((position) => {
-//         setViewState({
-//           latitude: position.coords.latitude,/           longitude: position.coords.longitude
-//           // center: [position.coords.longitude, position.coords.latitude],
-//         });
-//         setMarker({
-//           latitude: position.coords.latitude,
-//           longitude: position.coords.longitude
-//           // center: [position.coords.longitude, position.coords.latitude],
-//         });
-//       });
-//     }
-//   }, [props.latitude, props.longitude]);
-//   console.log(`lat: ${viewState.latitude}, long: ${viewState.longitude}`);
-
-//   return (
-//     <div>
-//       <Map
-//         // ref={mapRef.current}
-//         {...viewState}
-//         onMove={(evt) =>
-//           setViewState({
-//             ...viewState,
-//             latitude: evt.viewState.latitude,
-//             longitude: evt.viewState.longitude
-//           })
-//         }
-//         style={{ width: "100vw", height: "100vh" }}
-//         mapStyle="mapbox://styles/mapbox/dark-v10"
-//         mapboxAccessToken={MAPBOX_TOKEN}
-//         pitch={50}
-//         center={viewState.center}
-//       >
-//         <Marker
-//           longitude={marker.longitude}
-//           latitude={marker.latituden
-//           anchor="bottom"
-//           color="lightblue"
-//         />
-//         {/* <MapboxDirections
-//             mapRef={mapRef.current}
-//             mapboxApiAccessToken={MAPBOX_TOKEN}
-//           /> */}
-//         <GeolocateControl
-//           trackUserLocation
-//           position="top-right"
-//           showAccuracyCircle={false}
-//         />
-//         <NavigationControl position="bottom-right" />
-//       </Map>
-//     </div>
-//   );
-// }
-// import {counter, maxAttempts, emoji, collision, detail, reports , addCard, noRoutes} from "./reroute";
 import {addCard, noRoutes} from "./reroute";
 import polyline from '@mapbox/polyline';
 // import bbox from "turf";
@@ -91,11 +14,14 @@ import * as turf from "@turf/turf";
 import "./reroute.css";
 // import { disasterData } from "../assets/data";
 
+import safehouse from './safe_house_locs.json';
+
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
   "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
+
 
 const Map = (props) => {
   // create references for the map
@@ -194,6 +120,7 @@ const Map = (props) => {
         zoom: viewState.zoom,
         pitch: 50,
       });
+	
 
       // Add NavigationControl to the map
       const nav = new mapboxgl.NavigationControl();
@@ -268,6 +195,9 @@ const Map = (props) => {
         //directions_rr.setOrigin([marker.longitude, marker.latitude]);
         //directions.setDestination([-6.25819, 53.344415]);
 	
+		
+		
+		console.log(safehouse)
 
 		map.current.addLayer({
 			id: 'clearances',
