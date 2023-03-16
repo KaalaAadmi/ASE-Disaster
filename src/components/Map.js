@@ -16,6 +16,8 @@ import "./reroute.css";
 
 import safehouse from './safe_house_locs.json';
 
+const { getNearestSafehouse } = require('./haversine');
+
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
   "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
@@ -212,8 +214,15 @@ const Map = (props) => {
         //directions.setDestination([-6.25819, 53.344415]);
 	
 		createSafeHouseMarker(safehouse)
-		
 		console.log(safehouse)
+		
+		const disasterLocation = {
+		  lat: marker.latitude,
+		  lng: marker.longitude
+		};
+
+		const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouse);
+		console.log(`The nearest safehouse is ${nearestSafehouse.Name}`);
 
 		map.current.addLayer({
 			id: 'clearances',
@@ -289,9 +298,9 @@ const Map = (props) => {
 		  // Hide the route and box by setting the opacity to zero
 		  map.current.setLayoutProperty('theRoute', 'visibility', 'none');
 		  map.current.setLayoutProperty('theBox', 'visibility', 'none');
-		  console.log(counter)
-		  console.log(maxAttempts)
-		  console.log(event)
+		//  console.log(counter)
+		// console.log(maxAttempts)
+		//  console.log(event)
 		  
 		  if (counter >= maxAttempts) {
 			noRoutes(reports);
