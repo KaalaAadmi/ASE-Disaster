@@ -39,6 +39,18 @@ const Map = (props) => {
         .addTo(map.current);
     }
   }
+  
+   function createSafeHouseMarker(safehouse_loc) {
+    console.log(typeof safehouse_loc);
+    for (var i = 0; i < safehouse_loc.length; i++) {
+      const disaster = new mapboxgl.Marker({ color: "green" })
+        .setLngLat([safehouse_loc[i].Location.lng, safehouse_loc[i].Location.lat])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }).setText(safehouse_loc[i].Name)
+        )
+        .addTo(map.current);
+    }
+  }
 
   const [disasterData, setDisasterData] = React.useState();
   React.useEffect(() => {
@@ -50,12 +62,16 @@ const Map = (props) => {
         console.log(res.data)
         setDisasterData(res.data);
         createDisasterMarker(res.data);
+	
       } catch (error) {
         console.log(error);
       }
     };
     getData();
   }, [disasterData]);
+
+  
+  
   // function createReportMarker() {
   //   console.log(typeof markerData);
   //   for (var i = 0; i < data.length; i++) {
@@ -195,7 +211,7 @@ const Map = (props) => {
         //directions_rr.setOrigin([marker.longitude, marker.latitude]);
         //directions.setDestination([-6.25819, 53.344415]);
 	
-		
+		createSafeHouseMarker(safehouse)
 		
 		console.log(safehouse)
 
