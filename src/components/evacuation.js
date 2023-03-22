@@ -11,32 +11,13 @@ export function addRoute(map, disasterLocation, safehouses) {
   // get the nearest safehouse from the disaster location
   const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouses);
 
-  // use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
-  const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${disasterLocation.lng},${disasterLocation.lat};${nearestSafehouse.Location.lng},${nearestSafehouse.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
-
-  axios.get(directionsUrl)
-    .then(response => {
-      const route = response.data.routes[0].geometry;
-      const coordinates = polyline.decode(route);
-
-      const geoJsonObj = {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: coordinates,
-        },
-      };
-      const sourceObj = {
-        type: 'geojson',
-        data: geoJsonObj,
-      };
-		console.log(geoJsonObj)
-      // check if the "evacuation_route" layer exists and update it if it does, otherwise add a new layer
-      const layerExists = map.getLayer("evacuation_route");
-      if (layerExists) {
-        map.getSource('evacuation_route').setData(geoJsonObj);
-      } else {
-        map.addSource('evacuation_route', sourceObj);
+		map.addSource('evacuation_route', {
+		  type: 'geojson',
+		  data: {
+			type: 'Feature'
+		  }
+		});
+		
 		// Check if the source exists
 		const source = map.getSource('evacuation_route');
 		if (source) {
@@ -54,7 +35,7 @@ export function addRoute(map, disasterLocation, safehouses) {
             "line-cap": "round",
           },
           paint: {
-            'line-color': '#4d4d4d',
+            'line-color': 'green',
             'line-opacity': 0.5,
             'line-width': 13,
             'line-blur': 0.5
@@ -68,6 +49,23 @@ export function addRoute(map, disasterLocation, safehouses) {
 		} else {
 		  console.log('Layer not added');
 		}
+		
+  // use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
+  const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${disasterLocation.lng},${disasterLocation.lat};${nearestSafehouse.Location.lng},${nearestSafehouse.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+
+  axios.get(directionsUrl)
+    .then(response => {
+      const route = response.data.routes[0].geometry;
+	  const routeLine = polyline.toGeoJSON(route);
+	  console.log(routeLine)
+
+      // check if the "evacuation_route" layer exists and update it if it does, otherwise add a new layer
+      const layerExists = map.getLayer("evacuation_route");
+      if (layerExists) {
+        map.getSource('evacuation_route').setData(routeLine);
+      } else {
+        //map.addSource('evacuation_route', sourceObj);
+
 
       }
 
