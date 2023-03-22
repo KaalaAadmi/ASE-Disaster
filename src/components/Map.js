@@ -14,10 +14,12 @@ import * as turf from "@turf/turf";
 import "./reroute.css";
 // import { disasterData } from "../assets/data";
 
-import safehouse from './safe_house_locs.json';
+import safehouse from './locs_safehouse.json';
+import loc_hospitals from './locs_hospital.json';
 
 const { getNearestSafehouse } = require('./haversine');
 const { addRoute } = require('./evacuation');
+const { addRoute_hospital } = require('./reroute');
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
 	"pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
@@ -50,7 +52,21 @@ const Map = (props) => {
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(safehouse_loc[i].Name)
 					)
-					.addTo(map.current);
+					.addTo(map.current)
+				//	.togglePopup();
+			}
+		}
+		
+		function createHospitalMarker(loc_hospitals) {
+			console.log(typeof loc_hospitals);
+			for (var i = 0; i < loc_hospitals.length; i++) {
+				const disaster = new mapboxgl.Marker({ color: "red" })
+					.setLngLat([loc_hospitals[i].Location.lng, loc_hospitals[i].Location.lat])
+					.setPopup(
+						new mapboxgl.Popup({ offset: 25 }).setText(loc_hospitals[i].Name)
+					)
+					.addTo(map.current)
+				//	.togglePopup();
 			}
 		}
 
@@ -190,7 +206,8 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					createSafeHouseMarker(safehouse)
+					createSafeHouseMarker(safehouse)					
+					createHospitalMarker(loc_hospitals)
 					console.log(safehouse)
 
 					// Source and layer for clearance
@@ -261,7 +278,7 @@ const Map = (props) => {
 					//const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouse);
 					//console.log(`The nearest safehouse is ${nearestSafehouse.Name}`);
 					addRoute(map.current, disasterLocation, safehouse);
-
+					addRoute_hospital(map.current, disasterLocation, loc_hospitals);
 				});
 
 
