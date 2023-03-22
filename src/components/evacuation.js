@@ -7,7 +7,7 @@ const REACT_APP_MAPBOX_TOKEN =
 
 const { getNearestSafehouse } = require('./haversine');
 
-export function addRoute(map, disasterLocation, safehouses) {
+export function addRoute_safehouse(map, disasterLocation, safehouses) {
 	// get the nearest safehouse from the disaster location
 	const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouses);
 

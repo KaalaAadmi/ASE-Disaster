@@ -14,11 +14,11 @@ import * as turf from "@turf/turf";
 import "./reroute.css";
 // import { disasterData } from "../assets/data";
 
-import safehouse from './locs_safehouse.json';
+import loc_safehouses from './locs_safehouse.json';
 import loc_hospitals from './locs_hospital.json';
 
 const { getNearestSafehouse } = require('./haversine');
-const { addRoute } = require('./evacuation');
+const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
@@ -206,9 +206,9 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					createSafeHouseMarker(safehouse)					
+					createSafeHouseMarker(loc_safehouses)					
 					createHospitalMarker(loc_hospitals)
-					console.log(safehouse)
+					console.log(loc_safehouses)
 
 					// Source and layer for clearance
 					map.current.addLayer({
@@ -275,9 +275,9 @@ const Map = (props) => {
 						lng: marker.longitude
 					};
 
-					//const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouse);
-					//console.log(`The nearest safehouse is ${nearestSafehouse.Name}`);
-					addRoute(map.current, disasterLocation, safehouse);
+					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
+					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
+					addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
 					addRoute_hospital(map.current, disasterLocation, loc_hospitals);
 				});
 
