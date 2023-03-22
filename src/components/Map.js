@@ -17,7 +17,7 @@ import "./reroute.css";
 import safehouse from './safe_house_locs.json';
 
 const { getNearestSafehouse } = require('./haversine');
-
+const { addRoute } = require('./evacuation');
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
   "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
@@ -73,30 +73,6 @@ const Map = (props) => {
   }, [disasterData]);
 
   
-  
-  // function createReportMarker() {
-  //   console.log(typeof markerData);
-  //   for (var i = 0; i < data.length; i++) {
-  //     const report = new mapboxgl.Marker({ color: "red" })
-  //       .setLngLat([data[i].longitude, data[i].latitude])
-  //       .setPopup(
-  //         new mapboxgl.Popup({ offset: 25 }).setText(data[i].detail)
-  //       )
-  //       .addTo(map.current);
-  //   }
-  // }
-  // function createDisasterMarker() {
-  //   console.log(typeof disasterData);
-  //   for (var i = 0; i < disasterData.length; i++) {
-  //     const disaster = new mapboxgl.Marker({ color: "yellow" })
-  //       .setLngLat([disasterData[i].longitude, disasterData[i].latitude])
-  //       .setPopup(
-  //         new mapboxgl.Popup({ offset: 25 }).setText(disasterData[i].detail)
-  //       )
-  //       .addTo(map.current);
-  //   }
-  // }
-  // Setting the map and marker states
   const [viewState, setViewState] = React.useState({
     latitude: 0,
     longitude: 0,
@@ -126,6 +102,8 @@ const Map = (props) => {
       });
     }
   }, [viewState.latitude, viewState.longitude]);
+
+
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -169,7 +147,7 @@ const Map = (props) => {
 		});
 		
 		map.current.addControl(directions_rr, 'top-right');
-		
+
     let counter = 0;
     const maxAttempts = 50;
     let emoji = '';
@@ -216,14 +194,7 @@ const Map = (props) => {
 		createSafeHouseMarker(safehouse)
 		console.log(safehouse)
 		
-		const disasterLocation = {
-		  lat: marker.latitude,
-		  lng: marker.longitude
-		};
-
-		const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouse);
-		console.log(`The nearest safehouse is ${nearestSafehouse.Name}`);
-
+		// Source and layer for clearance
 		map.current.addLayer({
 			id: 'clearances',
 			type: 'fill',
@@ -281,10 +252,20 @@ const Map = (props) => {
 			'fill-outline-color': '#FFC300'
 		  }
 		});
-
-      });
-      // map.current.addControl(directions, "top-left");
 		
+		//add the route after the map is on
+		const disasterLocation = {
+		  lat: marker.latitude,
+		  lng: marker.longitude
+		};
+
+		//const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouse);
+		//console.log(`The nearest safehouse is ${nearestSafehouse.Name}`);
+		addRoute(map.current, disasterLocation, safehouse);
+		
+      });
+    
+	
 		
 		directions_rr.on('clear', () => {
 		  map.current.setLayoutProperty('theRoute', 'visibility', 'none');
@@ -312,8 +293,9 @@ const Map = (props) => {
 			  map.current.setLayoutProperty('theBox', 'visibility', 'visible');
 
 			  // Get GeoJSON LineString feature of route
+			  console.log(route.geometry)
 			  const routeLine = polyline.toGeoJSON(route.geometry);
-				 console.log(routeLine)
+			//	 console.log(routeLine)
 			  // Create a bounding box around this route
 			  // The app will find a random point in the new bbox
 			  bbox = turf.bbox(routeLine);
@@ -321,11 +303,12 @@ const Map = (props) => {
 
 			  // Update the data for the route
 			  // This will update the route line on the map
+			console.log(routeLine)
 			  map.current.getSource('theRoute').setData(routeLine);
-
+			const layer = map.current.getLayer('theRoute');
+			console.log(layer)
 			  // Update the box
 			  map.current.getSource('theBox').setData(polygon);
-
 			  const clear = turf.booleanDisjoint(obstacle, routeLine);
 			  console.log(routeLine)
 			  console.log(obstacle)
@@ -368,24 +351,14 @@ const Map = (props) => {
 		  }
 		});
 
-
+	
+		
+		
       // Add the user location marker
       const origin = new mapboxgl.Marker()
         .setLngLat([marker.longitude, marker.latitude])
         .addTo(map.current);
-      // Add the destination marker
-      // const destination = new mapboxgl.Marker({ color: "red" })
-      //   .setLngLat([-6.25819, 53.344415])
-      //   .addTo(map.current);
 
-      // console.log(markerData);
-      // markerData?.map((item) => {
-      //   const marker = new mapboxgl.Marker({ color: "red" })
-      //     .setLngLat([item.longitude, item.latitude])
-      //     .addTo(map.current);
-      // });
-      // createReportMarker();
-      // createDisasterMarker();
     }
   }, [viewState.latitude, viewState.longitude]);
 
