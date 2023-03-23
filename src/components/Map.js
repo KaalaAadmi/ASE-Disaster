@@ -65,7 +65,10 @@ const Map = (props) => {
 		function createHospitalMarker(loc_hospitals) {
 			console.log(typeof loc_hospitals);
 			for (var i = 0; i < loc_hospitals.length; i++) {
-				const disaster = new mapboxgl.Marker({ color: "red" })
+				const disaster = new mapboxgl.Marker({ color: "red",
+			// specify the icon using a URL or a Maki icon name
+            // see https://labs.mapbox.com/maki-icons/ for available Maki icons
+													icon: "hospital-0" })
 					.setLngLat([loc_hospitals[i].Location.lng, loc_hospitals[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_hospitals[i].Name)
