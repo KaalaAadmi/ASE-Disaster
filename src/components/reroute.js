@@ -59,10 +59,10 @@ export function noRoutes(element) {
 
 export function addRoute_hospital(map, disasterLocation, hospitals) {
 	// get the nearest hospital from the disaster location
-	const nearestSafehouse = getNearestSafehouse(disasterLocation, hospitals);
+	const nearesthospital = getNearestSafehouse(disasterLocation, hospitals);
 
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
-	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearestSafehouse.Location.lng},${nearestSafehouse.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.Location.lng},${nearesthospital.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 
 	map.addSource('hospital_route', {
 		type: 'geojson',
@@ -104,6 +104,60 @@ export function addRoute_hospital(map, disasterLocation, hospitals) {
 
 			// make the "hospital_route" layer visible
 			map.setLayoutProperty('hospital_route', 'visibility', 'visible');
+			console.log(map)
+		})
+		.catch(error => {
+			console.log(error);
+		});
+}
+
+export function addRoute_garda(map, disasterLocation, gardi) {
+	// get the nearest hospital from the disaster location
+	const nearestGarda = getNearestSafehouse(disasterLocation, gardi);
+
+	// use the Mapbox Directions API to get the route from the disaster location to the nearest garda
+	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearestGarda.Location.lng},${nearestGarda.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+
+	map.addSource('garda_route', {
+		type: 'geojson',
+		data: {
+			type: 'Feature'
+		}
+	});
+
+	map.addLayer({
+		id: "garda_route",
+		type: "line",
+		source: "garda_route",
+		layout: {
+			"line-join": "round",
+			"line-cap": "round",
+		},
+		paint: {
+			'line-color': 'red',
+			'line-opacity': 0.5,
+			'line-width': 13,
+			'line-blur': 0.5
+		}
+	});
+	
+	axios.get(directionsUrl)
+		.then(response => {
+			const route = response.data.routes[0].geometry;
+			const routeLine = polyline.toGeoJSON(route);
+			console.log(routeLine)
+
+			// check if the "garda_route" layer exists and update it if it does, otherwise add a new layer
+			const layerExists = map.getLayer("garda_route");
+			if (layerExists) {
+				map.getSource('garda_route').setData(routeLine);
+			} else {
+				//map.addSource('garda_route', sourceObj);
+
+			}
+
+			// make the "garda_route" layer visible
+			map.setLayoutProperty('garda_route', 'visibility', 'visible');
 			console.log(map)
 		})
 		.catch(error => {

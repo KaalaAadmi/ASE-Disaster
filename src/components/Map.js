@@ -16,10 +16,13 @@ import "./reroute.css";
 
 import loc_safehouses from './locs_safehouse.json';
 import loc_hospitals from './locs_hospital.json';
+import loc_gardi from './locs_garda.json';
 
-const { getNearestSafehouse } = require('./haversine');
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
+const { addRoute_garda} = require('./reroute');
+
+
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
 	"pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
@@ -70,6 +73,19 @@ const Map = (props) => {
 			}
 		}
 
+		function createGardaMarker(loc_gardi) {
+			console.log(typeof loc_gardi);
+			for (var i = 0; i < loc_gardi.length; i++) {
+				const disaster = new mapboxgl.Marker({ color: "yellow" })
+					.setLngLat([loc_gardi[i].Location.lng, loc_gardi[i].Location.lat])
+					.setPopup(
+						new mapboxgl.Popup({ offset: 25 }).setText(loc_gardi[i].Name)
+					)
+					.addTo(map.current)
+					.togglePopup();
+			}
+		}
+		
 		const [disasterData, setDisasterData] = React.useState();
 		React.useEffect(() => {
 			const getData = async () => {
@@ -195,7 +211,7 @@ const Map = (props) => {
 					]
 				};
 				console.log(clearances)
-				const obstacle = turf.buffer(clearances, 0.500, { "unit": 'kilometers' });
+				const obstacle = turf.buffer(clearances, 0.100, { "unit": 'kilometers' });
 				console.log(obstacle)
 				let bbox = [0, 0, 0, 0];
 				let polygon = turf.bboxPolygon(bbox);
@@ -206,9 +222,9 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					createSafeHouseMarker(loc_safehouses)					
-					createHospitalMarker(loc_hospitals)
-					console.log(loc_safehouses)
+					createSafeHouseMarker(loc_safehouses);					
+					createHospitalMarker(loc_hospitals);
+					createGardaMarker(loc_gardi);
 
 					// Source and layer for clearance
 					map.current.addLayer({
@@ -279,6 +295,7 @@ const Map = (props) => {
 					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
 					addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
 					addRoute_hospital(map.current, disasterLocation, loc_hospitals);
+					addRoute_garda(map.current, disasterLocation, loc_gardi);
 				});
 
 
