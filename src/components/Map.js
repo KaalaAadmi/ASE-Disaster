@@ -113,8 +113,14 @@ const Map = (props) => {
     const getData = async () => {
       try {
         const res = await axios.get(
-          "http://127.0.0.1:8000/api/v1/all-disaster-data"
+          // "http://127.0.0.1:8000/api/v1/all-disaster-data"
+          // "http://100.26.18.111:8000/api/v1/all-disaster-data"
+          "https://msdocs-expressjs-mongodb-odonneb4.azurewebsites.net/api/v1/get-disaster-data"
         );
+
+        // console.log(res.data);
+        setDisasterData(res.data);
+        console.log(disasterData);
         console.log(res.data)
         setDisasterData(res.data);
         createDisasterMarker(res.data);
@@ -135,6 +141,17 @@ const Map = (props) => {
   //       .addTo(map.current);
   //   }
   // }
+  function createDisasterMarker(disasterData) {
+    console.log(typeof disasterData);
+    for (var i = 0; i < disasterData.length; i++) {
+      const disaster = new mapboxgl.Marker({ color: "yellow" })
+        .setLngLat([disasterData[i].longitude, disasterData[i].latitude])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }).setText(disasterData[i].detail)
+        )
+        .addTo(map.current);
+    }
+  }
   // function createDisasterMarker() {
   //   console.log(typeof disasterData);
   //   for (var i = 0; i < disasterData.length; i++) {
@@ -161,19 +178,29 @@ const Map = (props) => {
   // Getting the actual user location through gps
   React.useEffect(() => {
     if (!viewState.latitude && !viewState.longitude) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setViewState((prev) => ({
-          ...prev,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          // center: [position.coords.longitude, position.coords.latitude],
-        }));
-        setMarker({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          // center: [position.coords.longitude, position.coords.latitude],
-        });
-      });
+      // if (navigator.geolocation) {
+      // let location_timeout = setTimeout("geolocFail()", 10000);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // clearTimeout(location_timeout);
+          setViewState((prev) => ({
+            ...prev,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            // center: [position.coords.longitude, position.coords.latitude],
+          }));
+          setMarker({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            // center: [position.coords.longitude, position.coords.latitude],
+          });
+        },
+        // function (e) {document.alert("failed")},
+        { timeout: 10000 }
+      );
+      // } else{
+      //   alert("failed")
+      // }
     }
   }, [viewState.latitude, viewState.longitude]);
 
@@ -212,10 +239,28 @@ const Map = (props) => {
       });
 
       // Add origin and destination to the map direction
+      // map.current.on("load", function () {
+      //   directions.setOrigin([marker.longitude, marker.latitude]);
+      //   directions.setDestination([-6.25819, 53.344415]);
+      // });
+      // map.current.addControl(directions, "top-left");
+      // Add the traffic data as a layer
       map.current.on("load", function () {
-        directions.setOrigin([marker.longitude, marker.latitude]);
-        directions.setDestination([-6.25819, 53.344415]);
+        map.addLayer({
+          id: "traffic",
+          type: "line",
+          source: {
+            type: "vector",
+            url: "mapbox://mapbox.mapbox-traffic-v1",
+          },
+          "source-layer": "traffic",
+          paint: {
+            "line-color": "red",
+            "line-width": 3,
+          },
+        });
       });
+
       // map.current.addControl(directions, "top-left");
 
       // Add the user location marker

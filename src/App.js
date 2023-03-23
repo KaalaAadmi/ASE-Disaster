@@ -5,7 +5,9 @@ import News from "./components/News";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
+import LoginScreen from './screens/LoginScreen/LoginScreen';
 import DisasterResponse from "./components/DisasterResponse";
+
 
 function App() {
   const [location, setLocation] = React.useState({
@@ -36,6 +38,7 @@ function App() {
               />
             }
           />
+          <Route path="/login" element={<LoginScreen />} />
         </Routes>
       </div>
     </div>
