@@ -92,6 +92,22 @@ const REACT_APP_MAPBOX_TOKEN =
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
 const Map = (props) => {
+  // create references for the map
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+
+  function createDisasterMarker(disasterDataset) {
+    console.log(typeof disasterDataset);
+    for (var i = 0; i < disasterDataset.length; i++) {
+      const disaster = new mapboxgl.Marker({ color: "yellow" })
+        .setLngLat([disasterDataset[i].longitude, disasterDataset[i].latitude])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }).setText(disasterDataset[i].detail)
+        )
+        .addTo(map.current);
+    }
+  }
+
   const [disasterData, setDisasterData] = React.useState();
   React.useEffect(() => {
     const getData = async () => {
@@ -101,15 +117,19 @@ const Map = (props) => {
           // "http://100.26.18.111:8000/api/v1/all-disaster-data"
           "https://msdocs-expressjs-mongodb-odonneb4.azurewebsites.net/api/v1/get-disaster-data"
         );
+
         // console.log(res.data);
         setDisasterData(res.data);
         console.log(disasterData);
+        console.log(res.data)
+        setDisasterData(res.data);
+        createDisasterMarker(res.data);
       } catch (error) {
         console.log(error);
       }
     };
     getData();
-  }, []);
+  }, [disasterData]);
   // function createReportMarker() {
   //   console.log(typeof markerData);
   //   for (var i = 0; i < data.length; i++) {
@@ -132,6 +152,17 @@ const Map = (props) => {
         .addTo(map.current);
     }
   }
+  // function createDisasterMarker() {
+  //   console.log(typeof disasterData);
+  //   for (var i = 0; i < disasterData.length; i++) {
+  //     const disaster = new mapboxgl.Marker({ color: "yellow" })
+  //       .setLngLat([disasterData[i].longitude, disasterData[i].latitude])
+  //       .setPopup(
+  //         new mapboxgl.Popup({ offset: 25 }).setText(disasterData[i].detail)
+  //       )
+  //       .addTo(map.current);
+  //   }
+  // }
   // Setting the map and marker states
   const [viewState, setViewState] = React.useState({
     latitude: 0,
@@ -172,10 +203,6 @@ const Map = (props) => {
       // }
     }
   }, [viewState.latitude, viewState.longitude]);
-
-  // create references for the map
-  const mapContainer = useRef(null);
-  const map = useRef(null);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -233,6 +260,9 @@ const Map = (props) => {
           },
         });
       });
+
+      // map.current.addControl(directions, "top-left");
+
       // Add the user location marker
       const origin = new mapboxgl.Marker()
         .setLngLat([marker.longitude, marker.latitude])
@@ -249,25 +279,35 @@ const Map = (props) => {
       //     .addTo(map.current);
       // });
       // createReportMarker();
-      createDisasterMarker();
+      // createDisasterMarker();
     }
   }, [viewState.latitude, viewState.longitude]);
 
-  return (
-    <div>
-      {viewState.latitude && viewState.longitude && (
-        <>
-          {/* Add lower div to display the current position of the user --> for testing use */}
-          <div className="sidebar">
-            You current location: <br /> Longitude: {marker.longitude} |
-            Latitude: {marker.latitude}
-          </div>
-          {/* Add the map to the screen */}
-          <div ref={mapContainer} className="map-container" />
-        </>
-      )}
-    </div>
-  );
+  if ((viewState.latitude && viewState.longitude))
+  {
+    return (
+      <div>
+        {
+          <>
+            {/* Add lower div to display the current position of the user --> for testing use */}
+            <div className="sidebar">
+              You current location: <br /> Longitude: {marker.longitude} |
+              Latitude: {marker.latitude}
+            </div>
+            {/* Add the map to the screen */}
+            <div ref={mapContainer} className="map-container" />
+          </>
+        } 
+
+      </div>
+      
+    );
+  }
+  else {
+    return (
+      <div><h1>Give location permission</h1></div>
+    )
+  }
 };
 
 export default Map;
