@@ -17,11 +17,13 @@ import "./reroute.css";
 import loc_safehouses from './locs_safehouse.json';
 import loc_hospitals from './locs_hospital.json';
 import loc_gardi from './locs_garda.json';
+import loc_firestations from './locs_firestation.json';
 
 const { addRoute_safehouse } = require('./evacuation');
+
 const { addRoute_hospital } = require('./reroute');
 const { addRoute_garda} = require('./reroute');
-
+const { addRoute_firestation} = require('./reroute');
 
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
@@ -76,15 +78,31 @@ const Map = (props) => {
 		function createGardaMarker(loc_gardi) {
 			console.log(typeof loc_gardi);
 			for (var i = 0; i < loc_gardi.length; i++) {
-				const disaster = new mapboxgl.Marker({ color: "yellow" })
+				const disaster = new mapboxgl.Marker({ color: "yellow"})
 					.setLngLat([loc_gardi[i].Location.lng, loc_gardi[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_gardi[i].Name)
 					)
 					.addTo(map.current)
-					.togglePopup();
+				//	.togglePopup();
 			}
 		}
+		
+		function createFirestationMarker(loc_firestations) {
+			console.log(typeof loc_firestations);
+			for (var i = 0; i < loc_firestations.length; i++) {
+				//https://docs.mapbox.com/help/tutorials/markers-js/
+				//https://labs.mapbox.com/maki-icons/
+				const disaster = new mapboxgl.Marker({ color: "blue", symbol: 'fire-station' })
+					.setLngLat([loc_firestations[i].Location.lng, loc_firestations[i].Location.lat])
+					.setPopup(
+						new mapboxgl.Popup({ offset: 25 }).setText(loc_firestations[i].Name)
+					)
+					.addTo(map.current)
+				//	.togglePopup();
+			}
+		}
+		
 		
 		const [disasterData, setDisasterData] = React.useState();
 		React.useEffect(() => {
@@ -225,7 +243,8 @@ const Map = (props) => {
 					createSafeHouseMarker(loc_safehouses);					
 					createHospitalMarker(loc_hospitals);
 					createGardaMarker(loc_gardi);
-
+					createFirestationMarker(loc_firestations);
+					
 					// Source and layer for clearance
 					map.current.addLayer({
 						id: 'clearances',
@@ -296,6 +315,7 @@ const Map = (props) => {
 					addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
 					addRoute_hospital(map.current, disasterLocation, loc_hospitals);
 					addRoute_garda(map.current, disasterLocation, loc_gardi);
+					addRoute_firestation(map.current, disasterLocation, loc_firestations);
 				});
 
 

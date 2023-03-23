@@ -28,10 +28,18 @@ params_garda = {
     "region": "ir",
     "key": "AIzaSyAF07_m_fY9IEIK4aDnrgwPr5-rSYMWprE"
 }
+params_firestation = {
+    "query": "fire station",
+    "location": "53.3213275,-6.2497396",
+    "radius": 2000,
+    "region": "ir",
+    "key": "AIzaSyAF07_m_fY9IEIK4aDnrgwPr5-rSYMWprE"
+}
 
 
 #res = requests.get(endpoint_url, params=params_hospital)
-res = requests.get(endpoint_url, params=params_garda)
+#res = requests.get(endpoint_url, params=params_garda)
+res = requests.get(endpoint_url, params=params_firestation)
 locations = json.loads(res.content)
 
 print("there're %d locations \n"%len(locations["results"]))
