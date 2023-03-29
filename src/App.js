@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import LoginScreen from './screens/LoginScreen/LoginScreen';
 import DisasterResponse from "./components/DisasterResponse";
+import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
             }
           />
           <Route path="/login" element={<LoginScreen />} />
+          <Route path='/report-disaster' element={<ReportDisaster/>}/>
         </Routes>
       </div>
     </div>
