@@ -164,7 +164,7 @@ const Map = (props) => {
 				// Add map
 				map.current = new mapboxgl.Map({
 					container: mapContainer.current,
-					style: "mapbox://styles/mapbox/dark-v9",
+					style: "mapbox://styles/mapbox/light-v9",
 					center: [viewState.longitude, viewState.latitude],
 					zoom: viewState.zoom,
 					pitch: 50,
