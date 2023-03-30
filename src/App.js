@@ -3,6 +3,7 @@ import "./App.css";
 import Maps from "./components/Map";
 import News from "./components/News";
 import Navbar from "./components/Navbar";
+import FAQ from "./components/FAQ";
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import DisasterResponse from "./components/DisasterResponse";
@@ -15,6 +16,7 @@ function App() {
   return (
     <div>
       <Navbar />
+      <FAQ />
       {/* <Maps
         latitude={location.latitude}
         longitude={location.longitude}
