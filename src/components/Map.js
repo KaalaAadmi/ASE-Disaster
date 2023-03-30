@@ -63,12 +63,12 @@ const Map = (props) => {
 		}
 		
 		function createHospitalMarker(loc_hospitals) {
-			console.log(typeof loc_hospitals);
 			for (var i = 0; i < loc_hospitals.length; i++) {
-				const disaster = new mapboxgl.Marker({ color: "red",
-			// specify the icon using a URL or a Maki icon name
-            // see https://labs.mapbox.com/maki-icons/ for available Maki icons
-													icon: "hospital-0" })
+				// Create a DOM element for each marker.
+				const el = document.createElement('div');
+				el.className = 'marker';
+
+				const marker_hs = new mapboxgl.Marker(el)
 					.setLngLat([loc_hospitals[i].Location.lng, loc_hospitals[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_hospitals[i].Name)
@@ -232,7 +232,7 @@ const Map = (props) => {
 					]
 				};
 				console.log(clearances)
-				const obstacle = turf.buffer(clearances, 0.100, { "unit": 'kilometers' });
+				const obstacle = turf.buffer(clearances, 0.500, { "unit": 'kilometers' });
 				console.log(obstacle)
 				let bbox = [0, 0, 0, 0];
 				let polygon = turf.bboxPolygon(bbox);
@@ -243,10 +243,10 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					createSafeHouseMarker(loc_safehouses);					
+					//createSafeHouseMarker(loc_safehouses);					
 					createHospitalMarker(loc_hospitals);
-					createGardaMarker(loc_gardi);
-					createFirestationMarker(loc_firestations);
+					//createGardaMarker(loc_gardi);
+					//createFirestationMarker(loc_firestations);
 					
 					// Source and layer for clearance
 					map.current.addLayer({
