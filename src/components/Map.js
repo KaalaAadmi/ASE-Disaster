@@ -61,7 +61,7 @@ const Map = (props) => {
 				//	.togglePopup();
 			}
 		}
-		
+		//https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
 		function createHospitalMarker(loc_hospitals) {
 			for (var i = 0; i < loc_hospitals.length; i++) {
 				// Create a DOM element for each marker.
