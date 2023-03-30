@@ -32,7 +32,7 @@ export function addRoute_safehouse(map, disasterLocation, safehouses) {
 		paint: {
 			'line-color': 'green',
 			'line-opacity': 0.5,
-			'line-width': 13,
+			'line-width': 8,
 			'line-blur': 0.5
 		}
 	});

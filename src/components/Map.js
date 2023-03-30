@@ -50,9 +50,12 @@ const Map = (props) => {
 		}
 
 		function createSafeHouseMarker(safehouse_loc) {
-			console.log(typeof safehouse_loc);
+			//console.log(typeof safehouse_loc);
 			for (var i = 0; i < safehouse_loc.length; i++) {
-				const disaster = new mapboxgl.Marker({ color: "green" })
+				const el = document.createElement('div');
+				el.className = 'marker_safehouse';
+				
+				const disaster = new mapboxgl.Marker(el)
 					.setLngLat([safehouse_loc[i].Location.lng, safehouse_loc[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(safehouse_loc[i].Name)
@@ -66,7 +69,7 @@ const Map = (props) => {
 			for (var i = 0; i < loc_hospitals.length; i++) {
 				// Create a DOM element for each marker.
 				const el = document.createElement('div');
-				el.className = 'marker';
+				el.className = 'marker_hospital';
 
 				const marker_hs = new mapboxgl.Marker(el)
 					.setLngLat([loc_hospitals[i].Location.lng, loc_hospitals[i].Location.lat])
@@ -79,9 +82,12 @@ const Map = (props) => {
 		}
 
 		function createGardaMarker(loc_gardi) {
-			console.log(typeof loc_gardi);
+			//console.log(typeof loc_gardi);
 			for (var i = 0; i < loc_gardi.length; i++) {
-				const disaster = new mapboxgl.Marker({ color: "yellow"})
+				const el = document.createElement('div');
+				el.className = 'marker_garda';
+
+				const maker_garda = new mapboxgl.Marker(el)
 					.setLngLat([loc_gardi[i].Location.lng, loc_gardi[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_gardi[i].Name)
@@ -92,11 +98,14 @@ const Map = (props) => {
 		}
 		
 		function createFirestationMarker(loc_firestations) {
-			console.log(typeof loc_firestations);
+			//console.log(typeof loc_firestations);
 			for (var i = 0; i < loc_firestations.length; i++) {
 				//https://docs.mapbox.com/help/tutorials/markers-js/
 				//https://labs.mapbox.com/maki-icons/
-				const disaster = new mapboxgl.Marker({ color: "blue", symbol: 'fire-station' })
+						
+				const el = document.createElement('div');
+				el.className = 'marker_firestation';
+				const marker_fs = new mapboxgl.Marker(el)
 					.setLngLat([loc_firestations[i].Location.lng, loc_firestations[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_firestations[i].Name)
@@ -243,10 +252,10 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					//createSafeHouseMarker(loc_safehouses);					
+					createSafeHouseMarker(loc_safehouses);					
 					createHospitalMarker(loc_hospitals);
-					//createGardaMarker(loc_gardi);
-					//createFirestationMarker(loc_firestations);
+					createGardaMarker(loc_gardi);
+					createFirestationMarker(loc_firestations);
 					
 					// Source and layer for clearance
 					map.current.addLayer({
@@ -283,7 +292,7 @@ const Map = (props) => {
 						paint: {
 							'line-color': '#cccccc',
 							'line-opacity': 0.5,
-							'line-width': 13,
+							'line-width': 5,
 							'line-blur': 0.5
 						}
 					});

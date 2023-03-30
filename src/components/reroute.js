@@ -82,7 +82,7 @@ export function addRoute_hospital(map, disasterLocation, hospitals) {
 		paint: {
 			'line-color': 'red',
 			'line-opacity': 0.5,
-			'line-width': 13,
+			'line-width': 8,
 			'line-blur': 0.5
 		}
 	});
@@ -136,7 +136,7 @@ export function addRoute_garda(map, disasterLocation, gardi) {
 		paint: {
 			'line-color': 'red',
 			'line-opacity': 0.5,
-			'line-width': 13,
+			'line-width': 8,
 			'line-blur': 0.5
 		}
 	});
@@ -191,7 +191,7 @@ export function addRoute_firestation(map, disasterLocation, fire_stations) {
 		paint: {
 			'line-color': 'red',
 			'line-opacity': 0.5,
-			'line-width': 13,
+			'line-width': 8,
 			'line-blur': 0.5
 		}
 	});
