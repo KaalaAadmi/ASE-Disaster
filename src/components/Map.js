@@ -19,11 +19,20 @@ import loc_hospitals from './locs_hospital.json';
 import loc_gardi from './locs_garda.json';
 import loc_firestations from './locs_firestation.json';
 
-const { addRoute_safehouse } = require('./evacuation');
+import {
+  createDisasterMarker,
+  createSafeHouseMarker,
+  createHospitalMarker,
+  createGardaMarker,
+  createFirestationMarker,
+} from "./markers";
 
+const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
 const { addRoute_garda} = require('./reroute');
 const { addRoute_firestation} = require('./reroute');
+
+
 
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
@@ -37,84 +46,7 @@ const Map = (props) => {
 		const mapContainer = useRef(null);
 		const map = useRef(null);
 
-		function createDisasterMarker(disasterDataset) {
-			console.log(typeof disasterDataset);
-			for (var i = 0; i < disasterDataset.length; i++) {
-				const disaster = new mapboxgl.Marker({ color: "yellow" })
-					.setLngLat([disasterDataset[i].longitude, disasterDataset[i].latitude])
-					.setPopup(
-						new mapboxgl.Popup({ offset: 25 }).setText(disasterDataset[i].detail)
-					)
-					.addTo(map.current);
-			}
-		}
 
-		function createSafeHouseMarker(safehouse_loc) {
-			//console.log(typeof safehouse_loc);
-			for (var i = 0; i < safehouse_loc.length; i++) {
-				const el = document.createElement('div');
-				el.className = 'marker_safehouse';
-				
-				const disaster = new mapboxgl.Marker(el)
-					.setLngLat([safehouse_loc[i].Location.lng, safehouse_loc[i].Location.lat])
-					.setPopup(
-						new mapboxgl.Popup({ offset: 25 }).setText(safehouse_loc[i].Name)
-					)
-					.addTo(map.current)
-				//	.togglePopup();
-			}
-		}
-		//https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
-		function createHospitalMarker(loc_hospitals) {
-			for (var i = 0; i < loc_hospitals.length; i++) {
-				// Create a DOM element for each marker.
-				const el = document.createElement('div');
-				el.className = 'marker_hospital';
-
-				const marker_hs = new mapboxgl.Marker(el)
-					.setLngLat([loc_hospitals[i].Location.lng, loc_hospitals[i].Location.lat])
-					.setPopup(
-						new mapboxgl.Popup({ offset: 25 }).setText(loc_hospitals[i].Name)
-					)
-					.addTo(map.current)
-				//	.togglePopup();
-			}
-		}
-
-		function createGardaMarker(loc_gardi) {
-			//console.log(typeof loc_gardi);
-			for (var i = 0; i < loc_gardi.length; i++) {
-				const el = document.createElement('div');
-				el.className = 'marker_garda';
-
-				const maker_garda = new mapboxgl.Marker(el)
-					.setLngLat([loc_gardi[i].Location.lng, loc_gardi[i].Location.lat])
-					.setPopup(
-						new mapboxgl.Popup({ offset: 25 }).setText(loc_gardi[i].Name)
-					)
-					.addTo(map.current)
-				//	.togglePopup();
-			}
-		}
-		
-		function createFirestationMarker(loc_firestations) {
-			//console.log(typeof loc_firestations);
-			for (var i = 0; i < loc_firestations.length; i++) {
-				//https://docs.mapbox.com/help/tutorials/markers-js/
-				//https://labs.mapbox.com/maki-icons/
-						
-				const el = document.createElement('div');
-				el.className = 'marker_firestation';
-				const marker_fs = new mapboxgl.Marker(el)
-					.setLngLat([loc_firestations[i].Location.lng, loc_firestations[i].Location.lat])
-					.setPopup(
-						new mapboxgl.Popup({ offset: 25 }).setText(loc_firestations[i].Name)
-					)
-					.addTo(map.current)
-				//	.togglePopup();
-			}
-		}
-		
 		
 		const [disasterData, setDisasterData] = React.useState();
 		React.useEffect(() => {
@@ -125,7 +57,7 @@ const Map = (props) => {
 					);
 					console.log(res.data)
 					setDisasterData(res.data);
-					createDisasterMarker(res.data);
+					createDisasterMarker(res.data, map);
 
 				} catch (error) {
 					console.log(error);
@@ -252,10 +184,10 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					createSafeHouseMarker(loc_safehouses);					
-					createHospitalMarker(loc_hospitals);
-					createGardaMarker(loc_gardi);
-					createFirestationMarker(loc_firestations);
+					createSafeHouseMarker(loc_safehouses, map);					
+					createHospitalMarker(loc_hospitals, map);
+					createGardaMarker(loc_gardi, map);
+					createFirestationMarker(loc_firestations, map);
 					
 					// Source and layer for clearance
 					map.current.addLayer({
