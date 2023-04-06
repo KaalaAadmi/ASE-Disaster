@@ -65,7 +65,7 @@ const Map = (props) => {
 			};
 			getData();
 		}, []);
-
+		
 
 		const [viewState, setViewState] = React.useState({
 			latitude: 0,
@@ -143,8 +143,6 @@ const Map = (props) => {
 				map.current.addControl(directions_rr, 'top-right');
 				
 				
-			
-
 
 				// Add origin and destination to the map direction
 				map.current.on("load", function() {
@@ -215,12 +213,22 @@ const Map = (props) => {
 						}
 					});
 
+	
 					//add the route after the map is on
 					const disasterLocation = {
-						lat: marker.latitude,
-						lng: marker.longitude
+						lat: disasterJson[0].latitude,
+						lng: disasterJson[0].longitude,
+						id: disasterJson[0]._id
 					};
-
+					
+					// Add the disaster location marker
+					const origin = new mapboxgl.Marker()
+						//.setLngLat([marker.longitude, marker.latitude])
+						.setLngLat([disasterLocation.lng, disasterLocation.lat])
+						.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(disasterLocation.id))
+						.addTo(map.current)
+						.togglePopup();
+					
 					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
 					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
 					addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
@@ -242,10 +250,7 @@ const Map = (props) => {
 					rr_avoid_obstacle(event, obstacle, directions_rr, map);
 				});
 				
-					// Add the user location marker
-				const origin = new mapboxgl.Marker()
-					.setLngLat([marker.longitude, marker.latitude])
-					.addTo(map.current);
+
 			}
 		}, [viewState.latitude, viewState.longitude]);
 
