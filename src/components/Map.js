@@ -38,7 +38,8 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
-
+let disasterJson=null;
+let obstacle = null;
 const Map = (props) => {
 		// create references for the map
 		const mapContainer = useRef(null);
@@ -50,18 +51,20 @@ const Map = (props) => {
 			const getData = async () => {
 				try {
 					const res = await axios.get(
-						"http://127.0.0.1:8000/api/v1/all-disaster-data"
+						"http://127.0.0.1:8000/api/v1/active-disaster-data"
 					);
-					console.log(res.data)
+					disasterJson=res.data
+					console.log(disasterJson)
+					obstacle = rr_create_obstacle(disasterJson);
 					setDisasterData(res.data);
 					//createDisasterMarker(res.data, map);
-
+				
 				} catch (error) {
 					console.log(error);
 				}
 			};
 			getData();
-		}, [disasterData]);
+		}, []);
 
 
 		const [viewState, setViewState] = React.useState({
@@ -139,7 +142,8 @@ const Map = (props) => {
 
 				map.current.addControl(directions_rr, 'top-right');
 				
-				const obstacle = rr_create_obstacle(marker);
+				
+			
 
 
 				// Add origin and destination to the map direction

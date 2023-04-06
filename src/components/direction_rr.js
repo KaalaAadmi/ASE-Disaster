@@ -15,30 +15,47 @@ const reports = document.getElementById('reports');
 let bbox = [0, 0, 0, 0];
 let polygon = turf.bboxPolygon(bbox);
 
-export function rr_create_obstacle(disaster) {
+const createFeatures = (disasters) => {
+  return disasters.map((disaster) => [
+    {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [parseFloat(disaster.longitude), parseFloat(disaster.latitude)],
+      },
+      properties: {
+        clearance: "13' 2",
+      },
+    },
+  ]).flat();
+};
+
+	/*
+	for (let i = 0; i < disasters.length; i++) {
+	  console.log(`Object ${i + 1}:`);
+	  console.log("ID:", disasters[i]._id);
+	  console.log("Latitude:", disasters[i].latitude);
+	  console.log("Longitude:", disasters[i].longitude);
+	  console.log("Title:", disasters[i].title);
+	  console.log("Reports:");
+
+	  // Iterate through the reports array in each object
+	  for (let j = 0; j < disasters[i].reports.length; j++) {
+		console.log(`  Report ${j + 1}:`);
+		console.log("  ID:", disasters[i].reports[j]._id);
+		console.log("  Latitude:", disasters[i].reports[j].latitude);
+		console.log("  Longitude:", disasters[i].reports[j].longitude);
+		console.log("  Detail:", disasters[i].reports[j].detail);
+	  }
+	}
+	*/
+
+export function rr_create_obstacle(disasters) {
+	console.log(disasters)
+
 	const clearances = {
-		type: 'FeatureCollection',
-		features: [{
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [disaster.longitude, disaster.latitude]
-				},
-				properties: {
-					clearance: "13' 2"
-				}
-			},
-			{
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [disaster.longitude + 0.02, disaster.latitude + 0.004]
-				},
-				properties: {
-					clearance: "13' 7"
-				}
-			}
-		]
+	  type: "FeatureCollection",
+	  features: createFeatures(disasters),
 	};
 	console.log(clearances)
 	const obstacle = turf.buffer(clearances, 0.500, {
@@ -52,9 +69,7 @@ export function rr_avoid_obstacle(event, obstacle, directions_rr, map) {
 	// Hide the route and box by setting the opacity to zero
 	map.current.setLayoutProperty('theRoute', 'visibility', 'none');
 	map.current.setLayoutProperty('theBox', 'visibility', 'none');
-	//  console.log(counter)
-	// console.log(maxAttempts)
-	//  console.log(event)
+
 
 	if (counter >= maxAttempts) {
 		noRoutes(reports);
