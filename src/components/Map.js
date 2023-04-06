@@ -1,4 +1,4 @@
-import { addCard, noRoutes } from "./reroute";
+
 
 // import bbox from "turf";
 // import polygon from "turf";
@@ -54,7 +54,7 @@ const Map = (props) => {
 					);
 					console.log(res.data)
 					setDisasterData(res.data);
-					createDisasterMarker(res.data, map);
+					//createDisasterMarker(res.data, map);
 
 				} catch (error) {
 					console.log(error);

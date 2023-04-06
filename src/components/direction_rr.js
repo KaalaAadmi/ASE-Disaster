@@ -15,14 +15,14 @@ const reports = document.getElementById('reports');
 let bbox = [0, 0, 0, 0];
 let polygon = turf.bboxPolygon(bbox);
 
-export function rr_create_obstacle(marker) {
+export function rr_create_obstacle(disaster) {
 	const clearances = {
 		type: 'FeatureCollection',
 		features: [{
 				type: 'Feature',
 				geometry: {
 					type: 'Point',
-					coordinates: [marker.longitude, marker.latitude]
+					coordinates: [disaster.longitude, disaster.latitude]
 				},
 				properties: {
 					clearance: "13' 2"
@@ -32,7 +32,7 @@ export function rr_create_obstacle(marker) {
 				type: 'Feature',
 				geometry: {
 					type: 'Point',
-					coordinates: [marker.longitude + 0.02, marker.latitude + 0.004]
+					coordinates: [disaster.longitude + 0.02, disaster.latitude + 0.004]
 				},
 				properties: {
 					clearance: "13' 7"
