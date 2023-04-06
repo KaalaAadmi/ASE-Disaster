@@ -8,13 +8,13 @@ export default function Navbar() {
     let navBar = document.querySelector(".nav-bar");
     let cross1 = document.querySelector(".cross");
 
-    hamburger.onclick = function() {
+    hamburger.onclick = function () {
       navBar.classList.toggle("active");
       cross1.classList.toggle("hide");
       hamburger.classList.toggle('hide');
     };
-    
-    cross1.onclick = function() {
+
+    cross1.onclick = function () {
       navBar.classList.toggle("active");
       cross1.classList.toggle("hide");
       hamburger.classList.toggle('hide');
@@ -22,7 +22,7 @@ export default function Navbar() {
   };
 
 
-
+  const isLoggedIn = true;
   return (
     <header>
       <div className="logo">DISASTRO</div>
@@ -35,34 +35,44 @@ export default function Navbar() {
       <nav className="nav-bar">
         <ul>
           <li>
-            <a href="">Login</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="" className="active">
+            <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/maps">
               Map
-            </a>
+            </Link>
+
           </li>
           <li>
-            <a href="">Bulletin</a>
+            <Link to="/">
+              Bulletin
+            </Link>
+
           </li>
           <li>
-            <a href="">FAQ</a>
+            <Link to="/faq">FAQ</Link>
           </li>
           <li>
-            <a href="">Report Disaster</a>
+            <Link to="/report-disaster">Report Disaster</Link>
           </li>
           <li>
-            <a href="">View Reports</a>
+            <Link to="">View Reports</Link>
           </li>
+          {isLoggedIn&& <li>
+            <Link to="/">Message HQ</Link>
+          </li>}
           <li>
-            <a href="">Message HQ</a>
+            <Link to="/">Disaster Information</Link>
           </li>
-          <li>
-            <a href="">Disaster Information</a>
-          </li>
-          <li>
-            <a href="">Send Resources</a>
-          </li>
+          {isLoggedIn && <li>
+            <Link to="/">Send Resources</Link>
+          </li>}
+          {isLoggedIn && <li>
+            <Link to="/create-disaster">Create Disaster</Link>
+          </li>}
         </ul>
       </nav>
     </header>

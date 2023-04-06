@@ -9,6 +9,7 @@ import Home from "./components/Home";
 import LoginScreen from './screens/LoginScreen/LoginScreen';
 import DisasterResponse from "./components/DisasterResponse";
 import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
+import CreateDisaster from './screens/CreateDisaster/CreateDisaster';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   return (
     <div>
       <Navbar />
-      <FAQ />
+      {/* <FAQ /> */}
       {/* <Maps
         latitude={location.latitude}
         longitude={location.longitude}
@@ -43,6 +44,8 @@ function App() {
           />
           <Route path="/login" element={<LoginScreen />} />
           <Route path='/report-disaster' element={<ReportDisaster/>}/>
+          <Route path='/faq' element={<FAQ/>}/>
+          <Route path='/create-disaster' element={<CreateDisaster/>}/>
         </Routes>
       </div>
     </div>
