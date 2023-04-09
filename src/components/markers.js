@@ -26,7 +26,7 @@ export	function createSafeHouseMarker(safehouse_loc, map) {
 						new mapboxgl.Popup({ offset: 25 }).setText(safehouse_loc[i].Name)
 					)
 					.addTo(map.current)
-				//	.togglePopup();
+					.togglePopup();
 			}
 		}
 		//https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
