@@ -7,12 +7,18 @@ const REACT_APP_MAPBOX_TOKEN =
 
 const { getNearestSafehouse } = require('./haversine');
 
-export function addRoute_safehouse(map, disasterLocation, safehouses) {
+// it seems like the lng and lat are reversed from backend for rest centre?
+export function addRoute_safehouse(map, disasterLocation, safehouse) {
 	// get the nearest safehouse from the disaster location
-	const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouses);
+	//const nearestSafehouse = getNearestSafehouse(disasterLocation, safehouses);
+
+	const nearestSafehouse = safehouse;
+	console.log(nearestSafehouse);
+	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${disasterLocation.lng},${disasterLocation.lat};${nearestSafehouse.Location.lat},${nearestSafehouse.Location.lng}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+
 
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
-	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${disasterLocation.lng},${disasterLocation.lat};${nearestSafehouse.Location.lng},${nearestSafehouse.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+//	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${disasterLocation.lng},${disasterLocation.lat};${nearestSafehouse.Location.lng},${nearestSafehouse.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 
 	map.addSource('evacuation_route', {
 		type: 'geojson',

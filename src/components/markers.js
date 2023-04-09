@@ -12,6 +12,7 @@ export	function createDisasterMarker(disasterDataset,map) {
 			}
 		}
 
+//todo: rest centre coordinates reversed, to be fixed in the backend.
 export	function createSafeHouseMarker(safehouse_loc, map) {
 			//console.log(typeof safehouse_loc);
 			for (var i = 0; i < safehouse_loc.length; i++) {
@@ -19,7 +20,8 @@ export	function createSafeHouseMarker(safehouse_loc, map) {
 				el.className = 'marker_safehouse';
 				
 				const marker_sh = new mapboxgl.Marker(el)
-					.setLngLat([safehouse_loc[i].Location.lng, safehouse_loc[i].Location.lat])
+					//.setLngLat([safehouse_loc[i].Location.lng, safehouse_loc[i].Location.lat])
+					.setLngLat([safehouse_loc[i].Location.lat, safehouse_loc[i].Location.lng])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(safehouse_loc[i].Name)
 					)

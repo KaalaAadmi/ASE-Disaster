@@ -12,7 +12,7 @@ import { markerData } from "../assets/data";
 import {rr_create_obstacle, rr_avoid_obstacle} from "./direction_rr";
 import {getResourses} from "./reroute";
 
-import loc_safehouses from './locs_safehouse.json';
+//import loc_safehouses from './locs_safehouse.json';
 import loc_hospitals from './locs_hospital.json';
 //import loc_gardi from './locs_garda.json';
 import loc_firestations from './locs_firestation.json';
@@ -38,6 +38,7 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
+let loc_safehouses = null;
 let loc_gardi = null;
 let disasterJson=null;
 let obstacle = null;
@@ -66,8 +67,9 @@ const Map = (props) => {
 					};
 					
 					loc_gardi = await getResourses(disasterJson[0]._id, 'garda');
-					console.log(loc_gardi);
-
+					//console.log(loc_gardi);
+					loc_safehouses = await getResourses(disasterJson[0]._id, 'rest centre');
+					console.log(loc_safehouses);
 				} catch (error) {
 					console.log(error);
 				}
@@ -158,7 +160,7 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					//createSafeHouseMarker(loc_safehouses, map);					
+									
 					//createHospitalMarker(loc_hospitals, map);
 					
 					//createFirestationMarker(loc_firestations, map);
@@ -232,10 +234,13 @@ const Map = (props) => {
 					
 					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
 					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
-					//addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
+					
+					createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
+					console.log(loc_safehouses);
+					addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
+					
 					//addRoute_hospital(map.current, disasterLocation, loc_hospitals);
-					const lastElement = [loc_gardi[loc_gardi.length - 1]];
-					createGardaMarker(lastElement, map);
+					createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
 					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
 					//addRoute_garda(map.current, disasterLocation, loc_gardi);
 					//addRoute_firestation(map.current, disasterLocation, loc_firestations);
