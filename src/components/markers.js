@@ -77,7 +77,7 @@ export function createFirestationMarker(loc_firestations, map) {
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_firestations[i].Name)
 					)
 					.addTo(map.current)
-				//	.togglePopup();
+					.togglePopup();
 			}
 		}
 		

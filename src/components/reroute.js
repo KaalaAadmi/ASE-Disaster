@@ -208,10 +208,11 @@ export function addRoute_garda(map, disasterLocation, garda) {
 }
 
 
-export function addRoute_firestation(map, disasterLocation, fire_stations) {
+export function addRoute_firestation(map, disasterLocation, fire_station) {
 	// get the nearest hospital from the disaster location
-	const nearestFireStation= getNearestSafehouse(disasterLocation, fire_stations);
-
+	//const nearestFireStation= getNearestSafehouse(disasterLocation, fire_stations);
+	const nearestFireStation = fire_station;
+	console.log(nearestFireStation);
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest garda
 	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearestFireStation.Location.lng},${nearestFireStation.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 

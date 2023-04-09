@@ -15,7 +15,7 @@ import {getResourses} from "./reroute";
 //import loc_safehouses from './locs_safehouse.json';
 import loc_hospitals from './locs_hospital.json';
 //import loc_gardi from './locs_garda.json';
-import loc_firestations from './locs_firestation.json';
+//import loc_firestations from './locs_firestation.json';
 
 import {
   createDisasterMarker,
@@ -38,6 +38,7 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
+let loc_firestations = null;
 let loc_safehouses = null;
 let loc_gardi = null;
 let disasterJson=null;
@@ -69,7 +70,10 @@ const Map = (props) => {
 					loc_gardi = await getResourses(disasterJson[0]._id, 'garda');
 					//console.log(loc_gardi);
 					loc_safehouses = await getResourses(disasterJson[0]._id, 'rest centre');
-					console.log(loc_safehouses);
+					//console.log(loc_safehouses);
+					loc_firestations = await getResourses(disasterJson[0]._id, 'fire');
+					console.log(loc_firestations);
+					
 				} catch (error) {
 					console.log(error);
 				}
@@ -162,8 +166,7 @@ const Map = (props) => {
 
 									
 					//createHospitalMarker(loc_hospitals, map);
-					
-					//createFirestationMarker(loc_firestations, map);
+				
 					
 					// Source and layer for clearance
 					map.current.addLayer({
@@ -243,7 +246,9 @@ const Map = (props) => {
 					createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
 					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
 					//addRoute_garda(map.current, disasterLocation, loc_gardi);
-					//addRoute_firestation(map.current, disasterLocation, loc_firestations);
+					
+					createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
+					addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
 				});
 
 
