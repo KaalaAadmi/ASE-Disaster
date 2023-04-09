@@ -57,6 +57,46 @@ export function noRoutes(element) {
   element.insertBefore(card, element.firstChild);
 }
 
+
+function mapJSONArray(inputArray, resource_name_backend) {
+  const outputArray = [];
+
+  inputArray.forEach(input => {
+    if (input.resource === resource_name_backend) {
+      outputArray.push({
+        Name: input._id,
+        Location: {
+          lat: parseFloat(input.locationLatitude),
+          lng: parseFloat(input.locationLongitude)
+        },
+        Quantity: parseInt(input.quantity),
+        Instructions: input.instructions,
+        Status: input.status,
+      });
+    }
+  });
+
+  return outputArray;
+}
+
+// resource_name, use name defined in backend
+// 'garda'
+// 'fire'
+// 'rest centre'
+// 'ambulance'
+
+export function getResourses(disasterId, resource_name){
+	const orderUrl = `http://127.0.0.1:8000/api/v1/disaster-orders/${disasterId}`;
+	return axios.get(orderUrl)
+		.then(response => {
+			const locs_for_rr = mapJSONArray(response.data, resource_name);
+			return locs_for_rr;
+		})
+		.catch(error => {
+			console.log(error);
+		});
+}
+
 export function addRoute_hospital(map, disasterLocation, hospitals) {
 	// get the nearest hospital from the disaster location
 	const nearesthospital = getNearestSafehouse(disasterLocation, hospitals);
@@ -111,10 +151,12 @@ export function addRoute_hospital(map, disasterLocation, hospitals) {
 		});
 }
 
-export function addRoute_garda(map, disasterLocation, gardi) {
+export function addRoute_garda(map, disasterLocation, garda) {
 	// get the nearest hospital from the disaster location
-	const nearestGarda = getNearestSafehouse(disasterLocation, gardi);
-
+	//const nearestGarda = getNearestSafehouse(disasterLocation, gardi);
+	const nearestGarda = garda;
+	console.log(nearestGarda);
+	console.log(disasterLocation);
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest garda
 	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearestGarda.Location.lng},${nearestGarda.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 

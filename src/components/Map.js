@@ -10,11 +10,11 @@ import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up 
 import axios from "axios";
 import { markerData } from "../assets/data";
 import {rr_create_obstacle, rr_avoid_obstacle} from "./direction_rr";
-
+import {getResourses} from "./reroute";
 
 import loc_safehouses from './locs_safehouse.json';
 import loc_hospitals from './locs_hospital.json';
-import loc_gardi from './locs_garda.json';
+//import loc_gardi from './locs_garda.json';
 import loc_firestations from './locs_firestation.json';
 
 import {
@@ -38,8 +38,11 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
+let loc_gardi = null;
 let disasterJson=null;
 let obstacle = null;
+let disasterLocation = null;
+
 const Map = (props) => {
 		// create references for the map
 		const mapContainer = useRef(null);
@@ -47,25 +50,31 @@ const Map = (props) => {
 
 		
 		const [disasterData, setDisasterData] = React.useState();
+
 		React.useEffect(() => {
 			const getData = async () => {
 				try {
-					const res = await axios.get(
-						"http://127.0.0.1:8000/api/v1/active-disaster-data"
-					);
+					const res = await axios.get("http://127.0.0.1:8000/api/v1/active-disaster-data");
 					disasterJson=res.data
 					console.log(disasterJson)
 					obstacle = rr_create_obstacle(disasterJson);
 					setDisasterData(res.data);
-					//createDisasterMarker(res.data, map);
-				
+					disasterLocation = {
+						lat: disasterJson[0].latitude,
+						lng: disasterJson[0].longitude,
+						id: disasterJson[0]._id
+					};
+					
+					loc_gardi = await getResourses(disasterJson[0]._id, 'garda');
+					console.log(loc_gardi);
+
 				} catch (error) {
 					console.log(error);
 				}
 			};
 			getData();
 		}, []);
-		
+
 
 		const [viewState, setViewState] = React.useState({
 			latitude: 0,
@@ -149,10 +158,10 @@ const Map = (props) => {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
 
-					createSafeHouseMarker(loc_safehouses, map);					
-					createHospitalMarker(loc_hospitals, map);
-					createGardaMarker(loc_gardi, map);
-					createFirestationMarker(loc_firestations, map);
+					//createSafeHouseMarker(loc_safehouses, map);					
+					//createHospitalMarker(loc_hospitals, map);
+					
+					//createFirestationMarker(loc_firestations, map);
 					
 					// Source and layer for clearance
 					map.current.addLayer({
@@ -213,14 +222,6 @@ const Map = (props) => {
 						}
 					});
 
-	
-					//add the route after the map is on
-					const disasterLocation = {
-						lat: disasterJson[0].latitude,
-						lng: disasterJson[0].longitude,
-						id: disasterJson[0]._id
-					};
-					
 					// Add the disaster location marker
 					const origin = new mapboxgl.Marker()
 						//.setLngLat([marker.longitude, marker.latitude])
@@ -231,10 +232,13 @@ const Map = (props) => {
 					
 					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
 					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
-					addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
-					addRoute_hospital(map.current, disasterLocation, loc_hospitals);
-					addRoute_garda(map.current, disasterLocation, loc_gardi);
-					addRoute_firestation(map.current, disasterLocation, loc_firestations);
+					//addRoute_safehouse(map.current, disasterLocation, loc_safehouses);
+					//addRoute_hospital(map.current, disasterLocation, loc_hospitals);
+					const lastElement = [loc_gardi[loc_gardi.length - 1]];
+					createGardaMarker(lastElement, map);
+					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
+					//addRoute_garda(map.current, disasterLocation, loc_gardi);
+					//addRoute_firestation(map.current, disasterLocation, loc_firestations);
 				});
 
 

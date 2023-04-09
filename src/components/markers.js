@@ -45,18 +45,19 @@ export	function createHospitalMarker(loc_hospitals, map) {
 		}
 
 export	function createGardaMarker(loc_gardi, map) {
-			//console.log(typeof loc_gardi);
+			console.log(typeof loc_gardi);
+			console.log(loc_gardi);
 			for (var i = 0; i < loc_gardi.length; i++) {
 				const el = document.createElement('div');
 				el.className = 'marker_garda';
-
+				
 				const maker_garda = new mapboxgl.Marker(el)
 					.setLngLat([loc_gardi[i].Location.lng, loc_gardi[i].Location.lat])
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_gardi[i].Name)
 					)
 					.addTo(map.current)
-				//	.togglePopup();
+					.togglePopup();
 			}
 		}
 		
