@@ -42,7 +42,7 @@ export	function createHospitalMarker(loc_hospitals, map) {
 						new mapboxgl.Popup({ offset: 25 }).setText(loc_hospitals[i].Name)
 					)
 					.addTo(map.current)
-				//	.togglePopup();
+					.togglePopup();
 			}
 		}
 

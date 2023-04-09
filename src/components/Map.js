@@ -13,7 +13,7 @@ import {rr_create_obstacle, rr_avoid_obstacle} from "./direction_rr";
 import {getResourses} from "./reroute";
 
 //import loc_safehouses from './locs_safehouse.json';
-import loc_hospitals from './locs_hospital.json';
+//import loc_hospitals from './locs_hospital.json';
 //import loc_gardi from './locs_garda.json';
 //import loc_firestations from './locs_firestation.json';
 
@@ -38,6 +38,7 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
+let loc_hospitals = null;
 let loc_firestations = null;
 let loc_safehouses = null;
 let loc_gardi = null;
@@ -72,8 +73,9 @@ const Map = (props) => {
 					loc_safehouses = await getResourses(disasterJson[0]._id, 'rest centre');
 					//console.log(loc_safehouses);
 					loc_firestations = await getResourses(disasterJson[0]._id, 'fire');
-					console.log(loc_firestations);
-					
+					//console.log(loc_firestations);
+					loc_hospitals = await getResourses(disasterJson[0]._id, 'ambulance');
+					console.log(loc_hospitals);
 				} catch (error) {
 					console.log(error);
 				}
@@ -163,10 +165,6 @@ const Map = (props) => {
 				map.current.on("load", function() {
 					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 					//directions.setDestination([-6.25819, 53.344415]);
-
-									
-					//createHospitalMarker(loc_hospitals, map);
-				
 					
 					// Source and layer for clearance
 					map.current.addLayer({
@@ -242,10 +240,12 @@ const Map = (props) => {
 					console.log(loc_safehouses);
 					addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
 					
-					//addRoute_hospital(map.current, disasterLocation, loc_hospitals);
+					
+					createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
+					addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
+					
 					createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
 					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
-					//addRoute_garda(map.current, disasterLocation, loc_gardi);
 					
 					createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
 					addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
