@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import "./CreateDisaster.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
@@ -110,13 +110,26 @@ const Option = styled.option`
 `;
 
 export default function CreateDisaster() {
+  const [type, setType] = useState("fire");
+  const [radius, setRadius] = useState("");
+  const [site, setSite] = useState([]);
+  const [size, setSize] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("token") !== null
+  ); // check if the user is authenticated on page load
+
   return (
     <Container>
       <Title>Create Disaster</Title>
       <Form>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Date & Time:</Label>
-          <Input type="text" style={{ boxShadow: "none !important" }} />
+          <Label>Radius</Label>
+          <Input 
+            type="text" 
+            style={{ boxShadow: "none !important" }} 
+            value={radius}
+            onChange={(event) => setRadius(event.target.value)}
+          />
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label for="disasterType">Select Disaster Type:</Label>
@@ -125,13 +138,22 @@ export default function CreateDisaster() {
             style={{
               color: "#a5a5a5",
             }}
+            value={type}
+            onChange={(event) => setType(event.target.value)}
           >
             <Option disabled selected value="">Select an option</Option>
             <Option value="fire">Fire</Option>
+            <Option value="flood">Flood</Option>
+            <Option value="traffic accident">Traffic Accident</Option>
+            <Option value="accident">Accident</Option>
+            <Option value="collapse">Collapse</Option>
+            <Option value="terrorist activity">Terrorist Activity</Option>
+            <Option value="explosion">Explosion</Option>
+            <Option value="chemical hazard">Chemical Hazard</Option>
+            <Option value="tornado">Tornado</Option>
             <Option value="earthquake">Earthquake</Option>
-            <Option value="landslide">Landslide</Option>
-            <Option value="other-manmade">Other Manmade</Option>
-            <Option value="other-natural">Other Natural</Option>
+            <Option value="hurricane">Hurricane/Storm</Option>
+            <Option value="wildfire">Wildfire</Option>
           </Select>
         </div>
         <div
@@ -164,7 +186,7 @@ export default function CreateDisaster() {
           <Label>Description:</Label>
           <Input type="text" />
         </div>
-        <Submit type="submit" />
+        <Submit type="submit" onClick={() => activateDisaster(id, type, radius, size, site)}/>
       </Form>
     </Container>
   );

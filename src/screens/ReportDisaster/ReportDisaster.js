@@ -3,36 +3,8 @@ import "./ReportDisaster.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
 import axios from "axios";
-
+import {addReport} from "../../api/reports";
 const accessToken = "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ"
-
-function addReport(type, latitude, longitude, details){
-  console.log(details);
-  let data = JSON.stringify({
-  "detail": details,
-  "latitude": latitude,
-  "longitude": longitude,
-  "type": type
-  });
-
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'http://127.0.0.1:8000/api/v1/add-report-data',
-    headers: { 
-      'Content-Type': 'application/json'
-    },
-    data : data
-  };
-
-  axios.request(config)
-  .then((response) => {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-}
 
 function getCurrentLoc(setLatitude, setLongitude) {
   if ("geolocation" in navigator) {
@@ -180,6 +152,8 @@ export default function ReportDisaster() {
   const [details, setDetails] = useState("");
   const [latitude, setLatitude] = useState([]);
   const [longitude, setLongitude] = useState([]);
+  const token = localStorage.getItem("token");
+   // check if the user is authenticated on page load
 
   return (
     <Container>
@@ -201,10 +175,17 @@ export default function ReportDisaster() {
           >
             <Option disabled selected value="">Select an option</Option>
             <Option value="fire">Fire</Option>
+            <Option value="flood">Flood</Option>
+            <Option value="traffic accident">Traffic Accident</Option>
+            <Option value="accident">Accident</Option>
+            <Option value="collapse">Collapse</Option>
+            <Option value="terrorist activity">Terrorist Activity</Option>
+            <Option value="explosion">Explosion</Option>
+            <Option value="chemical hazard">Chemical Hazard</Option>
+            <Option value="tornado">Tornado</Option>
             <Option value="earthquake">Earthquake</Option>
-            <Option value="landslide">Landslide</Option>
-            <Option value="other-manmade">Other Manmade</Option>
-            <Option value="other-natural">Other Natural</Option>
+            <Option value="hurricane">Hurricane/Storm</Option>
+            <Option value="wildfire">Wildfire</Option>
           </Select>
         </div>
         <div
@@ -243,7 +224,7 @@ export default function ReportDisaster() {
             onChange={(event) => setDetails(event.target.value)}
           />
         </div>
-        <Submit type="submit" onClick={() => addReport(type, latitude, longitude, details)} />
+        <Submit type="submit" onClick={() => addReport(type, latitude, longitude, details, token)} />
       </Form>
     </Container>
   );
