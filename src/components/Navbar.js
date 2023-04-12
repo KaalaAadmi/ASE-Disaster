@@ -62,7 +62,7 @@ export default function Navbar() {
             <Link to="">View Reports</Link>
           </li>
           {isLoggedIn&& <li>
-            <Link to="/">Message HQ</Link>
+            <Link to="/message-hq">Message HQ</Link>
           </li>}
           <li>
             <Link to="/">Disaster Information</Link>
