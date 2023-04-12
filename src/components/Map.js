@@ -242,7 +242,7 @@ const Map = (props) => {
 						addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
 					}
 					
-					if(loc_hospitals.length != 0){
+					if(loc_hospitals!= null && loc_hospitals.length != 0){
 						createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
 						addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
 					}
@@ -284,10 +284,6 @@ const Map = (props) => {
               You current location: <br /> Longitude: {marker.longitude} |
               Latitude: {marker.latitude}
             </div>
-			<div className="sidebarRR">
-			  <h1>Reports</h1>
-			  <div id="reports"></div>
-			</div>
             {/* Add the map to the screen */}
             <div ref={mapContainer} className="map-container" />
           </>
