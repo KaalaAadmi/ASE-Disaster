@@ -63,18 +63,18 @@ const Map = (props) => {
 					obstacle = rr_create_obstacle(disasterJson);
 					setDisasterData(res.data);
 					disasterLocation = {
-						lat: disasterJson[0].latitude,
-						lng: disasterJson[0].longitude,
-						id: disasterJson[0]._id
+						lat: disasterJson[1].latitude,
+						lng: disasterJson[1].longitude,
+						id: disasterJson[1]._id
 					};
 					
-					loc_gardi = await getResourses(disasterJson[0]._id, 'garda');
-					//console.log(loc_gardi);
-					loc_safehouses = await getResourses(disasterJson[0]._id, 'rest centre');
-					//console.log(loc_safehouses);
-					loc_firestations = await getResourses(disasterJson[0]._id, 'fire');
-					//console.log(loc_firestations);
-					loc_hospitals = await getResourses(disasterJson[0]._id, 'ambulance');
+					loc_gardi = await getResourses(disasterJson[1]._id, 'garda');
+					console.log(loc_gardi);
+					loc_safehouses = await getResourses(disasterJson[1]._id, 'rest centre');
+					console.log(loc_safehouses);
+					loc_firestations = await getResourses(disasterJson[1]._id, 'fire');
+					console.log(loc_firestations);
+					loc_hospitals = await getResourses(disasterJson[1]._id, 'ambulance');
 					console.log(loc_hospitals);
 				} catch (error) {
 					console.log(error);
@@ -236,19 +236,26 @@ const Map = (props) => {
 					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
 					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
 					
-					createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
-					console.log(loc_safehouses);
-					addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
+					if(loc_safehouses.length != 0){
+						createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
+						console.log(loc_safehouses);
+						addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
+					}
 					
+					if(loc_hospitals.length != 0){
+						createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
+						addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
+					}
 					
-					createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
-					addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
+					if(loc_gardi.length != 0){
+						createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
+						addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
+					}
 					
-					createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
-					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
-					
-					createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
-					addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
+					if(loc_firestations.length != 0){
+						createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
+						addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
+					}
 				});
 
 
