@@ -236,7 +236,7 @@ const Map = (props) => {
 					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
 					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
 					
-					if(loc_safehouses.length != 0){
+					if(loc_safehouses!=null && loc_safehouses.length != 0){
 						createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
 						console.log(loc_safehouses);
 						addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
@@ -247,12 +247,12 @@ const Map = (props) => {
 						addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
 					}
 					
-					if(loc_gardi.length != 0){
+					if(loc_gardi!=null && loc_gardi.length != 0){
 						createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
 						addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
 					}
 					
-					if(loc_firestations.length != 0){
+					if(loc_firestations!=null && loc_firestations.length != 0){
 						createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
 						addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
 					}
