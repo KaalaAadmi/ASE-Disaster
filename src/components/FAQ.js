@@ -6,7 +6,7 @@ export default function FAQ() {
 
     faqs.forEach((faq) => {
         faq.addEventListener("click", () => {
-            // console.log("clicked");
+            console.log("clicked");
             faq.classList.toggle("active");
         });
     });
