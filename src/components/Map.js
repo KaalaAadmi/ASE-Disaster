@@ -270,8 +270,6 @@ const Map = (props) => {
 				directions_rr.on('route', (event) => {
 					rr_avoid_obstacle(event, obstacle, directions_rr, map);
 				});
-				
-
 			}
 		}, [viewState.latitude, viewState.longitude]);
 
