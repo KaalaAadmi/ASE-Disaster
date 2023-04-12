@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import "./CreateDisaster.css";
 import styled from "styled-components";
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
-import Disaster from "../../api/Disaster";
+import {activateDisaster} from "../../api/Disaster";
 
 export default function CreateDisaster() {
   const { id } = useParams();
@@ -13,16 +13,6 @@ export default function CreateDisaster() {
   const [size, setSize] = useState(0);
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
-
-  const handleActivation = async (type, radius, size, site, disasterName, disasterDetails) => {
-    try {
-      const myDisaster = new Disaster(id, type, radius, size, site, disasterName, disasterDetails);
-      await myDisaster.activate();
-      console.log("Disaster activated successfully!");
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   return (
     <Container>
@@ -104,7 +94,7 @@ export default function CreateDisaster() {
             onChange={(event) => setDisasterDetails(event.target.value)}
           />
         </div>
-        <Submit type="submit" onClick={() => handleActivation(type, radius, size, site, disasterName, disasterDetails)}/>
+        <Submit type="submit" onClick={() => activateDisaster(id, type, radius, size, site, disasterName, disasterDetails)}/>
       </Form>
     </Container>
   );

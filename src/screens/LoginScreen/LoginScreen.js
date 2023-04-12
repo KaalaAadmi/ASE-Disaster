@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 // import styled from "styled-components";
 import "./LoginScreen.css";
-import {login,logout} from "../../api/auth"
+import {login,logout} from "../../api/Auth";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");

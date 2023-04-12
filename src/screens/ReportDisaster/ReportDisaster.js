@@ -3,20 +3,10 @@ import "./ReportDisaster.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
 import axios from "axios";
-import Report from "../../api/Report";
+import {addReport} from "../../api/Report";
 import {typeOptions} from "../../components/DropdownOptions"
 
 const accessToken = "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ"
-
-const handleReport = async (type, latitude, longitude, details, token) => {
-  try {
-    const myDisaster = new Report(type, latitude, longitude, details);
-    await myDisaster.submit(token);
-    console.log("Disaster activated successfully!");
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 function getCurrentLoc(setLatitude, setLongitude) {
   if ("geolocation" in navigator) {
@@ -247,7 +237,7 @@ export default function ReportDisaster() {
             onChange={(event) => setDetails(event.target.value)}
           />
         </div>
-        <Submit type="submit" onClick={() => handleReport(type, latitude, longitude, details, token)} />
+        <Submit type="submit" onClick={() => addReport(type, latitude, longitude, details, token)} />
       </Form>
     </Container>
   );
