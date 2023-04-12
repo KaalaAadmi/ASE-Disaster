@@ -1,10 +1,22 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import "./ReportDisaster.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
 import axios from "axios";
-import {addReport} from "../../api/reports";
+import Report from "../../api/Report";
+import {typeOptions} from "../../components/DropdownOptions"
+
 const accessToken = "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ"
+
+const handleReport = async (type, latitude, longitude, details, token) => {
+  try {
+    const myDisaster = new Report(type, latitude, longitude, details);
+    await myDisaster.submit(token);
+    console.log("Disaster activated successfully!");
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 function getCurrentLoc(setLatitude, setLongitude) {
   if ("geolocation" in navigator) {
@@ -122,6 +134,20 @@ const Input = styled.input`
   color: #a5a5a5;
 `;
 
+const TextArea = styled.textarea`
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-botom: 10px solid violet;
+  width: 20rem;
+  color: #a5a5a5;
+  resize: vertical;
+`;
+
 const Select = styled.select`
   padding: 5px;
   margin-bottom: 10px;
@@ -159,10 +185,10 @@ export default function ReportDisaster() {
     <Container>
       <Title>Report Disaster</Title>
       <Form>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+        {/* <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Date & Time:</Label>
           <Input type="text" style={{ boxShadow: "none !important" }} />
-        </div>
+        </div> */}
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label for="disasterType">Select Disaster Type:</Label>
           <Select
@@ -173,19 +199,16 @@ export default function ReportDisaster() {
               color: "#a5a5a5",
             }}
           >
-            <Option disabled selected value="">Select an option</Option>
-            <Option value="fire">Fire</Option>
-            <Option value="flood">Flood</Option>
-            <Option value="traffic accident">Traffic Accident</Option>
-            <Option value="accident">Accident</Option>
-            <Option value="collapse">Collapse</Option>
-            <Option value="terrorist activity">Terrorist Activity</Option>
-            <Option value="explosion">Explosion</Option>
-            <Option value="chemical hazard">Chemical Hazard</Option>
-            <Option value="tornado">Tornado</Option>
-            <Option value="earthquake">Earthquake</Option>
-            <Option value="hurricane">Hurricane/Storm</Option>
-            <Option value="wildfire">Wildfire</Option>
+          {typeOptions.map(item => (
+            <Option
+              key={item.value}
+              value={item.value}
+              disabled={item.disabled}
+              selected={item.selected}
+            >
+              {item.label}
+            </Option>
+          ))}
           </Select>
         </div>
         <div
@@ -219,12 +242,12 @@ export default function ReportDisaster() {
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Description:</Label>
-          <Input type="text" 
+          <TextArea
             value={details}
             onChange={(event) => setDetails(event.target.value)}
           />
         </div>
-        <Submit type="submit" onClick={() => addReport(type, latitude, longitude, details, token)} />
+        <Submit type="submit" onClick={() => handleReport(type, latitude, longitude, details, token)} />
       </Form>
     </Container>
   );
