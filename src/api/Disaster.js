@@ -3,8 +3,10 @@ import axios from "axios";
 const BACKEND = `http://127.0.0.1:8000/api/v1`;
 
 export default class Disaster {
-    constructor(id, type, radius, size, site) {
+    constructor(id, type, radius, size, site, name, description) {
         this.id = id;
+        this.disasterName = name;
+        this.disasterDescription = description;
         this.type = type;
         this.radius = radius;
         this.size = size;
@@ -19,6 +21,8 @@ export default class Disaster {
                 "radius": parseInt(this.radius),
                 "size": parseInt(this.size),
                 "site": this.site,
+                "disasterName": this.disasterName,
+                "disasterDescription": this.disasterDescription,
                 "evacuation": this.evacuation
             });
             let config = {

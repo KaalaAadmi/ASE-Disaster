@@ -8,14 +8,15 @@ import Disaster from "../../api/Disaster";
 export default function CreateDisaster() {
   const { id } = useParams();
   const [type, setType] = useState("fire");
-  const [radius, setRadius] = useState("");
-  const [site, setSite] = useState([]);
-  const [size, setSize] = useState([]);
-  const [disasterName, setDisasterName] = useState([]);
+  const [radius, setRadius] = useState(0);
+  const [site, setSite] = useState("building");
+  const [size, setSize] = useState(0);
+  const [disasterName, setDisasterName] = useState("");
+  const [disasterDetails, setDisasterDetails] = useState("");
 
-  const handleActivation = async (type, radius, size, site, disasterName) => {
+  const handleActivation = async (type, radius, size, site, disasterName, disasterDetails) => {
     try {
-      const myDisaster = new Disaster(id, type, radius, size, site, disasterName);
+      const myDisaster = new Disaster(id, type, radius, size, site, disasterName, disasterDetails);
       await myDisaster.activate();
       console.log("Disaster activated successfully!");
     } catch (error) {
@@ -96,7 +97,14 @@ export default function CreateDisaster() {
             onChange={(event) => setDisasterName(event.target.value)}
           />
         </div>
-        <Submit type="submit" onClick={() => handleActivation(type, radius, size, site, disasterName)}/>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          <Label>Description</Label>
+          <TextArea
+            value={disasterDetails}
+            onChange={(event) => setDisasterDetails(event.target.value)}
+          />
+        </div>
+        <Submit type="submit" onClick={() => handleActivation(type, radius, size, site, disasterName, disasterDetails)}/>
       </Form>
     </Container>
   );
@@ -126,8 +134,19 @@ const Form = styled.form`
   flex-wrap: wrap;
   justify-content: space-between;
 `;
-
-
+const TextArea = styled.textarea`
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-botom: 10px solid violet;
+  width: 20rem;
+  color: #a5a5a5;
+  resize: vertical;
+`;
 const Label = styled.label`
   margin-right: 10px;
   text-align: left;
