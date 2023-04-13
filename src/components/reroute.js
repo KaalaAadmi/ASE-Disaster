@@ -133,7 +133,7 @@ export function addRoute_hospital(map, disasterLocation, hospital) {
 		.then(response => {
 			const route = response.data.routes[0].geometry;
 			const routeLine = polyline.toGeoJSON(route);
-			console.log(routeLine)
+			//console.log(routeLine)
 
 			// check if the "hospital_route" layer exists and update it if it does, otherwise add a new layer
 			const layerExists = map.getLayer("hospital_route");
@@ -146,7 +146,7 @@ export function addRoute_hospital(map, disasterLocation, hospital) {
 
 			// make the "hospital_route" layer visible
 			map.setLayoutProperty('hospital_route', 'visibility', 'visible');
-			console.log(map)
+			//console.log(map)
 		})
 		.catch(error => {
 			console.log(error);
@@ -189,7 +189,7 @@ export function addRoute_garda(map, disasterLocation, garda) {
 		.then(response => {
 			const route = response.data.routes[0].geometry;
 			const routeLine = polyline.toGeoJSON(route);
-			console.log(routeLine)
+			//console.log(routeLine)
 
 			// check if the "garda_route" layer exists and update it if it does, otherwise add a new layer
 			const layerExists = map.getLayer("garda_route");
@@ -202,7 +202,7 @@ export function addRoute_garda(map, disasterLocation, garda) {
 
 			// make the "garda_route" layer visible
 			map.setLayoutProperty('garda_route', 'visibility', 'visible');
-			console.log(map)
+			//console.log(map)
 		})
 		.catch(error => {
 			console.log(error);
@@ -214,7 +214,7 @@ export function addRoute_firestation(map, disasterLocation, fire_station) {
 	// get the nearest hospital from the disaster location
 	//const nearestFireStation= getNearestSafehouse(disasterLocation, fire_stations);
 	const nearestFireStation = fire_station;
-	console.log(nearestFireStation);
+	//console.log(nearestFireStation);
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest garda
 	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearestFireStation.Location.lng},${nearestFireStation.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 
@@ -245,7 +245,7 @@ export function addRoute_firestation(map, disasterLocation, fire_station) {
 		.then(response => {
 			const route = response.data.routes[0].geometry;
 			const routeLine = polyline.toGeoJSON(route);
-			console.log(routeLine)
+			//console.log(routeLine)
 
 			// check if the "garda_route" layer exists and update it if it does, otherwise add a new layer
 			const layerExists = map.getLayer("fs_route");
@@ -264,3 +264,24 @@ export function addRoute_firestation(map, disasterLocation, fire_station) {
 			console.log(error);
 		});
 }
+
+// mapUtils.js
+export const clearRoutes = (map) => {
+  // Resource types and their corresponding layer IDs
+  const resourceTypes = ['hospital', 'evacuation', 'garda', 'fs'];
+
+  // Remove layers and sources for each resource type
+  resourceTypes.forEach((resourceType) => {
+    // Check if the route layer exists and remove it
+    if (map.getLayer(`${resourceType}_route`)) {
+		//console.log('getLayer');
+      map.removeLayer(`${resourceType}_route`);
+    }
+
+    // Check if the route source exists and remove it
+    if (map.getSource(`${resourceType}_route`)) {
+      map.removeSource(`${resourceType}_route`);
+    }
+  });
+};
+

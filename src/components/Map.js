@@ -10,7 +10,7 @@ import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up 
 import axios from "axios";
 import { markerData } from "../assets/data";
 import {rr_create_obstacle, rr_avoid_obstacle} from "./direction_rr";
-import {getResourses} from "./reroute";
+import {getResourses, clearRoutes} from "./reroute";
 
 //import loc_safehouses from './locs_safehouse.json';
 //import loc_hospitals from './locs_hospital.json';
@@ -23,6 +23,7 @@ import {
   createHospitalMarker,
   createGardaMarker,
   createFirestationMarker,
+  clearMarkers,
 } from "./markers";
 
 const { addRoute_safehouse } = require('./evacuation');
@@ -44,14 +45,14 @@ let loc_safehouses = null;
 let loc_gardi = null;
 let disasterJson=null;
 let obstacle = null;
-let disasterLocation = null;
+//let disasterLocation = null;
 
 const Map = (props) => {
 		// create references for the map
 		const mapContainer = useRef(null);
 		const map = useRef(null);
 
-		
+		const [selectedDisaster, setSelectedDisaster] = React.useState(null);
 		const [disasterData, setDisasterData] = React.useState();
 
 		React.useEffect(() => {
@@ -59,23 +60,10 @@ const Map = (props) => {
 				try {
 					const res = await axios.get("http://127.0.0.1:8000/api/v1/active-disaster-data");
 					disasterJson=res.data
-					console.log(disasterJson)
+					//console.log(disasterJson)
 					obstacle = rr_create_obstacle(disasterJson);
 					setDisasterData(res.data);
-					disasterLocation = {
-						lat: disasterJson[1].latitude,
-						lng: disasterJson[1].longitude,
-						id: disasterJson[1]._id
-					};
-					
-					loc_gardi = await getResourses(disasterJson[1]._id, 'garda');
-					console.log(loc_gardi);
-					loc_safehouses = await getResourses(disasterJson[1]._id, 'rest centre');
-					console.log(loc_safehouses);
-					loc_firestations = await getResourses(disasterJson[1]._id, 'fire');
-					console.log(loc_firestations);
-					loc_hospitals = await getResourses(disasterJson[1]._id, 'ambulance');
-					console.log(loc_hospitals);
+
 				} catch (error) {
 					console.log(error);
 				}
@@ -113,7 +101,6 @@ const Map = (props) => {
 				});
 			}
 		}, [viewState.latitude, viewState.longitude]);
-
 
 
 		useEffect(() => {
@@ -158,7 +145,6 @@ const Map = (props) => {
 				});
 
 				map.current.addControl(directions_rr, 'top-right');
-				
 				
 
 				// Add origin and destination to the map direction
@@ -225,40 +211,8 @@ const Map = (props) => {
 						}
 					});
 
-					// Add the disaster location marker
-					const origin = new mapboxgl.Marker()
-						//.setLngLat([marker.longitude, marker.latitude])
-						.setLngLat([disasterLocation.lng, disasterLocation.lat])
-						.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(disasterLocation.id))
-						.addTo(map.current)
-						.togglePopup();
-					
-					//const nearestSafehouse = getNearestSafehouse(disasterLocation, loc_safehouses);
-					//console.log(`The nearest loc_safehouses is ${nearestSafehouse.Name}`);
-					
-					if(loc_safehouses.length != 0){
-						createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
-						console.log(loc_safehouses);
-						addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length-1]);
-					}
-					
-					if(loc_hospitals.length != 0){
-						createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
-						addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
-					}
-					
-					if(loc_gardi.length != 0){
-						createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
-						addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
-					}
-					
-					if(loc_firestations.length != 0){
-						createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
-						addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
-					}
+					//generateRoutesForDisasters(disasterJson);
 				});
-
-
 
 				directions_rr.on('clear', () => {
 					map.current.setLayoutProperty('theRoute', 'visibility', 'none');
@@ -272,6 +226,62 @@ const Map = (props) => {
 				});
 			}
 		}, [viewState.latitude, viewState.longitude]);
+			  // New function to clear markers and routes
+				  const clearMarkersAndRoutes = () => {
+					// Clear existing markers and routes
+					// ...
+					console.log('clearMarkersAndRoutes');
+					clearRoutes(map.current);
+				  };
+  
+			  const generateRoutesForSelectedDisaster = async (disasters, selectedDisaster) => {
+				if (selectedDisaster) {
+				  clearMarkersAndRoutes();
+				  clearMarkers();
+				  const disaster = disasters.find(d => d._id === selectedDisaster);
+				  if (disaster) {
+
+					// Fetch resources for the current disaster
+					const loc_safehouses = await getResourses(disaster._id, 'rest centre');
+					console.log(disaster._id)
+					console.log(loc_safehouses)
+					const loc_hospitals = await getResourses(disaster._id, 'ambulance');
+					const loc_gardi = await getResourses(disaster._id, 'garda');
+					const loc_firestations = await getResourses(disaster._id, 'fire');
+
+					const disasterLocation = {
+					  lat: disaster.latitude,
+					  lng: disaster.longitude,
+					  id: disaster._id,
+					};
+					// Call the route creation functions for each type of resource and disaster
+					if (loc_safehouses != null && loc_safehouses.length != 0) {
+					  createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
+					  addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length - 1]);
+					}
+
+					if (loc_hospitals != null && loc_hospitals.length != 0) {
+					  createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
+					  addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
+					}
+
+					if (loc_gardi != null && loc_gardi.length != 0) {
+					  createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
+					  addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
+					}
+
+					if (loc_firestations != null && loc_firestations.length != 0) {
+					  createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
+					  addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
+					}
+				  }
+				}
+			  };
+				  React.useEffect(() => {
+					if (map.current && disasterJson && selectedDisaster) {
+					  generateRoutesForSelectedDisaster(disasterJson, selectedDisaster);
+					}
+				  }, [selectedDisaster]);
 
   if ((viewState.latitude && viewState.longitude))
   {
@@ -284,10 +294,19 @@ const Map = (props) => {
               You current location: <br /> Longitude: {marker.longitude} |
               Latitude: {marker.latitude}
             </div>
-			<div className="sidebarRR">
-			  <h1>Reports</h1>
-			  <div id="reports"></div>
-			</div>
+			      {/* Add a sidebar to display the list of disasters */}
+			  <div className="disaster-sidebar">
+				<h3>Disasters</h3>
+				<ul>
+				  {disasterData &&
+					disasterData.map((disaster) => (
+					  <li key={disaster._id} onClick={() => setSelectedDisaster(disaster._id)}>
+						{disaster.name} ({disaster._id})
+					  </li>
+					))}
+				</ul>
+			  </div>
+	  
             {/* Add the map to the screen */}
             <div ref={mapContainer} className="map-container" />
           </>

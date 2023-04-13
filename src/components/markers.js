@@ -1,7 +1,12 @@
 import mapboxgl from "mapbox-gl";
 
+let safehouseMarkers = []; // Add this line at the beginning of your code, outside the function
+let hospitalMarkers=[];
+let gardaMarkers=[];
+let firestationMarkers=[];
+
 export	function createDisasterMarker(disasterDataset,map) {
-			console.log(typeof disasterDataset);
+		//	console.log(typeof disasterDataset);
 			for (var i = 0; i < disasterDataset.length; i++) {
 				const disaster = new mapboxgl.Marker({ color: "yellow" })
 					.setLngLat([disasterDataset[i].longitude, disasterDataset[i].latitude])
@@ -27,6 +32,7 @@ export	function createSafeHouseMarker(safehouse_loc, map) {
 					)
 					.addTo(map.current)
 					.togglePopup();
+					safehouseMarkers.push(marker_sh); 
 			}
 		}
 		//https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
@@ -43,11 +49,12 @@ export	function createHospitalMarker(loc_hospitals, map) {
 					)
 					.addTo(map.current)
 					.togglePopup();
+					hospitalMarkers.push(marker_hs);
 			}
 		}
 
 export	function createGardaMarker(loc_gardi, map) {
-			console.log(typeof loc_gardi);
+			//console.log(typeof loc_gardi);
 			console.log(loc_gardi);
 			for (var i = 0; i < loc_gardi.length; i++) {
 				const el = document.createElement('div');
@@ -60,6 +67,7 @@ export	function createGardaMarker(loc_gardi, map) {
 					)
 					.addTo(map.current)
 					.togglePopup();
+					gardaMarkers.push(maker_garda);
 			}
 		}
 		
@@ -78,6 +86,29 @@ export function createFirestationMarker(loc_firestations, map) {
 					)
 					.addTo(map.current)
 					.togglePopup();
+					firestationMarkers.push(marker_fs);
 			}
 		}
-		
+
+export const clearMarkers = () => {
+  safehouseMarkers.forEach((marker) => {
+    marker.remove();
+  });
+  safehouseMarkers = [];
+
+  hospitalMarkers.forEach((marker) => {
+    marker.remove();
+  });
+  hospitalMarkers = [];
+
+  gardaMarkers.forEach((marker) => {
+    marker.remove();
+  });
+  gardaMarkers = [];
+
+  firestationMarkers.forEach((marker) => {
+    marker.remove();
+  });
+  firestationMarkers = [];
+  
+};

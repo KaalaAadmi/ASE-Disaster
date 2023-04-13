@@ -1,11 +1,13 @@
 import React, {useState} from "react";
+
 // import styled from "styled-components";
+import axios from 'axios'
+
 import "./LoginScreen.css";
 import {login,logout} from "../../api/Auth";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("token") !== null
   ); // check if the user is authenticated on page load
@@ -46,6 +48,7 @@ export default function LoginScreen() {
           </button>
           {/* </div> */}
         </div>
+
       </div>
     );
   }
