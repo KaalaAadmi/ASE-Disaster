@@ -1,20 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ReportDisaster.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
 import axios from "axios";
+import {addReport} from "../../api/Report";
+import {typeOptions} from "../../components/DropdownOptions"
 
 const accessToken = "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ"
 
-function getCurrentLoc() {
+function getCurrentLoc(setLatitude, setLongitude) {
   if ("geolocation" in navigator) {
 
     navigator.geolocation.getCurrentPosition(function(position) {
 
       console.log("Latitude is :", position.coords.latitude);
-
+      setLatitude(position.coords.latitude);
       console.log("Longitude is :", position.coords.longitude);
-
+      setLongitude(position.coords.longitude);
       // document.getElementById('location').value = position.coords.latitude + ", " + position.coords.longitude;
 
       axios
@@ -44,7 +46,7 @@ function getCurrentLoc() {
   }
 } 
 
-function getPosition() {
+function getPosition(setLatitude, setLongitude) {
   // console.log("Hello World")
   const address = document.getElementById("location").value;
   
@@ -56,7 +58,8 @@ function getPosition() {
         if (response.data.features.length > 0) {
           console.log(response.data.features[0].center[1]);
           console.log(response.data.features[0].center[0]);
-
+          setLatitude(response.data.features[0].center[1]);
+          setLongitude(response.data.features[0].center[0])
           // document.getElementById('location').value = response.data.features[0].center[1] + ", " + response.data.features[0].center[0];
         } else {
           alert("Location Not Found");
@@ -121,6 +124,20 @@ const Input = styled.input`
   color: #a5a5a5;
 `;
 
+const TextArea = styled.textarea`
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-botom: 10px solid violet;
+  width: 20rem;
+  color: #a5a5a5;
+  resize: vertical;
+`;
+
 const Select = styled.select`
   padding: 5px;
   margin-bottom: 10px;
@@ -147,28 +164,41 @@ const Option = styled.option`
 `;
 
 export default function ReportDisaster() {
+  const [type, setType] = useState("fire");
+  const [details, setDetails] = useState("");
+  const [latitude, setLatitude] = useState([]);
+  const [longitude, setLongitude] = useState([]);
+  const token = localStorage.getItem("token");
+   // check if the user is authenticated on page load
+
   return (
     <Container>
       <Title>Report Disaster</Title>
       <Form>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+        {/* <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Date & Time:</Label>
           <Input type="text" style={{ boxShadow: "none !important" }} />
-        </div>
+        </div> */}
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label for="disasterType">Select Disaster Type:</Label>
           <Select
             id="disasterType"
+            value={type}
+            onChange={(event) => setType(event.target.value)}
             style={{
               color: "#a5a5a5",
             }}
           >
-            <Option disabled selected value="">Select an option</Option>
-            <Option value="fire">Fire</Option>
-            <Option value="earthquake">Earthquake</Option>
-            <Option value="landslide">Landslide</Option>
-            <Option value="other-manmade">Other Manmade</Option>
-            <Option value="other-natural">Other Natural</Option>
+          {typeOptions.map(item => (
+            <Option
+              key={item.value}
+              value={item.value}
+              disabled={item.disabled}
+              selected={item.selected}
+            >
+              {item.label}
+            </Option>
+          ))}
           </Select>
         </div>
         <div
@@ -183,7 +213,8 @@ export default function ReportDisaster() {
           <Input id="location" type="text" />
           <div
             className = "currentLoc"
-            onClick={getCurrentLoc}
+            onClick={() => getCurrentLoc(setLatitude, setLongitude)}
+            // onValueChange={(itemValue) => setType(itemValue)} CHECK DATA OUTPUTS
             style={{ height: 22, width: 22, backgroundColor: "#e5e5e5", cursor: 'pointer'}}
           >
             <BiCurrentLocation size={22} color="black" />
@@ -192,7 +223,7 @@ export default function ReportDisaster() {
           
           <div
             className = "searchLoc"
-            onClick={getPosition}
+            onClick={() => getPosition(setLatitude, setLongitude)}
             style={{ height: 22, width: 22, backgroundColor: "#e5e5e5", cursor: 'pointer', marginLeft: '5px'}}
           >
             <BiSearchAlt size={22} color="black" />
@@ -201,9 +232,12 @@ export default function ReportDisaster() {
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Description:</Label>
-          <Input type="text" />
+          <TextArea
+            value={details}
+            onChange={(event) => setDetails(event.target.value)}
+          />
         </div>
-        <Submit type="submit" />
+        <Submit type="submit" onClick={() => addReport(type, latitude, longitude, details, token)} />
       </Form>
     </Container>
   );
