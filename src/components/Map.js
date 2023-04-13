@@ -1,81 +1,7 @@
-// import React from "react";
-// import Map, { Marker, GeolocateControl, NavigationControl } from "react-map-gl";
 
-// import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
 
-// const MAPBOX_TOKEN =
-//   "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
-
-// export default function Maps(props) {
-//   // Setting the map and marker states
-//   const [viewState, setViewState] = React.useState({
-//     latitude: 0,
-//     longitude: 0,
-//     zoom: 16
-//   });
-//   const [marker, setMarker] = React.useState({
-//     latitude: props.latitude,
-//     longitude: props.longitude
-//     // center: [props.latitude, props.longitude],
-//   });
-//   // Getting the actual user location through gps
-//   React.useEffect(() => {
-//     if (!props.latitude && !props.longitude) {
-//       navigator.geolocation.getCurrentPosition((position) => {
-//         setViewState({
-//           latitude: position.coords.latitude,
-//           longitude: position.coords.longitude
-//           // center: [position.coords.longitude, position.coords.latitude],
-//         });
-//         setMarker({
-//           latitude: position.coords.latitude,
-//           longitude: position.coords.longitude
-//           // center: [position.coords.longitude, position.coords.latitude],
-//         });
-//       });
-//     }
-//   }, [props.latitude, props.longitude]);
-//   console.log(`lat: ${viewState.latitude}, long: ${viewState.longitude}`);
-
-//   return (
-//     <div>
-//       <Map
-//         // ref={mapRef.current}
-//         {...viewState}
-//         onMove={(evt) =>
-//           setViewState({
-//             ...viewState,
-//             latitude: evt.viewState.latitude,
-//             longitude: evt.viewState.longitude
-//           })
-//         }
-//         style={{ width: "100vw", height: "100vh" }}
-//         mapStyle="mapbox://styles/mapbox/dark-v10"
-//         mapboxAccessToken={MAPBOX_TOKEN}
-//         pitch={50}
-//         center={viewState.center}
-//       >
-//         <Marker
-//           longitude={marker.longitude}
-//           latitude={marker.latitude}
-//           anchor="bottom"
-//           color="lightblue"
-//         />
-//         {/* <MapboxDirections
-//             mapRef={mapRef.current}
-//             mapboxApiAccessToken={MAPBOX_TOKEN}
-//           /> */}
-//         <GeolocateControl
-//           trackUserLocation
-//           position="top-right"
-//           showAccuracyCircle={false}
-//         />
-//         <NavigationControl position="bottom-right" />
-//       </Map>
-//     </div>
-//   );
-// }
-
+// import bbox from "turf";
+// import polygon from "turf";
 import React, { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
@@ -83,205 +9,279 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
 import axios from "axios";
 import { markerData } from "../assets/data";
-// import { disasterData } from "../assets/data";
+import {rr_create_obstacle, rr_avoid_obstacle} from "./direction_rr";
+import {getResourses, clearRoutes} from "./reroute";
+
+//import loc_safehouses from './locs_safehouse.json';
+//import loc_hospitals from './locs_hospital.json';
+//import loc_gardi from './locs_garda.json';
+//import loc_firestations from './locs_firestation.json';
+
+import {
+  createDisasterMarker,
+  createSafeHouseMarker,
+  createHospitalMarker,
+  createGardaMarker,
+  createFirestationMarker,
+  clearMarkers,
+} from "./markers";
+
+const { addRoute_safehouse } = require('./evacuation');
+const { addRoute_hospital } = require('./reroute');
+const { addRoute_garda} = require('./reroute');
+const { addRoute_firestation} = require('./reroute');
+
+
 
 // mapbox token
 const REACT_APP_MAPBOX_TOKEN =
-  "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
+	"pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
+let loc_hospitals = null;
+let loc_firestations = null;
+let loc_safehouses = null;
+let loc_gardi = null;
+let disasterJson=null;
+let obstacle = null;
+//let disasterLocation = null;
+
 const Map = (props) => {
-  // create references for the map
-  const mapContainer = useRef(null);
-  const map = useRef(null);
+		// create references for the map
+		const mapContainer = useRef(null);
+		const map = useRef(null);
 
-  function createDisasterMarker(disasterDataset) {
-    console.log(typeof disasterDataset);
-    for (var i = 0; i < disasterDataset.length; i++) {
-      const disaster = new mapboxgl.Marker({ color: "yellow" })
-        .setLngLat([disasterDataset[i].longitude, disasterDataset[i].latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setText(disasterDataset[i].detail)
-        )
-        .addTo(map.current);
-    }
-  }
+		const [selectedDisaster, setSelectedDisaster] = React.useState(null);
+		const [disasterData, setDisasterData] = React.useState();
 
-  const [disasterData, setDisasterData] = React.useState();
-  React.useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await axios.get(
-          // "http://127.0.0.1:8000/api/v1/all-disaster-data"
-          // "http://100.26.18.111:8000/api/v1/all-disaster-data"
-          "https://msdocs-expressjs-mongodb-odonneb4.azurewebsites.net/api/v1/get-disaster-data"
-        );
+		React.useEffect(() => {
+			const getData = async () => {
+				try {
+					const res = await axios.get("http://127.0.0.1:8000/api/v1/active-disaster-data");
+					disasterJson=res.data
+					//console.log(disasterJson)
+					obstacle = rr_create_obstacle(disasterJson);
+					setDisasterData(res.data);
 
-        // console.log(res.data);
-        setDisasterData(res.data);
-        console.log(disasterData);
-        console.log(res.data)
-        setDisasterData(res.data);
-        createDisasterMarker(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getData();
-  }, [disasterData]);
-  // function createReportMarker() {
-  //   console.log(typeof markerData);
-  //   for (var i = 0; i < data.length; i++) {
-  //     const report = new mapboxgl.Marker({ color: "red" })
-  //       .setLngLat([data[i].longitude, data[i].latitude])
-  //       .setPopup(
-  //         new mapboxgl.Popup({ offset: 25 }).setText(data[i].detail)
-  //       )
-  //       .addTo(map.current);
-  //   }
-  // }
-  function createDisasterMarker(disasterData) {
-    console.log(typeof disasterData);
-    for (var i = 0; i < disasterData.length; i++) {
-      const disaster = new mapboxgl.Marker({ color: "yellow" })
-        .setLngLat([disasterData[i].longitude, disasterData[i].latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setText(disasterData[i].detail)
-        )
-        .addTo(map.current);
-    }
-  }
-  // function createDisasterMarker() {
-  //   console.log(typeof disasterData);
-  //   for (var i = 0; i < disasterData.length; i++) {
-  //     const disaster = new mapboxgl.Marker({ color: "yellow" })
-  //       .setLngLat([disasterData[i].longitude, disasterData[i].latitude])
-  //       .setPopup(
-  //         new mapboxgl.Popup({ offset: 25 }).setText(disasterData[i].detail)
-  //       )
-  //       .addTo(map.current);
-  //   }
-  // }
-  // Setting the map and marker states
-  const [viewState, setViewState] = React.useState({
-    latitude: 0,
-    longitude: 0,
-    zoom: 13, // make this 16 for production
-  });
-  const [marker, setMarker] = React.useState({
-    latitude: props.latitude,
-    longitude: props.longitude,
-    // center: [props.latitude, props.longitude],
-  });
+				} catch (error) {
+					console.log(error);
+				}
+			};
+			getData();
+		}, []);
 
-  // Getting the actual user location through gps
-  React.useEffect(() => {
-    if (!viewState.latitude && !viewState.longitude) {
-      // if (navigator.geolocation) {
-      // let location_timeout = setTimeout("geolocFail()", 10000);
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // clearTimeout(location_timeout);
-          setViewState((prev) => ({
-            ...prev,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            // center: [position.coords.longitude, position.coords.latitude],
-          }));
-          setMarker({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            // center: [position.coords.longitude, position.coords.latitude],
-          });
-        },
-        // function (e) {document.alert("failed")},
-        { timeout: 10000 }
-      );
-      // } else{
-      //   alert("failed")
-      // }
-    }
-  }, [viewState.latitude, viewState.longitude]);
 
-  useEffect(() => {
-    if (map.current) return; // initialize map only once
-    if (viewState.latitude && viewState.longitude) {
-      // Add map
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: "mapbox://styles/mapbox/dark-v9",
-        center: [viewState.longitude, viewState.latitude],
-        zoom: viewState.zoom,
-        pitch: 50,
-      });
+		const [viewState, setViewState] = React.useState({
+			latitude: 0,
+			longitude: 0,
+			zoom: 13, // make this 16 for production
+		});
+		const [marker, setMarker] = React.useState({
+			latitude: props.latitude,
+			longitude: props.longitude,
+			// center: [props.latitude, props.longitude],
+		});
 
-      // Add NavigationControl to the map
-      const nav = new mapboxgl.NavigationControl();
-      map.current.addControl(nav, "bottom-right");
+		// Getting the actual user location through gps
+		React.useEffect(() => {
+			if (!viewState.latitude && !viewState.longitude) {
+				navigator.geolocation.getCurrentPosition((position) => {
+					setViewState((prev) => ({
+						...prev,
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude,
+						// center: [position.coords.longitude, position.coords.latitude],
+					}));
+					setMarker({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude,
+						// center: [position.coords.longitude, position.coords.latitude],
+					});
+				});
+			}
+		}, [viewState.latitude, viewState.longitude]);
 
-      // Add GeoLocateControl to the map
-      const geoLocate = new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        trackUserLocation: true,
-        showUserHeading: true,
-        showAccuracyCircle: false,
-      });
-      map.current.addControl(geoLocate);
 
-      // Add Directions to the map
-      const directions = new MapboxDirections({
-        accessToken: mapboxgl.accessToken,
-        unit: "metric",
-        profile: "mapbox/walking",
-      });
+		useEffect(() => {
+			if (map.current) return; // initialize map only once
+			if (viewState.latitude && viewState.longitude) {
+				// Add map
+				map.current = new mapboxgl.Map({
+					container: mapContainer.current,
+					style: "mapbox://styles/mapbox/light-v9",
+					center: [viewState.longitude, viewState.latitude],
+					zoom: viewState.zoom,
+					pitch: 50,
+				});
 
-      // Add origin and destination to the map direction
-      // map.current.on("load", function () {
-      //   directions.setOrigin([marker.longitude, marker.latitude]);
-      //   directions.setDestination([-6.25819, 53.344415]);
-      // });
-      // map.current.addControl(directions, "top-left");
-      // Add the traffic data as a layer
-      map.current.on("load", function () {
-        map.addLayer({
-          id: "traffic",
-          type: "line",
-          source: {
-            type: "vector",
-            url: "mapbox://mapbox.mapbox-traffic-v1",
-          },
-          "source-layer": "traffic",
-          paint: {
-            "line-color": "red",
-            "line-width": 3,
-          },
-        });
-      });
 
-      // map.current.addControl(directions, "top-left");
+				// Add NavigationControl to the map
+				const nav = new mapboxgl.NavigationControl();
+				map.current.addControl(nav, "bottom-right");
 
-      // Add the user location marker
-      const origin = new mapboxgl.Marker()
-        .setLngLat([marker.longitude, marker.latitude])
-        .addTo(map.current);
-      // Add the destination marker
-      // const destination = new mapboxgl.Marker({ color: "red" })
-      //   .setLngLat([-6.25819, 53.344415])
-      //   .addTo(map.current);
 
-      // console.log(markerData);
-      // markerData?.map((item) => {
-      //   const marker = new mapboxgl.Marker({ color: "red" })
-      //     .setLngLat([item.longitude, item.latitude])
-      //     .addTo(map.current);
-      // });
-      // createReportMarker();
-      // createDisasterMarker();
-    }
-  }, [viewState.latitude, viewState.longitude]);
+				// Add GeoLocateControl to the map
+				const geoLocate = new mapboxgl.GeolocateControl({
+					positionOptions: {
+						enableHighAccuracy: true,
+					},
+					trackUserLocation: true,
+					showUserHeading: true,
+					showAccuracyCircle: false,
+				});
+				map.current.addControl(geoLocate);
+
+
+				//add reroute navigationControl to the map
+				const directions_rr = new MapboxDirections({
+					accessToken: mapboxgl.accessToken,
+					unit: 'metric',
+					profile: 'mapbox/driving',
+					alternatives: false,
+					geometries: 'geojson',
+					controls: { instructions: false },
+					flyTo: false
+				});
+
+				map.current.addControl(directions_rr, 'top-right');
+				
+
+				// Add origin and destination to the map direction
+				map.current.on("load", function() {
+					//directions_rr.setOrigin([marker.longitude, marker.latitude]);
+					//directions.setDestination([-6.25819, 53.344415]);
+					
+					// Source and layer for clearance
+					map.current.addLayer({
+						id: 'clearances',
+						type: 'fill',
+						source: {
+							type: 'geojson',
+							data: obstacle
+						},
+						layout: {},
+						paint: {
+							'fill-color': '#f03b20',
+							'fill-opacity': 0.5,
+							'fill-outline-color': '#f03b20'
+						}
+					});
+
+					// Source and layer for the route
+					map.current.addSource('theRoute', {
+						type: 'geojson',
+						data: {
+							type: 'Feature'
+						}
+					});
+
+					map.current.addLayer({
+						id: 'theRoute',
+						type: 'line',
+						source: 'theRoute',
+						layout: {
+							'line-join': 'round',
+							'line-cap': 'round'
+						},
+						paint: {
+							'line-color': '#cccccc',
+							'line-opacity': 0.5,
+							'line-width': 5,
+							'line-blur': 0.5
+						}
+					});
+
+					// Source and layer for the bounding box
+					map.current.addSource('theBox', {
+						type: 'geojson',
+						data: {
+							type: 'Feature'
+						}
+					});
+					map.current.addLayer({
+						id: 'theBox',
+						type: 'fill',
+						source: 'theBox',
+						layout: {},
+						paint: {
+							'fill-color': '#FFC300',
+							'fill-opacity': 0.5,
+							'fill-outline-color': '#FFC300'
+						}
+					});
+
+					//generateRoutesForDisasters(disasterJson);
+				});
+
+				directions_rr.on('clear', () => {
+					map.current.setLayoutProperty('theRoute', 'visibility', 'none');
+					map.current.setLayoutProperty('theBox', 'visibility', 'none');
+
+					//reports.innerHTML = '';
+				});
+
+				directions_rr.on('route', (event) => {
+					rr_avoid_obstacle(event, obstacle, directions_rr, map);
+				});
+			}
+		}, [viewState.latitude, viewState.longitude]);
+			  // New function to clear markers and routes
+				  const clearMarkersAndRoutes = () => {
+					// Clear existing markers and routes
+					// ...
+					console.log('clearMarkersAndRoutes');
+					clearRoutes(map.current);
+				  };
+  
+			  const generateRoutesForSelectedDisaster = async (disasters, selectedDisaster) => {
+				if (selectedDisaster) {
+				  clearMarkersAndRoutes();
+				  clearMarkers();
+				  const disaster = disasters.find(d => d._id === selectedDisaster);
+				  if (disaster) {
+
+					// Fetch resources for the current disaster
+					const loc_safehouses = await getResourses(disaster._id, 'rest centre');
+					console.log(disaster._id)
+					console.log(loc_safehouses)
+					const loc_hospitals = await getResourses(disaster._id, 'ambulance');
+					const loc_gardi = await getResourses(disaster._id, 'garda');
+					const loc_firestations = await getResourses(disaster._id, 'fire');
+
+					const disasterLocation = {
+					  lat: disaster.latitude,
+					  lng: disaster.longitude,
+					  id: disaster._id,
+					};
+					// Call the route creation functions for each type of resource and disaster
+					if (loc_safehouses != null && loc_safehouses.length != 0) {
+					  createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
+					  addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length - 1]);
+					}
+
+					if (loc_hospitals != null && loc_hospitals.length != 0) {
+					  createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
+					  addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
+					}
+
+					if (loc_gardi != null && loc_gardi.length != 0) {
+					  createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
+					  addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
+					}
+
+					if (loc_firestations != null && loc_firestations.length != 0) {
+					  createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
+					  addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
+					}
+				  }
+				}
+			  };
+				  React.useEffect(() => {
+					if (map.current && disasterJson && selectedDisaster) {
+					  generateRoutesForSelectedDisaster(disasterJson, selectedDisaster);
+					}
+				  }, [selectedDisaster]);
 
   if ((viewState.latitude && viewState.longitude))
   {
@@ -294,6 +294,19 @@ const Map = (props) => {
               You current location: <br /> Longitude: {marker.longitude} |
               Latitude: {marker.latitude}
             </div>
+			      {/* Add a sidebar to display the list of disasters */}
+			  <div className="disaster-sidebar">
+				<h3>Disasters</h3>
+				<ul>
+				  {disasterData &&
+					disasterData.map((disaster) => (
+					  <li key={disaster._id} onClick={() => setSelectedDisaster(disaster._id)}>
+						{disaster.name} ({disaster._id})
+					  </li>
+					))}
+				</ul>
+			  </div>
+	  
             {/* Add the map to the screen */}
             <div ref={mapContainer} className="map-container" />
           </>

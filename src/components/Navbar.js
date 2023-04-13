@@ -21,7 +21,6 @@ export default function Navbar() {
     };
   };
 
-
   const isLoggedIn = true;
   return (
     <header>
