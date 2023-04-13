@@ -144,7 +144,7 @@ const Map = (props) => {
 					flyTo: false
 				});
 
-				map.current.addControl(directions_rr, 'top-right');
+				map.current.addControl(directions_rr, 'top-left');
 				
 
 				// Add origin and destination to the map direction
