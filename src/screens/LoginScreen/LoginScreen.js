@@ -7,7 +7,8 @@ import "./LoginScreen.css";
 import {login,logout} from "../../api/Auth";
 
 export default function LoginScreen() {
-  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("token") !== null
   ); // check if the user is authenticated on page load
