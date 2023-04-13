@@ -1,5 +1,5 @@
 import React from "react";
-import "./ReportDisaster.css";
+import "./MessageHQ.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
 import axios from "axios";
@@ -169,7 +169,7 @@ const TextArea = styled.textarea`
 export default function ReportDisaster() {
   return (
     <Container>
-      <Title>Report Disaster</Title>
+      <Title>Message Headquaters</Title>
       <Form>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Date & Time:</Label>

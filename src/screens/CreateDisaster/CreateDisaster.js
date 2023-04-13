@@ -6,6 +6,7 @@ import axios from "axios";
 
 const accessToken = "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ"
 
+const currentDateAndTime = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
 
 function getPosition() {
   // console.log("Hello World")
@@ -48,6 +49,8 @@ const Title = styled.div`
   display: flex;
   justify-content: center;
   // align-items:center;
+
+  
 `;
 const Form = styled.form`
   display: flex;
@@ -82,6 +85,11 @@ const Input = styled.input`
   border-botom: 10px solid violet;
   width: 20rem;
   color: #a5a5a5;
+
+  &.dateTime {
+    background-color: black;
+    opacity: 0.3;
+  }
 `;
 
 const Select = styled.select`
@@ -109,6 +117,20 @@ const Option = styled.option`
   width: 20rem;
 `;
 
+const TextArea = styled.textarea`
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-botom: 10px solid violet;
+  width: 20rem;
+  height: 5rem;
+  color: #a5a5a5;
+`;
+
 export default function CreateDisaster() {
   return (
     <Container>
@@ -116,7 +138,7 @@ export default function CreateDisaster() {
       <Form>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Date & Time:</Label>
-          <Input type="text" style={{ boxShadow: "none !important" }} />
+          <Input className="dateTime"  type="text" style={{ boxShadow: "none !important" }} value = {currentDateAndTime} readOnly/>
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label for="disasterType">Select Disaster Type:</Label>
@@ -143,17 +165,10 @@ export default function CreateDisaster() {
           }}
         >
           <Label>Location:</Label>
-          <Input id="location" type="text" />
-          <div
-            className = "currentLoc"
-            style={{ height: 22, width: 22, backgroundColor: "#e5e5e5", cursor: 'pointer'}}
-          >
-            <BiCurrentLocation size={22} color="black" />
-            <div className="tooltip1">Find Current Loc</div>
-          </div>
-          
+          <Input id="location" type="text" />          
           <div
             className = "searchLoc"
+            onClick={getPosition}
             style={{ height: 22, width: 22, backgroundColor: "#e5e5e5", cursor: 'pointer', marginLeft: '5px'}}
           >
             <BiSearchAlt size={22} color="black" />
@@ -162,7 +177,7 @@ export default function CreateDisaster() {
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Description:</Label>
-          <Input type="text" />
+          <TextArea type="text" />
         </div>
         <Submit type="submit" />
       </Form>

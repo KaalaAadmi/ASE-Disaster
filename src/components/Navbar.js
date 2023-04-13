@@ -11,6 +11,7 @@ function Navbar() {
 		);
 	};
 
+
 	return (
 		<header>
 			<h3>LOGO</h3>
