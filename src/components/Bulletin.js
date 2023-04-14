@@ -14,7 +14,7 @@ export default function Bulletin() {
       </p>
       <div className="disaster-info">
         <div>
-          <div className="buttons-container">
+          {/* <div className="buttons-container">
             {filters.map((category, idx) => (
               <button
                 onClick={() => handleFilterButtonClick(category)}
@@ -35,7 +35,7 @@ export default function Bulletin() {
                 <p className="category">{item.category}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
