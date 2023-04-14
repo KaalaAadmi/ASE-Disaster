@@ -10,6 +10,7 @@ import LoginScreen from './screens/LoginScreen/LoginScreen';
 import DisasterResponse from "./components/DisasterResponse";
 import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
 import CreateDisaster from './screens/CreateDisaster/CreateDisaster';
+import Bulletin from "./components/Bulletin";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
+          <Route path="/bulletin" element={<Bulletin />} />
           <Route path="/disaster-response" element={ <DisasterResponse />} />
           <Route
             path="/maps"
