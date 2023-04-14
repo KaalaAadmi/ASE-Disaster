@@ -52,7 +52,7 @@ const ViewReports = () => {
 
   return (
     <div>
-      <Table data={reportData} />
+      <Table data={data} />
     </div>
   );
 };
