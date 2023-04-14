@@ -278,3 +278,16 @@ nav {
   max-width: 990px;
   line-height: 28px;
 }
+
+/* -----------------------------TABLE------------------------------ */
+.table-header{
+  color:#fefefe;
+  border: 1px solid #fefefe;
+  padding: 10px;
+}
+
+.table-cell {
+  border: 1px solid #fefefe;
+  padding: 10px;
+  color:#fefefe;
+}
