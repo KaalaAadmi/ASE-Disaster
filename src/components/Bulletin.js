@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import "./styles.css";
 
 export default function Bulletin() {
+  const [selectedFilters, setSelectedFilters] = useState([]);
   return (
     <div className="bulletin-page">
-      <h1>News Bulletin</h1>
+      {/* <h1>News Bulletin</h1>
       <p>
         Disasters are sudden and often devastating events that cause significant
         damage to property, infrastructure, and the environment, as well as loss
@@ -15,7 +16,7 @@ export default function Bulletin() {
       <div className="disaster-info">
         <div>
           <div className="buttons-container">
-            {filters.map((category, idx) => (
+            {selectedFilters.map((category, idx) => (
               <button
                 onClick={() => handleFilterButtonClick(category)}
                 className={`button ${
@@ -37,7 +38,8 @@ export default function Bulletin() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
+      Hello World!
     </div>
   );
 }
