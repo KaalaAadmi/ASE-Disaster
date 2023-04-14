@@ -36,7 +36,7 @@ export default function Bulletin() {
                 <p className="category">{item.category}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div> */}
       Hello World!
