@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Table from "../../components/Table";
-import axios from "axios";
 import { getReports } from "../../api/Report";
 const ViewReports = () => {
   const data = [
