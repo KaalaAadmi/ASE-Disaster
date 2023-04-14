@@ -52,7 +52,6 @@ const ViewReports = () => {
 
   return (
     <div>
-      <div></div>
       <Table data={reportData} />
     </div>
   );
