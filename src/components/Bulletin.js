@@ -37,8 +37,6 @@ export default function Bulletin() {
               </div>
             ))}
           </div> */}
-        </div>
-      </div> */}
       Hello World!
     </div>
   );
