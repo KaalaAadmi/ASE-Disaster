@@ -11,6 +11,7 @@ import DisasterResponse from "./components/DisasterResponse";
 import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
 import CreateDisaster from './screens/CreateDisaster/CreateDisaster';
 import Bulletin from "./components/Bulletin";
+import ViewReports from "./screens/ViewReports/ViewReports";
 
 
 function App() {
@@ -21,13 +22,6 @@ function App() {
   return (
     <div>
       <Navbar />
-      {/* <FAQ /> */}
-      {/* <Maps
-        latitude={location.latitude}
-        longitude={location.longitude}
-        onChange={setLocation}
-      /> */}
-      {/* <News location={location} onChange={setLocation}/> */}
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -48,6 +42,7 @@ function App() {
           <Route path='/report-disaster' element={<ReportDisaster/>}/>
           <Route path='/faq' element={<FAQ/>}/>
           <Route path='/create-disaster' element={<CreateDisaster/>}/>
+          <Route path='/view-reports' element={<ViewReports/>}/>
         </Routes>
       </div>
     </div>
