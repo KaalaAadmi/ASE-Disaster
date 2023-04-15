@@ -301,7 +301,7 @@ const Map = (props) => {
 				  {disasterData &&
 					disasterData.map((disaster) => (
 					  <li key={disaster._id} onClick={() => setSelectedDisaster(disaster._id)}>
-						{disaster.name} ({disaster._id})
+						{disaster.disasterName} ({disaster._id})
 					  </li>
 					))}
 				</ul>

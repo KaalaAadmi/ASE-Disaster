@@ -69,7 +69,7 @@ export const resolveDisaster = async (id) => {
     }
 };
 
-export const getCurrentDisasters = async () => {
+export const getRelevantDisasters = async () => {
     try {
         let config = {
             method: 'get',
@@ -78,7 +78,23 @@ export const getCurrentDisasters = async () => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const getPendingDisasters = async () => {
+    try {
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `${BACKEND}/pending-disaster-data`,
+            headers: { }
+        };
+        const response = await axios.request(config);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
@@ -94,7 +110,7 @@ export const getActiveDisasters = async () => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
@@ -110,7 +126,7 @@ export const getAllDisasters = async () => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
@@ -126,7 +142,7 @@ export const getIndividualDisaster = async (id) => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;

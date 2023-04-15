@@ -6,11 +6,11 @@ export const requestResponders = async (id, ambulance, police, fireTruck, buses,
     try {
         let data = JSON.stringify({
             "disasterId": id,
-            "ambulance": parseInt(ambulance),
-            "police": parseInt(police),
-            "fireTruck": parseInt(fireTruck),
-            "buses": parseInt(buses),
-            "helicopter": parseInt(helicopter),
+            "ambulance": ambulance,
+            "police": police,
+            "fireTruck": fireTruck,
+            "buses": buses,
+            "helicopter": helicopter,
             "evacuation": evacBool
         });
         let config = {

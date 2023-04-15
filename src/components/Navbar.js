@@ -22,8 +22,9 @@ function Navbar() {
 				<a href="/report-disaster">Report Disaster</a>
 				<a href="/view-reports">View Reports</a>
 				<a href="/message-hq">Message HQ</a>
+				<a href="/disaster-information">Disaster Information</a>
+				<a href="/activate-response">Activate Response</a>
 				<a href="/send-resources">Send Resources</a>
-				<a href="/create-disaster">Create Disaster</a>
 				<button
 					className="nav-btn nav-close-btn"
 					onClick={showNavbar}>

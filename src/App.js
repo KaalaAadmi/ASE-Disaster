@@ -1,18 +1,17 @@
 import React from "react";
 import "./App.css";
 import Maps from "./components/Map";
-import News from "./components/News";
 import Navbar from "./components/Navbar";
 import FAQ from "./components/FAQ";
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import LoginScreen from './screens/LoginScreen/LoginScreen';
-import DisasterResponse from "./components/DisasterResponse";
 import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
-import CreateDisaster from './screens/CreateDisaster/CreateDisaster';
+import ActivateResponse from './screens/ActivateResponse/ActivateResponse';
+import SendResources from './screens/SendResources/SendResources';
+import DisasterInformation from './screens/DisasterInformation/DisasterInformation';
 import Bulletin from "./components/Bulletin";
 import ViewReports from "./screens/ViewReports/ViewReports";
-
 
 function App() {
   const [location, setLocation] = React.useState({
@@ -25,7 +24,6 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Bulletin />} />
-          <Route path="/news" element={<News />} />
           <Route path="/bulletin" element={<Bulletin />} />
           <Route
             path="/maps"
@@ -40,8 +38,10 @@ function App() {
           <Route path="/login" element={<LoginScreen />} />
           <Route path='/report-disaster' element={<ReportDisaster/>}/>
           <Route path='/faq' element={<FAQ/>}/>
-          <Route path='/create-disaster' element={<CreateDisaster/>}/>
+          <Route path='/activate-response' element={<ActivateResponse/>}/>
+          <Route path='/send-resources' element={<SendResources/>}/>
           <Route path='/view-reports' element={<ViewReports/>}/>
+          <Route path='/disaster-information' element={<DisasterInformation/>}/>
         </Routes>
       </div>
     </div>
