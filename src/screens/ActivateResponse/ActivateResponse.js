@@ -5,20 +5,12 @@ import { typeOptions, siteOptions } from "../../components/DropdownOptions";
 import {activateDisaster, getPendingDisasters, getIndividualDisaster} from "../../api/Disaster";
 
 export default function CreateDisaster() {
-<<<<<<< Updated upstream:src/screens/CreateDisaster/CreateDisaster.js
-  const { id } = useParams();
-  const [type, setType] = useState("fire");
-  const [radius, setRadius] = useState("");
-  const [site, setSite] = useState("building");
-  const [size, setSize] = useState("");
-=======
   const [disasters, setDisasters] = useState([]);
   const [selectedDisaster, setSelectedDisaster] = useState("");
   const [type, setType] = useState("");
   const [site, setSite] = useState("");
   const [radius, setRadius] = useState("0");
   const [size, setSize] = useState("0");
->>>>>>> Stashed changes:src/screens/ActivateResponse/ActivateResponse.js
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
 

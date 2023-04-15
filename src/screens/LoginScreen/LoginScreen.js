@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import axios from 'axios'
 
 import "./LoginScreen.css";
-import {login,logout} from "../../api/auth";
+import {login,logout} from "../../api/Auth";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
