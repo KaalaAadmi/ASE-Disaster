@@ -31,6 +31,9 @@ export default function DisasterInformation() {
   const [longitude, setLongitude] = useState("");
   const [address, setAddress] = useState("");
   const [orders, setOrders] = useState([]);
+  const [isCoordinator, setIsCoordinator] = useState(
+      localStorage.getItem("isAdmin") === true
+  ); // check if the user is a coordinator on page load
 
   const getAddressFromLatLng = (latitude, longitude) => {
     const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`;
@@ -90,134 +93,141 @@ export default function DisasterInformation() {
       getAddressFromLatLng(disasterInfo.disasterData.latitude,disasterInfo.disasterData.longitude);
     }
   };  
-  
-  return (
-    <Container>
-      <Title>Disaster Information</Title>
-      <Form>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Select Report Grouping:</Label>
-          <Select
-            id="disaster"
-            value={selectedDisaster || ''}
-            onChange={handleDropdownChange}
-            style={{
-              color: "#a5a5a5",
-            }}
-          >
-          <Option value="" disabled>Select a Options</Option>
-          {disasters.map((disaster) => (
-            <Option key={disaster._id} value={disaster._id}>
-              {disaster.disasterName}
-            </Option>
-          ))}
-          </Select>
-        </div>
-      </Form>
-      {id && <div>ID: {id}</div>}
-      {address && <div>Address: {address}</div>}
-      {latitude && <div> Latitude: {latitude}</div>}
-      {longitude && <div> Longitude: {longitude}</div>}
-      <Form>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Name</Label>
-          <Input type="text" 
-            value={disasterName}
-            onChange={(event) => setDisasterName(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Description</Label>
-          <TextArea
-            value={disasterDetails}
-            onChange={(event) => setDisasterDetails(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Status:</Label>
-          <Select
-            style={{
-              color: "#a5a5a5",
-            }}
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
-          <Option value="active" label="Active"></Option>
-          <Option value="resolved" label="Resolved"></Option>
-          </Select>
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label htmlFor="disasterType">Select Disaster Type:</Label>
-          <Select
-            id="disasterType"
-            style={{
-              color: "#a5a5a5",
-            }}
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-          >
-            {typeOptions.map(item => (
-              <Option
-                key={item.value}
-                value={item.value}
-                disabled={item.disabled}
+  if(isCoordinator){
+      return (
+        <Container>
+          <Title>Disaster Information</Title>
+          <Form>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Select Report Grouping:</Label>
+              <Select
+                id="disaster"
+                value={selectedDisaster || ''}
+                onChange={handleDropdownChange}
+                style={{
+                  color: "#a5a5a5",
+                }}
               >
-                {item.label}
-              </Option>
-            ))}
-          </Select>
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Radius Impacted (in meters)</Label>
-          <Input 
-            type="text" 
-            style={{ boxShadow: "none !important" }} 
-            value={radius}
-            placeholder="100"
-            onChange={(event) => setRadius(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Number of People Impacted</Label>
-          <Input 
-            type="text" 
-            style={{ boxShadow: "none !important" }} 
-            value={size}
-            placeholder="10"
-            onChange={(event) => setSize(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label htmlFor="disasterSite">Select Disaster Site:</Label>
-          <Select
-            id="disasterSite"
-            style={{
-              color: "#a5a5a5",
-            }}
-            value={site}
-            onChange={(event) => setSite(event.target.value)}
-          >
-            {siteOptions.map(item => (
-              <option
-                key={item.value}
-                value={item.value}
-                disabled={item.disabled}
+              <Option value="" disabled>Select a Options</Option>
+              {disasters.map((disaster) => (
+                <Option key={disaster._id} value={disaster._id}>
+                  {disaster.disasterName}
+                </Option>
+              ))}
+              </Select>
+            </div>
+          </Form>
+          {id && <div>ID: {id}</div>}
+          {address && <div>Address: {address}</div>}
+          {latitude && <div> Latitude: {latitude}</div>}
+          {longitude && <div> Longitude: {longitude}</div>}
+          <Form>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Name</Label>
+              <Input type="text" 
+                value={disasterName}
+                onChange={(event) => setDisasterName(event.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Description</Label>
+              <TextArea
+                value={disasterDetails}
+                onChange={(event) => setDisasterDetails(event.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Status:</Label>
+              <Select
+                style={{
+                  color: "#a5a5a5",
+                }}
+                value={status}
+                onChange={(event) => setStatus(event.target.value)}
               >
-                {item.label}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div style={{ display: "flex", flexDirection:"row", alignItems: "center" }}>
-          <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
-          <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
-        </div>
-        <Submit type="submit" onClick={() => activateDisaster(selectedDisaster, type, radius, size, site, disasterName, disasterDetails)}/>
-      </Form>
-      {/* {reports && <div>Reports:{JSON.stringify(reports)}</div>}
-      {orders && <div>Orders:{JSON.stringify(orders)}</div>} */}
-    </Container>
-  );
+              <Option value="active" label="Active"></Option>
+              <Option value="resolved" label="Resolved"></Option>
+              </Select>
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label htmlFor="disasterType">Select Disaster Type:</Label>
+              <Select
+                id="disasterType"
+                style={{
+                  color: "#a5a5a5",
+                }}
+                value={type}
+                onChange={(event) => setType(event.target.value)}
+              >
+                {typeOptions.map(item => (
+                  <Option
+                    key={item.value}
+                    value={item.value}
+                    disabled={item.disabled}
+                  >
+                    {item.label}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Radius Impacted (in meters)</Label>
+              <Input 
+                type="text" 
+                style={{ boxShadow: "none !important" }} 
+                value={radius}
+                placeholder="100"
+                onChange={(event) => setRadius(event.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Number of People Impacted</Label>
+              <Input 
+                type="text" 
+                style={{ boxShadow: "none !important" }} 
+                value={size}
+                placeholder="10"
+                onChange={(event) => setSize(event.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label htmlFor="disasterSite">Select Disaster Site:</Label>
+              <Select
+                id="disasterSite"
+                style={{
+                  color: "#a5a5a5",
+                }}
+                value={site}
+                onChange={(event) => setSite(event.target.value)}
+              >
+                {siteOptions.map(item => (
+                  <option
+                    key={item.value}
+                    value={item.value}
+                    disabled={item.disabled}
+                  >
+                    {item.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div style={{ display: "flex", flexDirection:"row", alignItems: "center" }}>
+              <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
+              <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
+            </div>
+            <Submit type="submit" onClick={() => activateDisaster(selectedDisaster, type, radius, size, site, disasterName, disasterDetails)}/>
+          </Form>
+          {reports && <div><Table data={reports} /></div>}
+          {/* {orders && <div>Orders:{JSON.stringify(orders)}</div>} */}
+        </Container>
+    );
+  }else{
+    return(
+      <Container>
+        <Title>Access Denied</Title>
+      </Container>
+    );
+  }
 }
 
 

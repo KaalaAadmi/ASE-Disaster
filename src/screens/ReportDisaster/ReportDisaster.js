@@ -99,7 +99,7 @@ const Option = styled.option`
 `;
 
 export default function ReportDisaster() {
-  const [type, setType] = useState("fire");
+  const [type, setType] = useState("");
   const [details, setDetails] = useState("");
   const [latitude, setLatitude] = useState([]);
   const [longitude, setLongitude] = useState([]);
@@ -159,7 +159,7 @@ export default function ReportDisaster() {
       <Title>Report Disaster</Title>
       <Form>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label for="disasterType">Select Disaster Type:</Label>
+          <Label htmlFor="disasterType">Select Disaster Type:</Label>
           <Select
             id="disasterType"
             value={type}
