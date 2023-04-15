@@ -8,9 +8,9 @@ import {activateDisaster} from "../../api/Disaster";
 export default function CreateDisaster() {
   const { id } = useParams();
   const [type, setType] = useState("fire");
-  const [radius, setRadius] = useState(0);
+  const [radius, setRadius] = useState("");
   const [site, setSite] = useState("building");
-  const [size, setSize] = useState(0);
+  const [size, setSize] = useState("");
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
 
@@ -46,6 +46,7 @@ export default function CreateDisaster() {
             type="text" 
             style={{ boxShadow: "none !important" }} 
             value={radius}
+            placeholder="100"
             onChange={(event) => setRadius(event.target.value)}
           />
         </div>
@@ -55,6 +56,7 @@ export default function CreateDisaster() {
             type="text" 
             style={{ boxShadow: "none !important" }} 
             value={size}
+            placeholder="10"
             onChange={(event) => setSize(event.target.value)}
           />
         </div>

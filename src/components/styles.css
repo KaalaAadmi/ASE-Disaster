@@ -11,7 +11,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   width: 100%;
   padding-top: 65px;
   margin-top: -65px;
@@ -46,6 +47,7 @@ header {
   color: #fefefe;
   z-index: 10000;
   position: relative;
+  box-shadow: 0px 3px 6px 3px rgba(0, 0, 0, 0.25);
 }
 
 nav a {
@@ -59,10 +61,6 @@ nav a:hover {
   color: #11101b;
   background-color: #fefefe;
   border-radius: 5px;
-}
-
-nav a.active {
-  background-color: #db2b39;
 }
 
 header .nav-btn {
@@ -103,11 +101,18 @@ nav {
 		gap: 1.5rem;
 		background-color: #11101b;
 		transition: 1s;
+    /* changes made  */
+    visibility: hidden;
 	}
-
+  
 	header .responsive_nav {
-		transform: translateY(100vh);
-	}
+    transform: translateY(100vh);
+    visibility: visible;
+    overflow: scroll;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 40px;
+}
 
 	nav .nav-close-btn {
 		position: absolute;
@@ -125,7 +130,7 @@ nav {
 
 .faq-page {
   padding: 50px;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -139,19 +144,20 @@ nav {
 }
 
 .faq-info>h1 {
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 600;
   color: #fefefe;
   text-align: left;
   margin-bottom: 10px;
 }
 
 .faq-info>p{
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 17px;
+  font-weight: 300;
   color: #fefefe;
   text-align: left;
   margin-bottom: 50px;
+  line-height: 25px;
 }
 
 .wrapper {
@@ -177,8 +183,13 @@ nav {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 16px;
   margin-top: 5px;
+  font-weight: 500;
+}
+
+.title>h2 {
+  font-weight: 500;
 }
 
 .content {
@@ -187,13 +198,15 @@ nav {
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0,1,0,1);
   font-size: 16px;
-  padding-top: 10px;
+  padding-top: 5px;
+  margin-bottom: 10px;
 }
 
 .content.show {
   height: auto;
   max-height: 9999px;
   transition: all 0.5s cubic-bezier(0,1,0,1);
+  line-height: 25px;
 }
 
 .map-container {
@@ -232,3 +245,49 @@ nav {
   text-decoration: underline;
 }
 
+
+/* -----------------------------BULLETIN------------------------------ */
+
+.bulletin-page {
+  width: 100%;
+  max-width: 1400px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: 100%;
+  color: #fefefe;
+}
+
+.bulletin-page h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #fefefe;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.bulletin-page p {
+  font-size: 17px;
+  font-weight: 300;
+  color: #fefefe;
+  text-align: left;
+  margin-bottom: 50px;
+  width: 100%;
+  max-width: 990px;
+  line-height: 28px;
+}
+
+/* -----------------------------TABLE------------------------------ */
+.table-header{
+  color:#fefefe;
+  border: 1px solid #fefefe;
+  padding: 10px;
+}
+
+.table-cell {
+  border: 1px solid #fefefe;
+  padding: 10px;
+  color:#fefefe;
+}

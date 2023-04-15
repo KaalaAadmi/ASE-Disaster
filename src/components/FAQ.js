@@ -7,9 +7,16 @@ const dataStore = [
       "During an earthquake, drop to the ground, take cover under a sturdy table or desk, and hold on until the shaking stops. If you're indoors, evacuate the building after the shaking stops, avoiding elevators and damaged stairs. Move away from buildings, trees, and power lines. If you're driving, pull over to a clear location, stop, and stay inside the vehicle until the shaking stops.",
   },
   {
-    question: "Earthquake",
+    question: "Tsunami",
     answer:
-      "During an earthquake, drop to the ground, take cover under a sturdy table or desk, and hold on until the shaking stops. If you're indoors, evacuate the building after the shaking stops, avoiding elevators and damaged stairs. Move away from buildings, trees, and power lines. If you're driving, pull over to a clear location, stop, and stay inside the vehicle until the shaking stops.",
+      "If you are in an area that is at risk of a tsunami, it is important to know how to evacuate quickly and safely. Here are some steps to follow:\
+      \n Listen for official warnings: Pay attention to tsunami warnings issued by local authorities via radio, television, or other sources. Take them seriously and act promptly.\
+      Move inland or to higher ground: If you are in a coastal area, move inland or to higher ground immediately. Tsunami waves can travel far inland, so it is important to move to higher ground or to a safe distance away from the coast.\
+      Follow designated evacuation routes: Follow the designated evacuation routes provided by local authorities. Do not try to return to your home or belongings as you may be risking your life.\
+      Avoid low-lying areas: When evacuating, avoid low-lying areas, as they are more prone to flooding.\
+      Stay informed: Keep up to date with the latest developments, as additional waves may follow the first one.\
+      Stay away from the coast: Do not return to the coast until local authorities advise that it is safe to do so.\
+      It is important to act quickly and follow these guidelines to stay safe during a tsunami.",
   },
   {
     question: "Earthquake",

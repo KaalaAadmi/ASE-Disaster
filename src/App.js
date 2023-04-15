@@ -11,6 +11,8 @@ import DisasterResponse from "./components/DisasterResponse";
 import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
 import CreateDisaster from './screens/CreateDisaster/CreateDisaster';
 import SendResources from './screens/SendResources/SendResources';
+import Bulletin from "./components/Bulletin";
+import ViewReports from "./screens/ViewReports/ViewReports";
 
 function App() {
   const [location, setLocation] = React.useState({
@@ -20,18 +22,11 @@ function App() {
   return (
     <div>
       <Navbar />
-      {/* <FAQ /> */}
-      {/* <Maps
-        latitude={location.latitude}
-        longitude={location.longitude}
-        onChange={setLocation}
-      /> */}
-      {/* <News location={location} onChange={setLocation}/> */}
       <div className="container">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Bulletin />} />
           <Route path="/news" element={<News />} />
-          <Route path="/disaster-response" element={ <DisasterResponse />} />
+          <Route path="/bulletin" element={<Bulletin />} />
           <Route
             path="/maps"
             element={
@@ -47,6 +42,7 @@ function App() {
           <Route path='/faq' element={<FAQ/>}/>
           <Route path='/create-disaster' element={<CreateDisaster/>}/>
           <Route path='/send-resources' element={<SendResources/>}/>
+          <Route path='/view-reports' element={<ViewReports/>}/>
         </Routes>
       </div>
     </div>
