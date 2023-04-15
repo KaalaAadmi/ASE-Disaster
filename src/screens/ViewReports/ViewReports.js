@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Table from "../../components/Table";
+import styled from "styled-components";
 import { getReports } from "../../api/Report";
-const ViewReports = () => {
+
+export default function ViewReports(){
   const data = [
     {
       _id: "64298e50ab316b690c196ddb",
@@ -41,20 +43,54 @@ const ViewReports = () => {
   ];
   
   const [reportData, setReportData] = React.useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("token") !== null
+  ); // check if the user is authenticated on page load
 
   useEffect(() => {
     const getData = async () => {
-      const res = getReports();
-      setReportData(JSON.parse(res));
+      const res = await getReports();
+      console.log(res);
+      setReportData(res);
     };
     getData();
   }, []);
 
-  return (
-    <div>
-      <Table data={reportData} />
-    </div>
-  );
-};
+  if(isAuthenticated){
+    return (
+      <Container>
+        <Title>VIEW REPORTS</Title>
+        <div>
+          <Table data={reportData} />
+        </div>
+      </Container>
 
-export default ViewReports;
+    );
+  } else {
+    console.log("ACCESS DENIED");
+    return(
+      <Container>
+        <div>
+          <Title>ACCESS DENIED</Title>
+        </div>
+      </Container>
+    );
+  }
+}
+
+const Container = styled.div`
+  color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+`;
+const Title = styled.div`
+  color: #e5e5e5;
+  font-size: 4rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  // align-items:center;
+`;

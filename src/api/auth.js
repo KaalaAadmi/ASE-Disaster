@@ -23,6 +23,7 @@ export const login = async (email, password, setIsAuthenticated) => {
 
         localStorage.setItem("token", response.data.accessToken);
         localStorage.setItem("isAdmin", response.data.isAdmin);
+        console.log(`HELP: ${response.data.isAdmin}`);
         setIsAuthenticated(true);
         console.log(JSON.stringify(response.data));
         console.log("Successful Login!")
@@ -38,11 +39,14 @@ export const login = async (email, password, setIsAuthenticated) => {
 
 export const logout = async () => {
     try {
+        const token = localStorage.getItem("token");
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
             url: `${AUTH_URL}/logout`,
-            headers: { }
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
         };
         const response = await axios.request(config);
         localStorage.removeItem("token", response.data.accessToken);

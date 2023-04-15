@@ -3,10 +3,9 @@ import { format, parseISO } from "date-fns";
 
 function Table(props) {
   const [data, setData] = useState(props.data);
-
   useEffect(() => {
     setData(props.data);
-  }, [props.data]);
+  }, [props]);
 
   return (
     <table>
@@ -30,10 +29,10 @@ function Table(props) {
               <input type="checkbox" checked={row.isResponder} />
             </td>
             <td className="table-cell">
-              <input type="checkbox" checked={row.isSpam} />
+              <input type="checkbox" checked={row.isSpam}/>
             </td>
-            <td className="table-cell">{row.disaster.reports.length}</td>
-            <td className="table-cell">{row.disaster.site}</td>
+            <td className="table-cell">{row.disaster?.reports?.length ?? "0"}</td>
+            <td className="table-cell">{row.site}</td>
             <td className="table-cell">
               {format(parseISO(row.created_at), "dd MMM, yyyy")}
             </td>
