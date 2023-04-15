@@ -94,7 +94,7 @@ export const getActiveDisasters = async () => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
@@ -110,7 +110,7 @@ export const getAllDisasters = async () => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
@@ -126,7 +126,7 @@ export const getIndividualDisaster = async (id) => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;

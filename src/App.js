@@ -10,7 +10,7 @@ import LoginScreen from './screens/LoginScreen/LoginScreen';
 import DisasterResponse from "./components/DisasterResponse";
 import ReportDisaster from './screens/ReportDisaster/ReportDisaster';
 import CreateDisaster from './screens/CreateDisaster/CreateDisaster';
-
+import SendResources from './screens/SendResources/SendResources';
 
 function App() {
   const [location, setLocation] = React.useState({
@@ -46,6 +46,7 @@ function App() {
           <Route path='/report-disaster' element={<ReportDisaster/>}/>
           <Route path='/faq' element={<FAQ/>}/>
           <Route path='/create-disaster' element={<CreateDisaster/>}/>
+          <Route path='/send-resources' element={<SendResources/>}/>
         </Routes>
       </div>
     </div>
