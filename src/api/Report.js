@@ -37,7 +37,7 @@ export const getReports = async () => {
             headers: { }
         };
         const response = await axios.request(config);
-        return JSON.stringify(response.data);
+        return response.data;
     } catch (error) {
         console.error(error);
         throw error;
