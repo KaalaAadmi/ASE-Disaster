@@ -1,25 +1,81 @@
-import React, {useState} from "react";
-import { useParams } from 'react-router-dom';
-import "./CreateDisaster.css";
+import React, {useState, useEffect} from "react";
+import "./ActivateResponse.css";
 import styled from "styled-components";
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
-import {activateDisaster} from "../../api/Disaster";
+import {activateDisaster, getPendingDisasters, getIndividualDisaster} from "../../api/Disaster";
 
 export default function CreateDisaster() {
+<<<<<<< Updated upstream:src/screens/CreateDisaster/CreateDisaster.js
   const { id } = useParams();
   const [type, setType] = useState("fire");
   const [radius, setRadius] = useState("");
   const [site, setSite] = useState("building");
   const [size, setSize] = useState("");
+=======
+  const [disasters, setDisasters] = useState([]);
+  const [selectedDisaster, setSelectedDisaster] = useState("");
+  const [type, setType] = useState("");
+  const [site, setSite] = useState("");
+  const [radius, setRadius] = useState("0");
+  const [size, setSize] = useState("0");
+>>>>>>> Stashed changes:src/screens/ActivateResponse/ActivateResponse.js
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
 
+  useEffect(() => {
+    async function fetchData() {
+      getPendingDisasters().then((response) => {
+        // Process the response data here, if necessary
+        const pendingDisasters = response;
+        console.log("Pending disasters:", pendingDisasters);
+        setDisasters(pendingDisasters);
+      });
+    }
+    fetchData();
+  }, []);
+
+  const handleDropdownChange = async (event) => {
+    if (event.target.value !== ""){
+      setSelectedDisaster(event.target.value);
+      const selectedDisasterId = event.target.value;
+      console.log(`selected disaster: ${selectedDisasterId}`);
+      const disasterInfo = await getIndividualDisaster(selectedDisasterId);
+      console.log(disasterInfo);
+    
+      setType(disasterInfo.disasterData.type ?? "");
+      setRadius(disasterInfo.disasterData.radius ?? "0");
+      setSite(disasterInfo.disasterData.site ?? "");
+      setSize(disasterInfo.disasterData.size ?? "0");
+      setDisasterName(disasterInfo.disasterData.disasterName ?? "");
+      setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
+    }
+  };
+  
+  
   return (
     <Container>
-      <Title>Create Disaster Record</Title>
+      <Title>Activate A Disaster Response</Title>
       <Form>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label for="disasterType">Select Disaster Type:</Label>
+          <Label>Select Report Grouping:</Label>
+          <Select
+            id="disaster"
+            value={selectedDisaster || ''}
+            onChange={handleDropdownChange}
+            style={{
+              color: "#a5a5a5",
+            }}
+          >
+          <Option value="" disabled>Select a Options</Option>
+          {disasters.map((disaster) => (
+            <Option key={disaster._id} value={disaster._id}>
+              {disaster.title}
+            </Option>
+          ))}
+          </Select>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          <Label htmlFor="disasterType">Select Disaster Type:</Label>
           <Select
             id="disasterType"
             style={{
@@ -28,16 +84,15 @@ export default function CreateDisaster() {
             value={type}
             onChange={(event) => setType(event.target.value)}
           >
-          {typeOptions.map(item => (
-            <Option
-              key={item.value}
-              value={item.value}
-              disabled={item.disabled}
-              selected={item.selected}
-            >
-              {item.label}
-            </Option>
-          ))}
+            {typeOptions.map(item => (
+              <Option
+                key={item.value}
+                value={item.value}
+                disabled={item.disabled}
+              >
+                {item.label}
+              </Option>
+            ))}
           </Select>
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -61,7 +116,7 @@ export default function CreateDisaster() {
           />
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label for="disasterSite">Select Disaster Site:</Label>
+          <Label htmlFor="disasterSite">Select Disaster Site:</Label>
           <Select
             id="disasterSite"
             style={{
@@ -70,16 +125,15 @@ export default function CreateDisaster() {
             value={site}
             onChange={(event) => setSite(event.target.value)}
           >
-          {siteOptions.map(item => (
-            <option
-              key={item.value}
-              value={item.value}
-              disabled={item.disabled}
-              selected={item.selected}
-            >
-              {item.label}
-            </option>
-          ))}
+            {siteOptions.map(item => (
+              <option
+                key={item.value}
+                value={item.value}
+                disabled={item.disabled}
+              >
+                {item.label}
+              </option>
+            ))}
           </Select>
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -96,7 +150,7 @@ export default function CreateDisaster() {
             onChange={(event) => setDisasterDetails(event.target.value)}
           />
         </div>
-        <Submit type="submit" onClick={() => activateDisaster(id, type, radius, size, site, disasterName, disasterDetails)}/>
+        <Submit type="submit" onClick={() => activateDisaster(selectedDisaster, type, radius, size, site, disasterName, disasterDetails)}/>
       </Form>
     </Container>
   );

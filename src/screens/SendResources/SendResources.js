@@ -2,17 +2,17 @@ import React, {useState, useEffect} from "react";
 // import { useParams } from 'react-router-dom';
 import "./SendResources.css";
 import styled from "styled-components";
-import {getActiveDisasters} from "../../api/Disaster";
+import {getActiveDisasters, getIndividualDisaster} from "../../api/Disaster";
 import {requestResponders} from "../../api/Order";
 
 export default function SendResources() {
   const [disasters, setDisasters] = useState([]);
   const [selectedDisaster, setSelectedDisaster] = useState("");
-  const [ambulances, setAmbulances] = useState(0);
-  const [fire, setFire] = useState(0);
-  const [police, setPolice] = useState(0);
-  const [bus, setBus] = useState(0);
-  const [helicopter, setHelicopter] = useState(0);
+  const [ambulances, setAmbulances] = useState("0");
+  const [fire, setFire] = useState("0");
+  const [police, setPolice] = useState("0");
+  const [bus, setBus] = useState("0");
+  const [helicopter, setHelicopter] = useState("0");
   const [evacuation, setEvacuation] = useState(false);
 
   useEffect(() => {
@@ -27,14 +27,19 @@ export default function SendResources() {
     fetchData();
   }, []);
 
-  const handleDropdownChange = (event) => {
-    setSelectedDisaster(event.target.value);
-    setAmbulances(0);
-    setFire(0);
-    setPolice(0);
-    setBus(0);
-    setHelicopter(0);
-    setEvacuation(false);
+  const handleDropdownChange = async (event) => {
+    if (event.target.value !== ""){
+      const selectedDisasterID = event.target.value;
+      setSelectedDisaster(event.target.value);
+      const disasterInfo = await getIndividualDisaster(selectedDisasterID);
+      console.log(disasterInfo);
+      setAmbulances(disasterInfo.disasterData.ambulance ?? "0");
+      setFire(disasterInfo.disasterData.fire ?? "0");
+      setPolice(disasterInfo.disasterData.police ?? "0");
+      setBus(disasterInfo.disasterData.bus ?? "0");
+      setHelicopter(disasterInfo.disasterData.helicopter ?? "0");
+      setEvacuation(false);
+    }
   };
   const handleCheckboxChange = (event) => {
     setEvacuation(event.target.checked);
@@ -53,9 +58,10 @@ export default function SendResources() {
               color: "#a5a5a5",
             }}
           >
+          <Option value="" disabled>Select a Options</Option>
           {disasters.map((disaster) => (
             <Option key={disaster._id} value={disaster._id}>
-              {disaster.title}
+              {disaster.disasterName}
             </Option>
           ))}
           </Select>
@@ -98,7 +104,7 @@ export default function SendResources() {
           <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
           <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
         </div>
-        
+
         {evacuation && (
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Number of Buses</Label>
