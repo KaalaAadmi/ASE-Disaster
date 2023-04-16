@@ -3,6 +3,7 @@ import "./styles.css";
 import { CgCalendarDates } from "react-icons/cg";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { getAllDisasters } from "../api/Disaster";
 const data = [
   {
     title: "Fire at Trinity",
@@ -40,7 +41,7 @@ const data = [
 ];
 
 export default function Bulletin() {
-  const [disasters, setDisasters] = useState(data);
+  const [disasters, setDisasters] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState("ALL");
   const [selected, setSelected] = useState(null);
   const toggle = (index) => {
@@ -49,9 +50,16 @@ export default function Bulletin() {
     }
     setSelected(index);
   };
+  // fetching data from api
+  useEffect(() => {
+    const getDisaster = async () => {
+      setDisasters(getAllDisasters());
+    };
+    getDisaster();
+  }, []);
   // for filtering disasters based on types
   useEffect(() => {
-    const filteredData = data.filter((item) => {
+    const filteredData = disasters.filter((item) => {
       if (selectedFilters === "ALL") {
         return item;
       } else {
@@ -60,6 +68,7 @@ export default function Bulletin() {
     });
     setDisasters(filteredData);
   }, [selectedFilters]);
+  console.log(disasters);
   return (
     <div className="bulletin-page">
       {/* Headers and details */}
@@ -173,7 +182,7 @@ export default function Bulletin() {
                   </div>
                 </div>
                 <span>
-                  {selected == index ? (
+                  {selected === index ? (
                     <IoIosArrowUp size={20} />
                   ) : (
                     <IoIosArrowDown size={20} />
@@ -189,7 +198,7 @@ export default function Bulletin() {
                   }}
                 ></div>
               )}
-              <div className={selected == index ? "content show" : "content"}>
+              <div className={selected === index ? "content show" : "content"}>
                 <p style={{ marginBottom: "10px" }}>
                   <span style={{ fontWeight: "bold", fontSize: "20px" }}>
                     DATE:{" "}
