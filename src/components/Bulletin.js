@@ -4,45 +4,69 @@ import { CgCalendarDates } from "react-icons/cg";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { getAllDisasters } from "../api/Disaster";
+import { format, parseISO } from "date-fns";
+
+// example data
 const data = [
   {
-    title: "Fire at Trinity",
-    message: "Massive fire at Trinity College Dublin",
-    date: "16-02-2023",
-    location: "Dublin",
-    description:
-      "In April 2023, a devastating fire broke out at Trinity College Dublin, one of Ireland's oldest and most prestigious universities. The fire started in the roof of the historic O'Donnell Building, which houses the university's administrative offices, and quickly spread to other parts of the building. The fire caused significant damage to the structure and contents of the building, including important historical documents and artwork. Thankfully, no one was injured in the fire, but the damage to the building and its contents was extensive. The university has since launched a massive restoration project to repair and rebuild the damaged areas and to ensure that the historic building can be preserved for future generations. The fire at Trinity College Dublin was a tragic event, but the university and the wider community have rallied together to support the restoration efforts and to ensure that the campus can continue to serve as a hub of academic excellence and cultural significance.",
-    affected: 7,
-    loss: 0,
-    type: "FIRE",
-  },
-  {
-    title: "Earthquake at Trinity",
-    message: "Massive fire at Trinity College Dublin",
-    date: "16-02-2023",
-    location: "Dublin",
-    description:
-      "In April 2023, a devastating fire broke out at Trinity College Dublin, one of Ireland's oldest and most prestigious universities. The fire started in the roof of the historic O'Donnell Building, which houses the university's administrative offices, and quickly spread to other parts of the building. The fire caused significant damage to the structure and contents of the building, including important historical documents and artwork. Thankfully, no one was injured in the fire, but the damage to the building and its contents was extensive. The university has since launched a massive restoration project to repair and rebuild the damaged areas and to ensure that the historic building can be preserved for future generations. The fire at Trinity College Dublin was a tragic event, but the university and the wider community have rallied together to support the restoration efforts and to ensure that the campus can continue to serve as a hub of academic excellence and cultural significance.",
-    affected: 7,
-    loss: 0,
-    type: "EARTHQUAKE",
-  },
-  {
-    title: "Tsunami at Trinity",
-    message: "Massive fire at Trinity College Dublin",
-    date: "16-02-2023",
-    location: "Dublin",
-    description:
-      "In April 2023, a devastating fire broke out at Trinity College Dublin, one of Ireland's oldest and most prestigious universities. The fire started in the roof of the historic O'Donnell Building, which houses the university's administrative offices, and quickly spread to other parts of the building. The fire caused significant damage to the structure and contents of the building, including important historical documents and artwork. Thankfully, no one was injured in the fire, but the damage to the building and its contents was extensive. The university has since launched a massive restoration project to repair and rebuild the damaged areas and to ensure that the historic building can be preserved for future generations. The fire at Trinity College Dublin was a tragic event, but the university and the wider community have rallied together to support the restoration efforts and to ensure that the campus can continue to serve as a hub of academic excellence and cultural significance.",
-    affected: 7,
-    loss: 0,
-    type: "TSUNAMI",
+    _id: "6436a089bb549a089965b0ae",
+    latitude: "53.3543",
+    longitude: "-6.2341",
+    evacuation: false,
+    status: "active",
+    reports: [
+      {
+        _id: "6436a089bb549a089965b0b0",
+        latitude: "53.3543",
+        longitude: "-6.2341",
+        detail: "Fire in the building",
+        type: "fire",
+        radius: "500",
+        size: "5",
+        site: "building",
+        isSpam: false,
+        isResponder: false,
+        status: "active",
+        disaster: "6436a089bb549a089965b0ae",
+        created_at: "2023-04-12T12:14:01.072Z",
+        __v: 0,
+      },
+      {
+        _id: "6436a0abbb549a089965b0b5",
+        latitude: "53.3543",
+        longitude: "-6.2341",
+        detail: "Fire in the building",
+        type: "fire",
+        radius: "500",
+        size: "5",
+        site: "building",
+        isSpam: false,
+        isResponder: true,
+        status: "active",
+        disaster: "6436a089bb549a089965b0ae",
+        created_at: "2023-04-12T12:14:35.822Z",
+        __v: 0,
+      },
+    ],
+    type: "fire",
+    created_at: "2023-04-12T12:14:01.045Z",
+    __v: 0,
+    ambulance: 3,
+    bus: 1,
+    disasterDescription: "XX",
+    disasterName: "Fire in apartment",
+    helicopter: 0,
+    police: 7,
+    radius: "20",
+    site: "apartment",
+    size: "5",
   },
 ];
 
 export default function Bulletin() {
-  const [disasters, setDisasters] = useState([]);
-  const [selectedFilters, setSelectedFilters] = useState("ALL");
+  const [disasters, setDisasters] = useState(data);
+  const [displayData,setDisplayData] = useState(disasters)
+  const [selectedFilters, setSelectedFilters] = useState("all");
   const [selected, setSelected] = useState(null);
   const toggle = (index) => {
     if (selected === index) {
@@ -57,18 +81,35 @@ export default function Bulletin() {
     };
     getDisaster();
   }, []);
+  // reverse geocoding the latitude and longitude
+  useEffect(() => {
+    const reverseGeocode = async () => {
+      const finalData = await Promise.all(
+        disasters.map(async (item) => {
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${item.latitude}&longitude=${item.longitude}&localityLanguage=en`
+          );
+          const data = await response.json();
+          console.log(data)
+          return { ...item, location: data.locality+", "+data.city };
+        })
+      );
+      console.log(finalData);
+      setDisasters(finalData);
+    };
+    reverseGeocode();
+  }, []);
   // for filtering disasters based on types
   useEffect(() => {
     const filteredData = disasters.filter((item) => {
-      if (selectedFilters === "ALL") {
+      if (selectedFilters === "all") {
         return item;
       } else {
         return item.type === selectedFilters;
       }
     });
-    setDisasters(filteredData);
+    setDisplayData(filteredData);
   }, [selectedFilters]);
-  console.log(disasters);
   return (
     <div className="bulletin-page">
       {/* Headers and details */}
@@ -85,46 +126,46 @@ export default function Bulletin() {
       {/* Filters */}
       <div style={{ display: "flex" }}>
         <p
-          name="ALL"
+          name="all"
           className={
-            selectedFilters === "ALL"
+            selectedFilters === "all"
               ? "bulletin__selected_filter"
               : "bulletin__filter"
           }
-          onClick={(event) => setSelectedFilters("ALL")}
+          onClick={(event) => setSelectedFilters("all")}
         >
           ALL
         </p>
         <p
-          name="EARTHQUAKE"
+          name="earthquake"
           className={
-            selectedFilters === "EARTHQUAKE"
+            selectedFilters === "earthquake"
               ? "bulletin__selected_filter"
               : "bulletin__filter"
           }
-          onClick={(event) => setSelectedFilters("EARTHQUAKE")}
+          onClick={(event) => setSelectedFilters("earthquake")}
         >
           EARTHQUAKE
         </p>
         <p
-          name="FIRE"
+          name="fire"
           className={
-            selectedFilters === "FIRE"
+            selectedFilters === "fire"
               ? "bulletin__selected_filter"
               : "bulletin__filter"
           }
-          onClick={(event) => setSelectedFilters("FIRE")}
+          onClick={(event) => setSelectedFilters("fire")}
         >
           FIRE
         </p>
         <p
-          name="TSUNAMI"
+          name="tsunami"
           className={
-            selectedFilters === "TSUNAMI"
+            selectedFilters === "tsunami"
               ? "bulletin__selected_filter"
               : "bulletin__filter"
           }
-          onClick={(event) => setSelectedFilters("TSUNAMI")}
+          onClick={(event) => setSelectedFilters("tsunami")}
         >
           TSUNAMI
         </p>
@@ -132,7 +173,7 @@ export default function Bulletin() {
       {/* Accordion */}
       <div className="bulletin__wrapper">
         <div className="accordion">
-          {disasters.map((item, index) => (
+          {displayData.map((item, index) => (
             <div className="bulletin__item" key={index}>
               <div className="title" onClick={() => toggle(index)}>
                 <div
@@ -142,9 +183,9 @@ export default function Bulletin() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <h2 style={{ marginBottom: "10px" }}>{item.title}</h2>
+                  <h2 style={{ marginBottom: "10px" }}>{item.disasterName}</h2>
                   <p style={{ marginBottom: "10px" }}>
-                    {selected === index ? "" : item.message}
+                    {selected === index ? "" : item.disasterDescription}
                   </p>
                   <div
                     style={{
@@ -163,7 +204,8 @@ export default function Bulletin() {
                           alignItems: "center",
                         }}
                       >
-                        <CgCalendarDates size={20} /> {item.date}
+                        <CgCalendarDates size={20} />{" "}
+                        {format(parseISO(item.created_at), "dd MMM, yyyy")}
                       </p>
                     )}
                     {!(selected === index) && (
@@ -211,7 +253,7 @@ export default function Bulletin() {
                   </span>
                   {item.location}
                 </p>
-                <p style={{ marginBottom: "10px" }}>{item.description}</p>
+                <p style={{ marginBottom: "10px" }}>{item.disasterDescription}</p>
                 <p style={{ marginBottom: "10px" }}>
                   <span style={{ fontWeight: "bold", fontSize: "20px" }}>
                     Number of People Affected:{" "}
