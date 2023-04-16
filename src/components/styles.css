@@ -24,17 +24,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;700&display=swap");
 
 * {
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: "Titillium Web", sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Titillium Web", sans-serif;
 }
 
 :root {
-	--mainColor: #29335c;
-	--mainColorLight: #5767aa;
-	--secondaryColor: #db2b39;
-	--textColor: #eee;
+  --mainColor: #29335c;
+  --mainColorLight: #5767aa;
+  --secondaryColor: #db2b39;
+  --textColor: #eee;
 }
 
 header {
@@ -51,9 +51,9 @@ header {
 }
 
 nav a {
-	margin: 0 1rem;
-	color: var(--textColor);
-	text-decoration: none;
+  margin: 0 1rem;
+  color: var(--textColor);
+  text-decoration: none;
   padding: 5px 10px;
 }
 
@@ -64,67 +64,66 @@ nav a:hover {
 }
 
 header .nav-btn {
-	padding: 5px;
-	cursor: pointer;
-	background: transparent;
-	border: none;
-	outline: none;
-	color: var(--textColor);
+  padding: 5px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--textColor);
   display: none;
-	opacity: 0;
-	font-size: 1.8rem;
+  opacity: 0;
+  font-size: 1.8rem;
 }
 
 header div,
 nav {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 @media only screen and (max-width: 1600px) {
-	header .nav-btn {
-		visibility: visible;
-		opacity: 1;
+  header .nav-btn {
+    visibility: visible;
+    opacity: 1;
     display: block;
-	}
+  }
 
-	header nav {
-		position: fixed;
-		top: -100vh;
-		left: 0;
-		height: 100%;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 1.5rem;
-		background-color: #11101b;
-		transition: 1s;
+  header nav {
+    position: fixed;
+    top: -100vh;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background-color: #11101b;
+    transition: 1s;
     /* changes made  */
     visibility: hidden;
-	}
-  
-	header .responsive_nav {
+  }
+
+  header .responsive_nav {
     transform: translateY(100vh);
     visibility: visible;
     overflow: scroll;
     justify-content: flex-start;
     align-items: center;
     padding-top: 40px;
+  }
+
+  nav .nav-close-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+
+  nav a {
+    font-size: 1.5rem;
+  }
 }
-
-	nav .nav-close-btn {
-		position: absolute;
-		top: 2rem;
-		right: 2rem;
-	}
-
-	nav a {
-		font-size: 1.5rem;
-	}
-}
-
 
 /* -----------------------------FAQ------------------------------ */
 
@@ -143,7 +142,7 @@ nav {
   max-width: 990px;
 }
 
-.faq-info>h1 {
+.faq-info > h1 {
   font-size: 30px;
   font-weight: 600;
   color: #fefefe;
@@ -151,7 +150,7 @@ nav {
   margin-bottom: 10px;
 }
 
-.faq-info>p{
+.faq-info > p {
   font-size: 17px;
   font-weight: 300;
   color: #fefefe;
@@ -163,12 +162,12 @@ nav {
 .wrapper {
   display: flex;
   /* height: 100vh; */
-  width: 100vw;
+  width: 100%;
   justify-content: center;
   align-items: flex-start;
 }
 
-.accordion{
+.accordion {
   width: 900px;
 }
 
@@ -188,7 +187,7 @@ nav {
   font-weight: 500;
 }
 
-.title>h2 {
+.title > h2 {
   font-weight: 500;
 }
 
@@ -196,7 +195,7 @@ nav {
   color: #ffffff;
   max-height: 0;
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0,1,0,1);
+  transition: all 0.5s cubic-bezier(0, 1, 0, 1);
   font-size: 16px;
   padding-top: 5px;
   margin-bottom: 10px;
@@ -205,7 +204,7 @@ nav {
 .content.show {
   height: auto;
   max-height: 9999px;
-  transition: all 0.5s cubic-bezier(0,1,0,1);
+  transition: all 0.5s cubic-bezier(1, 0, 1, 0);
   line-height: 25px;
 }
 
@@ -245,7 +244,6 @@ nav {
   text-decoration: underline;
 }
 
-
 /* -----------------------------BULLETIN------------------------------ */
 
 .bulletin-page {
@@ -260,7 +258,7 @@ nav {
   color: #fefefe;
 }
 
-.bulletin-page h1 {
+.bulletin__header h1 {
   font-size: 30px;
   font-weight: 600;
   color: #fefefe;
@@ -268,20 +266,53 @@ nav {
   margin-bottom: 15px;
 }
 
-.bulletin-page p {
+.bulletin__info {
   font-size: 17px;
   font-weight: 300;
   color: #fefefe;
   text-align: left;
   margin-bottom: 50px;
   width: 100%;
-  max-width: 990px;
+  max-width: 1400px;
   line-height: 28px;
 }
 
+.bulletin__item {
+  background-color: #333333;
+  padding: 5px 20px;
+  border-bottom: 1px solid #fefefe;
+}
+
+.bulletin__wrapper {
+  display: flex;
+  /* height: 100vh; */
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  /* border-top: 1px solid #fefefe; */
+}
+
+.bulletin__filter {
+  border: 1px solid #fefefe;
+  padding: 10px;
+  border-radius: 50px;
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.bulletin__selected_filter{
+  border: 1px solid #fefefe;
+  padding: 10px;
+  border-radius: 50px;
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #fefefe;
+  color: #11101b;
+}
 /* -----------------------------TABLE------------------------------ */
-.table-header{
-  color:#fefefe;
+.table-header {
+  color: #fefefe;
   border: 1px solid #fefefe;
   padding: 10px;
 }
@@ -289,5 +320,5 @@ nav {
 .table-cell {
   border: 1px solid #fefefe;
   padding: 10px;
-  color:#fefefe;
+  color: #fefefe;
 }
