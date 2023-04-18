@@ -15,7 +15,7 @@ export default function SendResources() {
   const [helicopter, setHelicopter] = useState("0");
   const [evacuation, setEvacuation] = useState(false);
   const [isCoordinator, setIsCoordinator] = useState(
-    localStorage.getItem("isAdmin") === true
+    localStorage.getItem("isAdmin")
   ); // check if the user is a coordinator on page load
 
   useEffect(() => {

@@ -90,11 +90,11 @@ export default function Bulletin() {
             `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${item.latitude}&longitude=${item.longitude}&localityLanguage=en`
           );
           const data = await response.json();
-          console.log(data)
+          // console.log(data)
           return { ...item, location: data.locality+", "+data.city };
         })
       );
-      console.log(finalData);
+      // console.log(finalData);
       setDisasters(finalData);
     };
     reverseGeocode();
