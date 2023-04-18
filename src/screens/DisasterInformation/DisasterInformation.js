@@ -6,10 +6,12 @@ import {disasterOrders} from "../../api/Order";
 import {activateDisaster, getActiveDisasters, getIndividualDisaster} from "../../api/Disaster";
 import axios from "axios";
 import Table from "../../components/Table";
-const accessToken =
-  "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
+import OrderTable from "../../components/OrderTable";
+import { useParams } from 'react-router-dom';
 
 export default function DisasterInformation() {
+  const { id } = useParams();
+  const [disasterID, setID] = useState(id);
   const [disasters, setDisasters] = useState([]);
   const [selectedDisaster, setSelectedDisaster] = useState("");
   const [type, setType] = useState("");
@@ -26,14 +28,15 @@ export default function DisasterInformation() {
   const [evacuation, setEvacuation] = useState(false);
   const [reports, setReports] = useState([]);
   const [status, setStatus] = useState("active");
-  const [id, setID] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [address, setAddress] = useState("");
   const [orders, setOrders] = useState([]);
   const [isCoordinator, setIsCoordinator] = useState(
-      localStorage.getItem("isAdmin") === true
+      localStorage.getItem("isAdmin") === "true"
   ); // check if the user is a coordinator on page load
+  const accessToken =
+  "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
 
   const getAddressFromLatLng = (latitude, longitude) => {
     const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`;
@@ -54,15 +57,37 @@ export default function DisasterInformation() {
       });
   };  
 
-  useEffect(() => {
-    async function fetchData() {
+  const fetchData = async () => {
+    if (id) {
+      const disasterInfo = await getIndividualDisaster(id);
+      setDisasters([]);
+      setSelectedDisaster(id);
+      setID(id);
+      const currentOrders = await disasterOrders(id);
+      setOrders(currentOrders);
+      setEvacuation(disasterInfo.disasterData.evacuation ?? false);
+      setType(disasterInfo.disasterData.type ?? "");
+      setRadius(disasterInfo.disasterData.radius ?? "0");
+      setSite(disasterInfo.disasterData.site ?? "");
+      setSize(disasterInfo.disasterData.size ?? "0");
+      console.log(disasterInfo.disasterData.reports ?? []);
+      setReports(disasterInfo.disasterData.reports ?? []);
+      setStatus(disasterInfo.disasterData.status ?? "Active");
+      setDisasterName(disasterInfo.disasterData.disasterName ?? "");
+      setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
+      setLatitude(disasterInfo.disasterData.latitude ?? "");
+      setLongitude(disasterInfo.disasterData.longitude ?? "");
+      getAddressFromLatLng(disasterInfo.disasterData.latitude,disasterInfo.disasterData.longitude);
+    } else {
       getActiveDisasters().then((response) => {
-        // Process the response data here, if necessary
         const activeDisasters = response;
         console.log("Active disasters:", activeDisasters);
         setDisasters(activeDisasters);
       });
     }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -78,6 +103,7 @@ export default function DisasterInformation() {
       setID(selectedDisasterID);
       setEvacuation(false);
       const currentOrders = await disasterOrders(selectedDisasterID);
+      console.log(`Orders:${currentOrders}`);
       setOrders(currentOrders);
       setType(disasterInfo.disasterData.type ?? "");
       setRadius(disasterInfo.disasterData.radius ?? "0");
@@ -94,30 +120,35 @@ export default function DisasterInformation() {
     }
   };  
   if(isCoordinator){
+    console.log(orders);
       return (
         <Container>
           <Title>Disaster Information</Title>
-          <Form>
-            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-              <Label>Select Report Grouping:</Label>
-              <Select
-                id="disaster"
-                value={selectedDisaster || ''}
-                onChange={handleDropdownChange}
-                style={{
-                  color: "#a5a5a5",
-                }}
-              >
-              <Option value="" disabled>Select a Options</Option>
-              {disasters.map((disaster) => (
-                <Option key={disaster._id} value={disaster._id}>
-                  {disaster.disasterName}
-                </Option>
-              ))}
-              </Select>
-            </div>
-          </Form>
-          {id && <div>ID: {id}</div>}
+          {!id && (
+            <Form>
+              <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                <Label>Select Report Grouping:</Label>
+                <Select
+                  id="disaster"
+                  value={selectedDisaster || ""}
+                  onChange={handleDropdownChange}
+                  style={{
+                    color: "#a5a5a5",
+                  }}
+                >
+                  <Option value="" disabled>
+                    Select a Options
+                  </Option>
+                  {disasters.map((disaster) => (
+                    <Option key={disaster._id} value={disaster._id}>
+                      {disaster.disasterName}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+            </Form>
+          )}
+          {disasterID && <div>ID: {disasterID}</div>}
           {address && <div>Address: {address}</div>}
           {latitude && <div> Latitude: {latitude}</div>}
           {longitude && <div> Longitude: {longitude}</div>}
@@ -217,8 +248,18 @@ export default function DisasterInformation() {
             </div>
             <Submit type="submit" onClick={() => activateDisaster(selectedDisaster, type, radius, size, site, disasterName, disasterDetails)}/>
           </Form>
-          {reports && <div><Table data={reports} /></div>}
-          {/* {orders && <div>Orders:{JSON.stringify(orders)}</div>} */}
+          <div>
+            {selectedDisaster !== "" && 
+              <Subtitle>Related reports</Subtitle> &&
+              <Table data={reports} />
+            }
+          </div>
+          <div>
+            {orders.length !== 0 && 
+              <Subtitle>Requested Resources</Subtitle> &&
+              <OrderTable data={orders}
+            />}
+          </div>
         </Container>
     );
   }else{
@@ -238,6 +279,14 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+`;
+const Subtitle = styled.div`
+  color: #e5e5e5;
+  font-size: 2rem;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  // align-items:center;
 `;
 const Title = styled.div`
   color: #e5e5e5;

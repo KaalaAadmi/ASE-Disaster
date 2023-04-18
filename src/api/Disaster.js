@@ -37,7 +37,7 @@ export const updateDisaster = async (id, details) => {
         let config = {
             method: 'put',
             maxBodyLength: Infinity,
-            url: `${BACKEND}/activate-disaster/${id}`,
+            url: `${BACKEND}/update-disaster/${id}`,
             headers: { 
               'Content-Type': 'application/json'
             },

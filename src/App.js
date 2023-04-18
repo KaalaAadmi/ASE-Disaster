@@ -40,8 +40,11 @@ function App() {
           <Route path='/faq' element={<FAQ/>}/>
           <Route path='/activate-response' element={<ActivateResponse/>}/>
           <Route path='/send-resources' element={<SendResources/>}/>
+          <Route path='/activate-response/:id' element={<ActivateResponse/>}/>
+          <Route path='/send-resources/:id' element={<SendResources/>}/>
           <Route path='/view-reports' element={<ViewReports/>}/>
           <Route path='/disaster-information' element={<DisasterInformation/>}/>
+          <Route path='/disaster-information/:id' element={<DisasterInformation/>}/>
         </Routes>
       </div>
     </div>

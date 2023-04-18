@@ -44,19 +44,38 @@ export const getReports = async () => {
     }
 };
 
-// THIS ISN'T WORKIING
-// export const getIndividualReport = async (id) => {
-//     try {
-//         let config = {
-//             method: 'get',
-//             maxBodyLength: Infinity,
-//             url: `${BACKEND}/report/${id}`,
-//             headers: { }
-//         };
-//         const response = await axios.request(config);
-//         return JSON.stringify(response.data);
-//     } catch (error) {
-//         console.error(error);
-//         throw error;
-//     }
-// };
+export const getIndividualReport = async (id) => {
+    try {
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `${BACKEND}/report/${id}`,
+            headers: { }
+        };
+        const response = await axios.request(config);
+        return JSON.stringify(response.data);
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const updateReport = async (id, details) => {
+    try {
+        let data = JSON.stringify(details);
+        let config = {
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: `${BACKEND}/update-report/${id}`,
+            headers: { 
+              'Content-Type': 'application/json'
+            },
+            data : data
+        };
+        const response = await axios.request(config);
+        console.log(JSON.stringify(response.data));
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
