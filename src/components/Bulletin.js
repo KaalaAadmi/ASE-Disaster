@@ -3,71 +3,16 @@ import "./styles.css";
 import { CgCalendarDates } from "react-icons/cg";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { getAllDisasters } from "../api/Disaster";
+import { getActiveDisasters } from "../api/Disaster";
 import { format, parseISO } from "date-fns";
-
-// example data
-const data = [
-  {
-    _id: "6436a089bb549a089965b0ae",
-    latitude: "53.3543",
-    longitude: "-6.2341",
-    evacuation: false,
-    status: "active",
-    reports: [
-      {
-        _id: "6436a089bb549a089965b0b0",
-        latitude: "53.3543",
-        longitude: "-6.2341",
-        detail: "Fire in the building",
-        type: "fire",
-        radius: "500",
-        size: "5",
-        site: "building",
-        isSpam: false,
-        isResponder: false,
-        status: "active",
-        disaster: "6436a089bb549a089965b0ae",
-        created_at: "2023-04-12T12:14:01.072Z",
-        __v: 0,
-      },
-      {
-        _id: "6436a0abbb549a089965b0b5",
-        latitude: "53.3543",
-        longitude: "-6.2341",
-        detail: "Fire in the building",
-        type: "fire",
-        radius: "500",
-        size: "5",
-        site: "building",
-        isSpam: false,
-        isResponder: true,
-        status: "active",
-        disaster: "6436a089bb549a089965b0ae",
-        created_at: "2023-04-12T12:14:35.822Z",
-        __v: 0,
-      },
-    ],
-    type: "fire",
-    created_at: "2023-04-12T12:14:01.045Z",
-    __v: 0,
-    ambulance: 3,
-    bus: 1,
-    disasterDescription: "XX",
-    disasterName: "Fire in apartment",
-    helicopter: 0,
-    police: 7,
-    radius: "20",
-    site: "apartment",
-    size: "5",
-  },
-];
+import axios from "axios"
 
 export default function Bulletin() {
-  const [disasters, setDisasters] = useState(data);
-  const [displayData,setDisplayData] = useState(disasters)
+  const [disasters, setDisasters] = useState([]);
+  const [displayData, setDisplayData] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState("all");
   const [selected, setSelected] = useState(null);
+  const [types, setTypes] = useState([]);
   const toggle = (index) => {
     if (selected === index) {
       return setSelected(null);
@@ -77,7 +22,10 @@ export default function Bulletin() {
   // fetching data from api
   useEffect(() => {
     const getDisaster = async () => {
-      setDisasters(getAllDisasters());
+      const res = await getActiveDisasters();
+      console.log(res)
+      setDisasters(res);
+      setDisplayData(res);
     };
     getDisaster();
   }, []);
@@ -91,14 +39,31 @@ export default function Bulletin() {
           );
           const data = await response.json();
           // console.log(data)
-          return { ...item, location: data.locality+", "+data.city };
+          return { ...item, location: data.locality + ", " + data.city };
         })
       );
       // console.log(finalData);
-      setDisasters(finalData);
+      setDisasters(finalData)
+      setDisplayData(finalData);
+      // disasters=finalData
     };
     reverseGeocode();
   }, []);
+  // for getting the list types of disasters from active disasters
+  useEffect(() => {
+    let type = [];
+    const typesSet = new Set();
+    const getTypes = () => {
+      type = disasters.map((item) => item.type);
+      for (let i = 0; i < type.length; i++) {
+        typesSet.add(type[i]);
+      }
+      let typeArray=["all"]
+      typesSet.forEach(value=>typeArray.push(value))
+      setTypes(typeArray);
+    };
+    getTypes();
+  }, [disasters]);
   // for filtering disasters based on types
   useEffect(() => {
     const filteredData = disasters.filter((item) => {
@@ -125,7 +90,22 @@ export default function Bulletin() {
       </div>
       {/* Filters */}
       <div style={{ display: "flex" }}>
-        <p
+        {types.length > 0 ?
+          (types.map((item, index) => (
+            <p
+              key={index}
+              name={item}
+              className={
+                selectedFilters === item
+                  ? "bulletin__selected_filter"
+                  : "bulletin__filter"
+              }
+              onClick={(event) => setSelectedFilters(item)}
+            >
+              {item}
+            </p>
+          ))):""}
+        {/* <p
           name="all"
           className={
             selectedFilters === "all"
@@ -168,7 +148,7 @@ export default function Bulletin() {
           onClick={(event) => setSelectedFilters("tsunami")}
         >
           TSUNAMI
-        </p>
+        </p> */}
       </div>
       {/* Accordion */}
       <div className="bulletin__wrapper">
@@ -253,7 +233,9 @@ export default function Bulletin() {
                   </span>
                   {item.location}
                 </p>
-                <p style={{ marginBottom: "10px" }}>{item.disasterDescription}</p>
+                <p style={{ marginBottom: "10px" }}>
+                  {item.disasterDescription}
+                </p>
                 <p style={{ marginBottom: "10px" }}>
                   <span style={{ fontWeight: "bold", fontSize: "20px" }}>
                     Number of People Affected:{" "}
