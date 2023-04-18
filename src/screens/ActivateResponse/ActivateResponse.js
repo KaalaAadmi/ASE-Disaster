@@ -1,8 +1,12 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./ActivateResponse.css";
 import {Container, Title, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
-import {activateDisaster, getPendingDisasters, getIndividualDisaster} from "../../api/Disaster";
+import {
+  activateDisaster,
+  getPendingDisasters,
+  getIndividualDisaster,
+} from "../../api/Disaster";
 import { useParams, useNavigate } from 'react-router-dom';
 
 export default function ActivateResponse() {
@@ -16,7 +20,7 @@ export default function ActivateResponse() {
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
   const [isCoordinator, setIsCoordinator] = useState(
-    localStorage.getItem("isAdmin") === "true"
+    localStorage.getItem("isAdmin") 
   ); // check if the user is a coordinator on page load
 
   useEffect(() => {
@@ -32,13 +36,13 @@ export default function ActivateResponse() {
   }, []);
 
   const handleDropdownChange = async (event) => {
-    if (event.target.value !== ""){
+    if (event.target.value !== "") {
       setSelectedDisaster(event.target.value);
       const selectedDisasterId = event.target.value;
       console.log(`selected disaster: ${selectedDisasterId}`);
       const disasterInfo = await getIndividualDisaster(selectedDisasterId);
       console.log(disasterInfo);
-    
+
       setType(disasterInfo.disasterData.type ?? "");
       setRadius(disasterInfo.disasterData.radius ?? "0");
       setSite(disasterInfo.disasterData.site ?? "");
@@ -47,15 +51,23 @@ export default function ActivateResponse() {
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
     }
   };
-
+  
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    await activateDisaster(selectedDisaster, type, radius, size, site, disasterName, disasterDetails);
-    navigate.push(`http://localhost:3000/send-resources/${selectedDisaster}`); // Replace '/path/to/redirect' with the desired path
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await activateDisaster(
+      selectedDisaster,
+      type,
+      radius,
+      size,
+      site,
+      disasterName,
+      disasterDetails
+    );
+    navigate.push(`http://localhost:3000/send-resources/${selectedDisaster}`); 
   };
-  
-  if(isCoordinator){
+  if (isCoordinator) {
     return (
       <Container>
         <Title>Activate A Disaster Response</Title>
@@ -65,18 +77,24 @@ export default function ActivateResponse() {
             <Label>Select Report Grouping:</Label>
             <Select
               id="disaster"
-              value={selectedDisaster || ''}
+              value={selectedDisaster || ""}
               onChange={handleDropdownChange}
               style={{
                 color: "#a5a5a5",
               }}
             >
-            <Option value="" disabled>Select a Options</Option>
-            {disasters.map((disaster) => (
-              <Option key={disaster._id} value={disaster._id}>
-                {disaster.title}
+              <Option value="" disabled>
+                Select a Options
               </Option>
-            ))}
+              {disasters.map((disaster) => (
+                <Option
+                  key={disaster._id}
+                  value={disaster._id}
+                  style={{ color: "black" }}
+                >
+                  {disaster.disasterName}
+                </Option>
+              ))}
             </Select>
           </div>
           }
@@ -90,7 +108,7 @@ export default function ActivateResponse() {
               value={type}
               onChange={(event) => setType(event.target.value)}
             >
-              {typeOptions.map(item => (
+              {typeOptions.map((item) => (
                 <Option
                   key={item.value}
                   value={item.value}
@@ -103,9 +121,9 @@ export default function ActivateResponse() {
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Radius Impacted (in meters)</Label>
-            <Input 
-              type="text" 
-              style={{ boxShadow: "none !important" }} 
+            <Input
+              type="text"
+              style={{ boxShadow: "none !important" }}
               value={radius}
               placeholder="100"
               onChange={(event) => setRadius(event.target.value)}
@@ -113,9 +131,9 @@ export default function ActivateResponse() {
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Number of People Impacted</Label>
-            <Input 
-              type="text" 
-              style={{ boxShadow: "none !important" }} 
+            <Input
+              type="text"
+              style={{ boxShadow: "none !important" }}
               value={size}
               placeholder="10"
               onChange={(event) => setSize(event.target.value)}
@@ -131,7 +149,7 @@ export default function ActivateResponse() {
               value={site}
               onChange={(event) => setSite(event.target.value)}
             >
-              {siteOptions.map(item => (
+              {siteOptions.map((item) => (
                 <option
                   key={item.value}
                   value={item.value}
@@ -144,7 +162,8 @@ export default function ActivateResponse() {
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Name</Label>
-            <Input type="text" 
+            <Input
+              type="text"
               value={disasterName}
               onChange={(event) => setDisasterName(event.target.value)}
             />
@@ -156,12 +175,12 @@ export default function ActivateResponse() {
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
-          <Submit type="submit" onClick={handleSubmit}/>
+          <Submit type="submit" onClick={handleSubmit} />
         </Form>
       </Container>
     );
   } else {
-    return(
+    return (
       <Container>
         <title>ACCESS DENIED</title>
       </Container>
