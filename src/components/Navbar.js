@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import "./styles.css";
+const storageEvent = new Event("storageEvent");
 
 function Navbar() {
 	const navRef = useRef();
@@ -15,10 +16,25 @@ function Navbar() {
 		localStorage.getItem("token") !== null
 	  ); // check if the user is authenticated on page load
 	const [isCoordinator, setIsCoordinator] = useState(
-		localStorage.getItem("isAdmin")
+		localStorage.getItem("isAdmin") === "true"
 	); // check if the user is a coordinator on page load
+
+	useEffect(() => {
+		const updateIsAuth = () => {
+			setIsAuthenticated(localStorage.getItem("token") !== null);
+			setIsCoordinator(localStorage.getItem("isAdmin") === "true");
+		};
+	  
+		window.addEventListener("storageEvent", updateIsAuth);
+	  
+		return () => {
+		  window.removeEventListener("storageEvent", updateIsAuth);
+		};
+	  }, []);
+	  
+
 	if (isAuthenticated) {
-		if (isCoordinator==="true") {
+		if (isCoordinator) {
 			console.log("COOORDINATOR");
 			return (
 				<header>

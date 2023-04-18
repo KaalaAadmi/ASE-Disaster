@@ -12,6 +12,12 @@ function ReportTable(props) {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [isResponderFilter, setIsResponderFilter] = useState(false);
   const [isSpamFilter, setIsSpamFilter] = useState(false);
+  const [selectedDisaster, setSelectedDisaster] = useState("");
+  const [assignedDisaster, setAssignedDisaster] = useState("");
+
+  const handleDisasterFilterChange = (e) => {
+    setSelectedDisaster(e.target.value);
+  };  
 
   const handleResponderFilterClick = () => {
     setIsResponderFilter(!isResponderFilter);
@@ -57,6 +63,9 @@ function ReportTable(props) {
     if (isSpamFilter) {
       filteredData = filteredData.filter((row) => !row.isSpam);
     }
+    if (selectedDisaster) {
+      filteredData = filteredData.filter((row) => row.disaster?._id === selectedDisaster);
+    }    
 
     if (sortConfig.key) {
       const sortedData = sortData(filteredData, sortConfig.key, sortConfig.direction);
@@ -73,7 +82,7 @@ function ReportTable(props) {
       });
     }
     fetchData();
-  }, [props, sortConfig, isResponderFilter, isSpamFilter]);
+  }, [props, sortConfig, isResponderFilter, isSpamFilter, selectedDisaster, assignedDisaster]);
 
   const handleSpamChange = (index) => {
     const newData = [...reports];
@@ -84,6 +93,7 @@ function ReportTable(props) {
 
   const handleDisasterChange = (index, disasterID) => {
     addReportToDisaster(disasterID, reports[index]._id);
+    setAssignedDisaster(disasterID);
   };
 
   const handleColumnHeaderClick = (key) => {
@@ -107,7 +117,17 @@ function ReportTable(props) {
     </button>
     <button onClick={handleSpamFilterClick}>
         {isSpamFilter ? "Show All" : "Remove Spam"}
-      </button>
+    </button>
+    <select value={selectedDisaster} onChange={handleDisasterFilterChange}>
+      <option value="">All Disasters</option>
+      {disasters.map((disaster) => (
+        <option key={disaster._id} value={disaster._id}>
+          {disaster.disasterName}
+        </option>
+      ))}
+    </select>
+
+    
     <table>
       <thead>
         <tr>

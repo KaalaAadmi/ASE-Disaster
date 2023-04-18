@@ -20,7 +20,7 @@ export default function ActivateResponse() {
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
   const [isCoordinator, setIsCoordinator] = useState(
-    localStorage.getItem("isAdmin") 
+    localStorage.getItem("isAdmin") === "true"
   ); // check if the user is a coordinator on page load
 
   useEffect(() => {
