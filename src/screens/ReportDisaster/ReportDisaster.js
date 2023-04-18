@@ -1,74 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ReportDisaster.css";
 import styled from "styled-components";
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
 import axios from "axios";
+import { addReport } from "../../api/Report";
+import { typeOptions } from "../../components/DropdownOptions";
 
-const accessToken = "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ"
-
-function getCurrentLoc() {
-  if ("geolocation" in navigator) {
-
-    navigator.geolocation.getCurrentPosition(function(position) {
-
-      console.log("Latitude is :", position.coords.latitude);
-
-      console.log("Longitude is :", position.coords.longitude);
-
-      // document.getElementById('location').value = position.coords.latitude + ", " + position.coords.longitude;
-
-      axios
-        .get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?access_token=${accessToken}`
-        )
-        .then((response) => {
-          if (response.data.features.length > 0) {
-            // setAddress(response.data.features[0].place_name);
-            document.getElementById('location').value = response.data.features[0].place_name;
-
-          } else {
-            alert("No results found");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          alert("Error retrieving data");
-        });
-
-    });
-
-  } else {
-
-    console.log("Not Available");
-
-  }
-} 
-
-function getPosition() {
-  // console.log("Hello World")
-  const address = document.getElementById("location").value;
-  
-  axios
-      .get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${accessToken}`
-      )
-      .then((response) => {
-        if (response.data.features.length > 0) {
-          console.log(response.data.features[0].center[1]);
-          console.log(response.data.features[0].center[0]);
-
-          // document.getElementById('location').value = response.data.features[0].center[1] + ", " + response.data.features[0].center[0];
-        } else {
-          alert("Location Not Found");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Error retrieving data");
-      });
-
-
-} 
+const accessToken =
+  "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
 
 const Container = styled.div`
   color: #e5e5e5;
@@ -92,7 +31,6 @@ const Form = styled.form`
   flex-wrap: wrap;
   justify-content: space-between;
 `;
-
 
 const Label = styled.label`
   margin-right: 10px;
@@ -121,6 +59,20 @@ const Input = styled.input`
   color: #a5a5a5;
 `;
 
+const TextArea = styled.textarea`
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-botom: 10px solid violet;
+  width: 20rem;
+  color: #a5a5a5;
+  resize: vertical;
+`;
+
 const Select = styled.select`
   padding: 5px;
   margin-bottom: 10px;
@@ -143,32 +95,89 @@ const Option = styled.option`
   border-left: 0;
   border-right: 0;
   border-botom: 10px solid violet;
-  width: 20rem;
+  width: 20rem;
 `;
 
 export default function ReportDisaster() {
+  const [type, setType] = useState("");
+  const [details, setDetails] = useState("");
+  const [latitude, setLatitude] = useState([]);
+  const [longitude, setLongitude] = useState([]);
+  const token = localStorage.getItem("token");
+  // check if the user is authenticated on page load
+
+  const getCurrentLoc = (setLatitude, setLongitude) => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        console.log("Latitude is :", position.coords.latitude);
+        setLatitude(position.coords.latitude);
+        console.log("Longitude is :", position.coords.longitude);
+        setLongitude(position.coords.longitude);
+        axios
+          .get(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?access_token=${accessToken}`
+          )
+          .then((response) => {
+            if (response.data.features.length > 0) {
+              document.getElementById("location").value =
+                response.data.features[0].place_name;
+            } else {
+              alert("No results found");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            alert("Error retrieving data");
+          });
+      });
+    } else {
+      console.log("Not Available");
+    }
+  };
+
+  const getPosition = (setLatitude, setLongitude) => {
+    const address = document.getElementById("location").value;
+    axios
+      .get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${accessToken}`
+      )
+      .then((response) => {
+        if (response.data.features.length > 0) {
+          setLatitude(response.data.features[0].center[1]);
+          setLongitude(response.data.features[0].center[0]);
+        } else {
+          alert("Location Not Found");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Error retrieving data");
+      });
+  };
   return (
     <Container>
       <Title>Report Disaster</Title>
       <Form>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Date & Time:</Label>
-          <Input type="text" style={{ boxShadow: "none !important" }} />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label for="disasterType">Select Disaster Type:</Label>
+          <Label htmlFor="disasterType">Select Disaster Type:</Label>
           <Select
             id="disasterType"
+            value={type}
+            onChange={(event) => setType(event.target.value)}
             style={{
               color: "#a5a5a5",
             }}
           >
-            <Option disabled selected value="">Select an option</Option>
-            <Option value="fire">Fire</Option>
-            <Option value="earthquake">Earthquake</Option>
-            <Option value="landslide">Landslide</Option>
-            <Option value="other-manmade">Other Manmade</Option>
-            <Option value="other-natural">Other Natural</Option>
+            {typeOptions.map((item) => (
+              <Option
+                key={item.value}
+                value={item.value}
+                disabled={item.disabled}
+                selected={item.selected}
+              >
+                {item.label}
+              </Option>
+            ))}
           </Select>
         </div>
         <div
@@ -182,18 +191,29 @@ export default function ReportDisaster() {
           <Label>Location:</Label>
           <Input id="location" type="text" />
           <div
-            className = "currentLoc"
-            onClick={getCurrentLoc}
-            style={{ height: 22, width: 22, backgroundColor: "#e5e5e5", cursor: 'pointer'}}
+            className="currentLoc"
+            onClick={() => getCurrentLoc(setLatitude, setLongitude)}
+            // onValueChange={(itemValue) => setType(itemValue)} CHECK DATA OUTPUTS
+            style={{
+              height: 22,
+              width: 22,
+              backgroundColor: "#e5e5e5",
+              cursor: "pointer",
+            }}
           >
             <BiCurrentLocation size={22} color="black" />
             <div className="tooltip1">Find Current Loc</div>
           </div>
-          
           <div
-            className = "searchLoc"
-            onClick={getPosition}
-            style={{ height: 22, width: 22, backgroundColor: "#e5e5e5", cursor: 'pointer', marginLeft: '5px'}}
+            className="searchLoc"
+            onClick={() => getPosition(setLatitude, setLongitude)}
+            style={{
+              height: 22,
+              width: 22,
+              backgroundColor: "#e5e5e5",
+              cursor: "pointer",
+              marginLeft: "5px",
+            }}
           >
             <BiSearchAlt size={22} color="black" />
             <div class="tooltip2">Convert to Lat Long</div>
@@ -201,9 +221,15 @@ export default function ReportDisaster() {
         </div>
         <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
           <Label>Description:</Label>
-          <Input type="text" />
+          <TextArea
+            value={details}
+            onChange={(event) => setDetails(event.target.value)}
+          />
         </div>
-        <Submit type="submit" />
+        <Submit
+          type="submit"
+          onClick={() => addReport(type, latitude, longitude, details, token)}
+        />
       </Form>
     </Container>
   );

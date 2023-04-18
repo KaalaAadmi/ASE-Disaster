@@ -1,6 +1,7 @@
-- Bulletin
-- view reports
-- message HQ
-- Disaster Information
-- Send Resources
-- Create Disaster
+- Bulletin -> Css
+- view reports --> Css
+- message HQ --> ??
+- Send Resources --> Css for dropdown, dropdown is moving up for no reason
+- Report Disaster
+
+- navbar dynamically render on login use &&

@@ -255,22 +255,22 @@ const Map = (props) => {
 					  id: disaster._id,
 					};
 					// Call the route creation functions for each type of resource and disaster
-					if (loc_safehouses != null && loc_safehouses.length != 0) {
+					if (loc_safehouses !== null && loc_safehouses.length !== 0) {
 					  createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
 					  addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length - 1]);
 					}
 
-					if (loc_hospitals != null && loc_hospitals.length != 0) {
+					if (loc_hospitals !== null && loc_hospitals.length !== 0) {
 					  createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
 					  addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
 					}
 
-					if (loc_gardi != null && loc_gardi.length != 0) {
+					if (loc_gardi !== null && loc_gardi.length !== 0) {
 					  createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
 					  addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
 					}
 
-					if (loc_firestations != null && loc_firestations.length != 0) {
+					if (loc_firestations !== null && loc_firestations.length !== 0) {
 					  createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
 					  addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
 					}
@@ -290,10 +290,10 @@ const Map = (props) => {
         {
           <>
             {/* Add lower div to display the current position of the user --> for testing use */}
-            <div className="sidebar">
+            {/* <div className="sidebar">
               You current location: <br /> Longitude: {marker.longitude} |
               Latitude: {marker.latitude}
-            </div>
+            </div> */}
 			      {/* Add a sidebar to display the list of disasters */}
 			  <div className="disaster-sidebar">
 				<h3>Disasters</h3>
@@ -301,7 +301,7 @@ const Map = (props) => {
 				  {disasterData &&
 					disasterData.map((disaster) => (
 					  <li key={disaster._id} onClick={() => setSelectedDisaster(disaster._id)}>
-						{disaster.name} ({disaster._id})
+						{disaster.disasterName} ({disaster._id})
 					  </li>
 					))}
 				</ul>
