@@ -60,9 +60,8 @@ export default function SendResources() {
       setAmbulances(disasterInfo.disasterData.ambulance ?? "0");
       setFire(disasterInfo.disasterData.fire ?? "0");
       setPolice(disasterInfo.disasterData.police ?? "0");
-      setBus(disasterInfo.disasterData.bus ?? "0");
       setHelicopter(disasterInfo.disasterData.helicopter ?? "0");
-      console.log("disasterInfo", disasterInfo.disasterData.helicopter)
+      setBus("0");
       console.log(helicopter);
       setEvacuation(false);
     }
@@ -77,8 +76,11 @@ export default function SendResources() {
       setSelectedDisaster(event.target.value);
     }
   };
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = async (event) => {
     setEvacuation(event.target.checked);
+    const disasterInfo = await getIndividualDisaster(selectedDisaster);
+    console.log(disasterInfo.disasterData.bus);
+    setBus(disasterInfo.disasterData.bus);
   };
   if (isCoordinator) {
     return (

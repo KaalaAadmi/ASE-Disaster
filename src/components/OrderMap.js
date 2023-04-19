@@ -8,6 +8,7 @@ import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-direct
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
 import axios from "axios";
+import "./styles.css"
 import { markerData } from "../assets/data";
 import { rr_create_obstacle, rr_avoid_obstacle } from "./direction_rr";
 import { getResourses, clearRoutes } from "./reroute";
@@ -20,7 +21,9 @@ import {
 	createGardaMarker,
 	createFirestationMarker,
 	clearMarker,
-} from "./OrderMarkers";
+} from "./markers";
+
+import polyline from '@mapbox/polyline';
 
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
@@ -35,11 +38,6 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
-let loc_hospitals = null;
-let loc_firestations = null;
-let loc_safehouses = null;
-let loc_gardi = null;
-let disasterJson = null;
 let obstacle = null;
 //let disasterLocation = null;
 
@@ -55,9 +53,9 @@ const OrderMap = (props) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const order = await getOrder(id);
-				console.log(order);
-				setOrderData(order.order);
+				const response = await getOrder(id);
+				console.log(response);
+				setOrderData(response.order);
 			} catch (error) {
 				console.log(error);
 			}
@@ -204,8 +202,6 @@ const OrderMap = (props) => {
 						'fill-outline-color': '#FFC300'
 					}
 				});
-
-				//generateRoutesForDisasters(disasterJson);
 			});
 
 			directions_rr.on('clear', () => {
@@ -227,57 +223,124 @@ const OrderMap = (props) => {
 		console.log('clearMarkersAndRoutes');
 		clearRoutes(map.current);
 	};
-
 	const generateOrderRoute = async (orderData) => {
 		if (orderData && orderData.location) {
-			clearMarkersAndRoutes();
-			clearMarker();
+			const location = [
+				{
+					"Instructions": orderData.instructions,
+					"Location": {
+						"lat": parseFloat(orderData.location.latitude),
+						"lng": parseFloat(orderData.location.longitude)
+					},
+					"Name": orderData.location.name,
+					"Quantity": parseInt(orderData.quantity),
+					"Status": orderData.status
+				}
+			];
+
+			// clearMarkersAndRoutes();
+			// clearMarker();
 
 			const resourceLocation = {
-				lat: parseFloat(orderData.latitude),
-				lng: parseFloat(orderData.longitude),
+				lat: parseFloat(orderData.location.latitude),
+				lng: parseFloat(orderData.location.longitude),
 				id: orderData.location._id,
 			};
 
 			const disasterLocation = {
-				lat: parseFloat(orderData.location.latitude),
-				lng: parseFloat(orderData.location.longitude),
-				id: orderData.disaster._id,
+				lat: parseFloat(orderData.disaster.latitude),
+				lng: parseFloat(orderData.disaster.longitude),
+				name: orderData.disasterName,
 			};
 
-			switch (orderData.resource) {
-				case 'rest centre':
-					createSafeHouseMarker([orderData.location], map);
-					addRoute_safehouse(map.current, disasterLocation, resourceLocation);
-					break;
-
-				case 'ambulance':
-					createHospitalMarker([orderData.location], map);
-					addRoute_hospital(map.current, disasterLocation, resourceLocation);
-					break;
-
-				case 'garda':
-					createGardaMarker([orderData.location], map);
-					addRoute_garda(map.current, disasterLocation, resourceLocation);
-					break;
-
-				case 'fire':
-					createFirestationMarker([orderData.location], map);
-					addRoute_firestation(map.current, disasterLocation, resourceLocation);
-					break;
-
-				default:
-					console.log('Resource type not recognized');
-					break;
-			}
+			createDisasterMarker([orderData.disaster], map);
+			createGenericMarker(location, map);
+			addRoute(map.current, disasterLocation, resourceLocation);
 		}
 	};
+
+	function createGenericMarker(location, map) {
+		for (var i = 0; i < location.length; i++) {
+			const resource = new mapboxgl.Marker({ color: "red" })
+				.setLngLat([location[i].Location.lng, location[i].Location.lat])
+				.setPopup(
+					new mapboxgl.Popup({ offset: 25 }).setText(location[i].Name)
+				)
+				.addTo(map.current)
+			const popup = new mapboxgl.Popup({ offset: 25 })
+				.setHTML(`
+			  <h3>${location[i].Name}</h3>
+			  <p>Instructions: ${location[i].Instructions}</p>
+			`);
+			resource.setPopup(popup);
+		}
+	}
+
+	function addRoute(map, disasterLocation, hospital) {
+		console.log(disasterLocation);
+		console.log(hospital);
+		console.log("Starting route");
+		// get the nearest hospital from the disaster location
+		//const nearesthospital = getNearestSafehouse(disasterLocation, hospitals);
+		const nearesthospital = hospital;
+		// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
+		const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.lng},${nearesthospital.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+
+		map.addSource('resource_route', {
+			type: 'geojson',
+			data: {
+				type: 'Feature'
+			}
+		});
+		console.log("add source");
+		map.addLayer({
+			id: "order_layer",
+			type: "line",
+			source: "resource_route",
+			layout: {
+				"line-join": "round",
+				"line-cap": "round",
+			},
+			paint: {
+				'line-color': 'red',
+				'line-opacity': 0.5,
+				'line-width': 8,
+				'line-blur': 0.5
+			}
+		});
+
+		console.log("add layer");
+		axios.get(directionsUrl)
+			.then(response => {
+				const route = response.data.routes[0].geometry;
+				const routeLine = polyline.toGeoJSON(route);
+				//console.log(routeLine)
+
+				// check if the "hospital_route" layer exists and update it if it does, otherwise add a new layer
+				const layerExists = map.getLayer("order_layer");
+				if (layerExists) {
+					map.getSource('resource_route').setData(routeLine);
+				} else {
+					//map.addSource('hospital_route', sourceObj);
+
+				}
+
+				// make the "hospital_route" layer visible
+				map.setLayoutProperty('resource_route', 'visibility', 'visible');
+				//console.log(map)
+			})
+			.catch(error => {
+				console.log(error);
+			});
+
+		console.log("complete");
+	}
 
 	React.useEffect(() => {
 		if (map.current && orderData) {
 			generateOrderRoute(orderData);
 		}
-	}, [orderData]);
+	}, []);
 
 	if ((viewState.latitude && viewState.longitude)) {
 		return (
@@ -292,9 +355,9 @@ const OrderMap = (props) => {
 						{/* Add a sidebar to display the list of disasters */}
 						<div className="disaster-sidebar">
 							<h3>Instructions</h3>
-							<ul>
-								{orderData.instuctions}
-							</ul>
+							<div>
+								{orderData.instructions}
+							</div>
 						</div>
 
 						{/* Add the map to the screen */}
