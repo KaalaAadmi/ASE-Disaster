@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ReportDisaster.css";
-import {Container, Title, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
+import { Container, Title, Form, TextArea, Label, Submit, Input, Select, Option } from "../style"
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
-import { getCurrentLoc, getPosition} from "../../components/Addresses"
+import { getCurrentLoc, getPosition, getAddressFromLatLng } from "../../components/Addresses"
 import { addReport } from "../../api/Report";
 import { typeOptions } from "../../components/DropdownOptions";
 export default function ReportDisaster() {
@@ -19,6 +19,11 @@ export default function ReportDisaster() {
     addReport(type, latitude, longitude, details, token);
     console.log("Submission Success")
   };
+
+  useEffect(() => {
+    getAddressFromLatLng(latitude, longitude, setAddress);
+  }, [latitude, longitude]);
+
   return (
     <Container>
       <Title>Report Disaster</Title>
@@ -55,7 +60,7 @@ export default function ReportDisaster() {
         >
           <Label>Location:</Label>
           <Input id="location" type="text" value={address}
-                onChange={(event) => setAddress(event.target.value)}/>
+            onChange={(event) => setAddress(event.target.value)} />
           <div
             className="currentLoc"
             onClick={() => getCurrentLoc(setLatitude, setLongitude)}
