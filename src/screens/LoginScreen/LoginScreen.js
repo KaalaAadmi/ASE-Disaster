@@ -1,10 +1,8 @@
 import React, {useState} from "react";
-
-// import styled from "styled-components";
-import axios from 'axios'
-
 import "./LoginScreen.css";
-import {login,logout} from "../../api/auth";
+import {login,logout} from "../../api/Auth";
+import {useNavigate } from 'react-router-dom';
+
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -17,6 +15,13 @@ export default function LoginScreen() {
     setIsAuthenticated(false); // set isAuthenticated to false
     logout();
   };
+
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    login(email,password,setIsAuthenticated)
+    navigate.push(`/view-reports`); 
+  }
 
   if (isAuthenticated) {
     return (
@@ -44,7 +49,7 @@ export default function LoginScreen() {
             <label className="placeholder">Password</label>
           </div>
           {/* <div className="submitContainer"> */}
-          <button className="btnSubmit" type="submit" onClick={() => login(email,password,setIsAuthenticated)}>
+          <button className="btnSubmit" type="submit" onClick={handleLogin}>
             LOGIN
           </button>
           {/* </div> */}

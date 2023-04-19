@@ -24,7 +24,7 @@ export const addReport = async (type, latitude, longitude, details, token) => {
         console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not submit report.");
     }
 };
 
@@ -40,23 +40,42 @@ export const getReports = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get report records.");
     }
 };
 
-// THIS ISN'T WORKIING
-// export const getIndividualReport = async (id) => {
-//     try {
-//         let config = {
-//             method: 'get',
-//             maxBodyLength: Infinity,
-//             url: `${BACKEND}/report/${id}`,
-//             headers: { }
-//         };
-//         const response = await axios.request(config);
-//         return JSON.stringify(response.data);
-//     } catch (error) {
-//         console.error(error);
-//         throw error;
-//     }
-// };
+export const getIndividualReport = async (id) => {
+    try {
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `${BACKEND}/report/${id}`,
+            headers: { }
+        };
+        const response = await axios.request(config);
+        return JSON.stringify(response.data);
+    } catch (error) {
+        console.error(error);
+        alert("ERROR - Could not get individual report record.");
+    }
+};
+
+export const updateReport = async (id, details) => {
+    try {
+        let data = JSON.stringify(details);
+        let config = {
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: `${BACKEND}/update-report/${id}`,
+            headers: { 
+              'Content-Type': 'application/json'
+            },
+            data : data
+        };
+        const response = await axios.request(config);
+        console.log(JSON.stringify(response.data));
+    } catch (error) {
+        console.error(error);
+        alert("ERROR - Could not update report record.");
+    }
+};

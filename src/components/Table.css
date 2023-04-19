@@ -1,0 +1,19 @@
+.highlighted-row {
+    background-color: #0d47a1;
+  }
+
+.table-container {
+    padding: 20px;
+  }
+
+.table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  
+.th, .td {
+   width: 100px; /* or any other fixed width you prefer */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

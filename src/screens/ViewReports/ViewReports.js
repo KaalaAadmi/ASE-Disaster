@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Table from "../../components/Table";
+import ReportTable from "../../components/ReportTable";
+import {Container, Title} from "../style"
 import styled from "styled-components";
 import { getReports } from "../../api/Report";
 
@@ -61,7 +62,7 @@ export default function ViewReports(){
       <Container>
         <Title>VIEW REPORTS</Title>
         <div>
-          <Table data={reportData} />
+          <ReportTable data={reportData} />
         </div>
       </Container>
 
@@ -77,20 +78,3 @@ export default function ViewReports(){
     );
   }
 }
-
-const Container = styled.div`
-  color: #e5e5e5;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-`;
-const Title = styled.div`
-  color: #e5e5e5;
-  font-size: 4rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  display: flex;
-  justify-content: center;
-  // align-items:center;
-`;
