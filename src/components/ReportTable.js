@@ -205,7 +205,7 @@ function ReportTable(props) {
         <Select
           value={selectedDisaster}
           onChange={handleDisasterFilterChange}
-          style={{ background: "white", marginBottom: "0px", borderRadius: "10px", padding:"10px" }}
+          style={{ background: "white", marginBottom: "0px", borderRadius: "10px", padding:"10px", fontSize: "17px" }}
         >
           <Option value="">All Disasters</Option>
           {disasters.map((disaster) => (
@@ -303,7 +303,9 @@ function ReportTable(props) {
                     }
                     style={{
                       backgroundColor: getDropdownBackgroundColor(row.disaster),
-                      maxWidth: "300px"
+                      maxWidth: "300px",
+                      padding: "10px",
+                      borderRadius: "10px"
                     }}
                   >
                     <option value="" disabled style={{maxWidth: "250px"}}>

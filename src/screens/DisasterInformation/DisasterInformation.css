@@ -49,3 +49,7 @@ z-index: 1;
 .currentLoc:hover .tooltip1 {
 visibility: visible;
 }
+
+.save-information-btn:hover {
+  background-color: rgb(83 105 214);
+}
