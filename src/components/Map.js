@@ -23,6 +23,7 @@ import {
   createHospitalMarker,
   createGardaMarker,
   createFirestationMarker,
+  createBusMarker,
   clearMarkers,
 } from "./markers";
 
@@ -43,6 +44,7 @@ let loc_hospitals = null;
 let loc_firestations = null;
 let loc_safehouses = null;
 let loc_gardi = null;
+let loc_bus = null;
 let disasterJson=null;
 let obstacle = null;
 //let disasterLocation = null;
@@ -243,12 +245,12 @@ const Map = (props) => {
 
 					// Fetch resources for the current disaster
 					const loc_safehouses = await getResourses(disaster._id, 'rest centre');
-					console.log(disaster._id)
-					console.log(loc_safehouses)
 					const loc_hospitals = await getResourses(disaster._id, 'ambulance');
 					const loc_gardi = await getResourses(disaster._id, 'garda');
 					const loc_firestations = await getResourses(disaster._id, 'fire');
-
+					const loc_bus = await getResourses(disaster._id, 'bus');
+					console.log(disaster._id)
+					console.log(loc_bus)
 					const disasterLocation = {
 					  lat: disaster.latitude,
 					  lng: disaster.longitude,
@@ -273,6 +275,10 @@ const Map = (props) => {
 					if (loc_firestations !== null && loc_firestations.length !== 0) {
 					  createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
 					  addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
+					}
+					
+					if(loc_bus !== null && loc_bus.length !=0 ){
+						createBusMarker([loc_bus[loc_bus.length - 1]], map);
 					}
 				  }
 				}

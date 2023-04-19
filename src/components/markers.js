@@ -4,6 +4,7 @@ let safehouseMarkers = []; // Add this line at the beginning of your code, outsi
 let hospitalMarkers=[];
 let gardaMarkers=[];
 let firestationMarkers=[];
+let busMarkers =[];
 
 export	function createDisasterMarker(disasterDataset,map) {
 		//	console.log(typeof disasterDataset);
@@ -71,6 +72,24 @@ export	function createGardaMarker(loc_gardi, map) {
 			}
 		}
 		
+export	function createBusMarker(loc_bus, map) {
+			//console.log(typeof loc_gardi);
+			console.log(loc_bus);
+			for (var i = 0; i < loc_bus.length; i++) {
+				const el = document.createElement('div');
+				el.className = 'marker_bus';
+				
+				const maker_bus = new mapboxgl.Marker(el)
+					.setLngLat([loc_bus[i].Location.lng, loc_bus[i].Location.lat])
+					.setPopup(
+						new mapboxgl.Popup({ offset: 25 }).setText(loc_bus[i].Name)
+					)
+					.addTo(map.current)
+					.togglePopup();
+					gardaMarkers.push(maker_bus);
+			}
+		}
+		
 export function createFirestationMarker(loc_firestations, map) {
 			//console.log(typeof loc_firestations);
 			for (var i = 0; i < loc_firestations.length; i++) {
@@ -110,5 +129,10 @@ export const clearMarkers = () => {
     marker.remove();
   });
   firestationMarkers = [];
+
+  busMarkers.forEach((marker) => {
+    marker.remove();
+  });
+  busMarkers = [];
   
 };

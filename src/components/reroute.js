@@ -89,6 +89,7 @@ export function getResourses(disasterId, resource_name){
 	const orderUrl = `http://127.0.0.1:8000/api/v1/disaster-orders/${disasterId}`;
 	return axios.get(orderUrl)
 		.then(response => {
+			//console.log(response.data);
 			const locs_for_rr = mapJSONArray(response.data, resource_name);
 			return locs_for_rr;
 		})
