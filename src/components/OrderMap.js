@@ -21,7 +21,9 @@ import {
 	createGardaMarker,
 	createFirestationMarker,
 	clearMarker,
-} from "./OrderMarkers";
+} from "./Markers";
+
+import polyline from '@mapbox/polyline';
 
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
@@ -36,11 +38,6 @@ const REACT_APP_MAPBOX_TOKEN =
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
-let loc_hospitals = null;
-let loc_firestations = null;
-let loc_safehouses = null;
-let loc_gardi = null;
-let disasterJson = null;
 let obstacle = null;
 //let disasterLocation = null;
 
@@ -235,13 +232,13 @@ const OrderMap = (props) => {
 						"lat": parseFloat(orderData.location.latitude),
 						"lng": parseFloat(orderData.location.longitude)
 					},
-					"Name": orderData._id,
+					"Name": orderData.location.name,
 					"Quantity": parseInt(orderData.quantity),
 					"Status": orderData.status
 				}
 			];
 
-			clearMarkersAndRoutes();
+			// clearMarkersAndRoutes();
 			// clearMarker();
 
 			const resourceLocation = {
@@ -257,77 +254,87 @@ const OrderMap = (props) => {
 			};
 
 			createDisasterMarker([orderData.disaster], map);
-
-			switch (orderData.resource) {
-				case 'rest centre':
-					createGenericMarker(location, map);
-					addRoute_safehouse(map.current, disasterLocation, resourceLocation);
-					break;
-
-				case 'ambulance':
-					console.log(orderData.location);
-					createGenericMarker(location, map);
-					console.log("now adding routes")
-					break;
-
-				case 'garda':
-					createGenericMarker(location, map);
-					addRoute_garda(map.current, disasterLocation, resourceLocation);
-					break;
-
-				case 'fire':
-					createGenericMarker(location, map);
-					addRoute_firestation(map.current, disasterLocation, resourceLocation);
-					break;
-
-				default:
-					console.log('Resource type not recognized');
-					break;
-			}
-
+			createGenericMarker([location], map);
+			addRoute(map.current, disasterLocation, resourceLocation);
 		}
 	};
 
-	const createDisasterMarker = (locationData, map) => {
-		locationData.forEach((location) => {
-			const markerElement = document.createElement('div');
-			markerElement.className = 'marker-generic';
-			console.log(location);
-			const marker = new mapboxgl.Marker(markerElement)
-				.setLngLat([location.longitude, location.latitude])
-				.addTo(map.current);
-
-			// Add popup with information
+	function createGenericMarker(location, map) {
+		for (var i = 0; i < location.length; i++) {
+			const resource = new mapboxgl.Marker({ color: "red" })
+				.setLngLat([location[i].Location.lng, location[i].Location.lat])
+				.setPopup(
+					new mapboxgl.Popup({ offset: 25 }).setText(location[i].Name)
+				)
+				.addTo(map.current)
 			const popup = new mapboxgl.Popup({ offset: 25 })
 				.setHTML(`
-			  <h3>${location.name}</h3>
-			  <p>${location.description}</p>
+			  <h3>${location[i].Name}</h3>
+			  <p>Instructions: ${location[i].Instructions}</p>
 			`);
+			resource.setPopup(popup);
+		}
+	}
 
-			marker.setPopup(popup);
+	function addRoute(map, disasterLocation, hospital) {
+		console.log(disasterLocation);
+		console.log(hospital);
+		console.log("Starting route");
+		// get the nearest hospital from the disaster location
+		//const nearesthospital = getNearestSafehouse(disasterLocation, hospitals);
+		const nearesthospital = hospital;
+		// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
+		const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.lng},${nearesthospital.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+
+		map.addSource('hospital_route', {
+			type: 'geojson',
+			data: {
+				type: 'Feature'
+			}
 		});
-	};
-
-	const createGenericMarker = (locationData, map) => {
-		locationData.forEach((location) => {
-			const markerElement = document.createElement('div');
-			markerElement.className = 'marker-generic';
-
-			const marker = new mapboxgl.Marker(markerElement)
-				.setLngLat([location.Location.lng, location.Location.lat])
-				.addTo(map.current);
-
-			// Add popup with information
-			const popup = new mapboxgl.Popup({ offset: 25 })
-				.setHTML(`
-			  <h3>${location.Name}</h3>
-			  <p>Instructions: ${location.Instructions}</p>
-			`);
-
-			marker.setPopup(popup);
+		console.log("add source");
+		map.addLayer({
+			id: "hospital_route",
+			type: "line",
+			source: "hospital_route",
+			layout: {
+				"line-join": "round",
+				"line-cap": "round",
+			},
+			paint: {
+				'line-color': 'red',
+				'line-opacity': 0.5,
+				'line-width': 8,
+				'line-blur': 0.5
+			}
 		});
-	};
 
+		console.log("add layer");
+		axios.get(directionsUrl)
+			.then(response => {
+				const route = response.data.routes[0].geometry;
+				const routeLine = polyline.toGeoJSON(route);
+				//console.log(routeLine)
+
+				// check if the "hospital_route" layer exists and update it if it does, otherwise add a new layer
+				const layerExists = map.getLayer("hospital_route");
+				if (layerExists) {
+					map.getSource('hospital_route').setData(routeLine);
+				} else {
+					//map.addSource('hospital_route', sourceObj);
+
+				}
+
+				// make the "hospital_route" layer visible
+				map.setLayoutProperty('hospital_route', 'visibility', 'visible');
+				//console.log(map)
+			})
+			.catch(error => {
+				console.log(error);
+			});
+
+		console.log("complete");
+	}
 
 	React.useEffect(() => {
 		if (map.current && orderData) {

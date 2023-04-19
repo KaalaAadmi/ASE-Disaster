@@ -5,7 +5,7 @@ let hospitalMarkers = [];
 let gardaMarkers = [];
 let firestationMarkers = [];
 
-export function createDisasterMarkers(disasterDataset, map) {
+export function createDisasterMarker(disasterDataset, map) {
 	//	console.log(typeof disasterDataset);
 	for (var i = 0; i < disasterDataset.length; i++) {
 		const disaster = new mapboxgl.Marker({ color: "yellow" })
@@ -18,7 +18,7 @@ export function createDisasterMarkers(disasterDataset, map) {
 }
 
 //todo: rest centre coordinates reversed, to be fixed in the backend.
-export function createSafeHouseMarkers(safehouse_loc, map) {
+export function createSafeHouseMarker(safehouse_loc, map) {
 	//console.log(typeof safehouse_loc);
 	for (var i = 0; i < safehouse_loc.length; i++) {
 		const el = document.createElement('div');
@@ -36,7 +36,7 @@ export function createSafeHouseMarkers(safehouse_loc, map) {
 	}
 }
 //https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
-export function createHospitalMarkers(loc_hospitals, map) {
+export function createHospitalMarker(loc_hospitals, map) {
 	console.log("ray hospital", loc_hospitals);
 	for (var i = 0; i < loc_hospitals.length; i++) {
 		// Create a DOM element for each marker.
@@ -54,7 +54,7 @@ export function createHospitalMarkers(loc_hospitals, map) {
 	}
 }
 
-export function createGardaMarkers(loc_gardi, map) {
+export function createGardaMarker(loc_gardi, map) {
 	//console.log(typeof loc_gardi);
 	console.log(loc_gardi);
 	for (var i = 0; i < loc_gardi.length; i++) {
@@ -72,7 +72,7 @@ export function createGardaMarkers(loc_gardi, map) {
 	}
 }
 
-export function createFirestationMarkers(loc_firestations, map) {
+export function createFirestationMarker(loc_firestations, map) {
 	for (var i = 0; i < loc_firestations.length; i++) {
 		//https://docs.mapbox.com/help/tutorials/markers-js/
 		//https://labs.mapbox.com/maki-icons/
@@ -90,7 +90,7 @@ export function createFirestationMarkers(loc_firestations, map) {
 	}
 }
 
-export const clearMarkers = () => {
+export const clearMarker = () => {
 	safehouseMarkers.forEach((marker) => {
 		marker.remove();
 	});

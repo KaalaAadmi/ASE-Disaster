@@ -13,11 +13,12 @@ export default function ReportDisaster() {
   const [address, setAddress] = useState([]);
   const token = localStorage.getItem("token");
   // check if the user is authenticated on page load
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     await getPosition(address, setAddress, setLatitude, setLongitude);
     console.log(latitude);
     addReport(type, latitude, longitude, details, token);
-    console.log("Submission Success")
+    alert("Submission Success")
   };
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function ReportDisaster() {
         </div>
         <Submit
           type="submit"
-          onClick={handleSubmit}
+          onClick={(event) => handleSubmit(event)}
           value="Submit Report"
         />
       </Form>

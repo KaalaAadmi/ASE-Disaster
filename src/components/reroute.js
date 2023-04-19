@@ -100,8 +100,6 @@ export function getResourses(disasterId, resource_name) {
 export function addRoute_hospital(map, disasterLocation, hospital) {
 	// get the nearest hospital from the disaster location
 	//const nearesthospital = getNearestSafehouse(disasterLocation, hospitals);
-	console.log("this", hospital);
-	console.log("tahat", disasterLocation);
 	const nearesthospital = hospital;
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
 	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.lng},${nearesthospital.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;

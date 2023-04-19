@@ -13,12 +13,12 @@ import { rr_create_obstacle, rr_avoid_obstacle } from "./direction_rr";
 import { getResourses, clearRoutes } from "./reroute";
 
 import {
-	createDisasterMarkers,
-	createSafeHouseMarkers,
-	createHospitalMarkers,
-	createGardaMarkers,
-	createFirestationMarkers,
-	clearMarkers,
+	createDisasterMarker,
+	createSafeHouseMarker,
+	createHospitalMarker,
+	createGardaMarker,
+	createFirestationMarker,
+	clearMarker,
 } from "./Markers";
 
 const { addRoute_safehouse } = require('./evacuation');
@@ -232,7 +232,7 @@ const Map = (props) => {
 	const generateRoutesForSelectedDisaster = async (disasters, selectedDisaster) => {
 		if (selectedDisaster) {
 			clearMarkersAndRoutes();
-			clearMarkers();
+			clearMarker();
 			const disaster = disasters.find(d => d._id === selectedDisaster);
 			if (disaster) {
 
@@ -251,22 +251,22 @@ const Map = (props) => {
 				};
 				// Call the route creation functions for each type of resource and disaster
 				if (loc_safehouses !== null && loc_safehouses.length !== 0) {
-					createSafeHouseMarkers([loc_safehouses[loc_safehouses.length - 1]], map);
+					createSafeHouseMarker([loc_safehouses[loc_safehouses.length - 1]], map);
 					addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length - 1]);
 				}
 
 				if (loc_hospitals !== null && loc_hospitals.length !== 0) {
-					createHospitalMarkers([loc_hospitals[loc_hospitals.length - 1]], map);
+					createHospitalMarker([loc_hospitals[loc_hospitals.length - 1]], map);
 					addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
 				}
 
 				if (loc_gardi !== null && loc_gardi.length !== 0) {
-					createGardaMarkers([loc_gardi[loc_gardi.length - 1]], map);
+					createGardaMarker([loc_gardi[loc_gardi.length - 1]], map);
 					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
 				}
 
 				if (loc_firestations !== null && loc_firestations.length !== 0) {
-					createFirestationMarkers([loc_firestations[loc_firestations.length - 1]], map);
+					createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
 					addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
 				}
 			}
