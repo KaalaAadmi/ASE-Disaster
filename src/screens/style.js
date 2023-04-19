@@ -17,8 +17,8 @@ export const Container = styled.div`
 `;
 export const Title = styled.div`
   color: #e5e5e5;
-  font-size: 4rem;
-  font-weight: bold;
+  font-size: 45px;
+  font-weight: 700;
   text-transform: uppercase;
   display: flex;
   justify-content: center;
@@ -32,13 +32,13 @@ export const Form = styled.form`
 `;
 export const TextArea = styled.textarea`
   padding: 5px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   background-color: transparent;
   outline: none;
   border-top: 0;
   border-left: 0;
   border-right: 0;
-  border-botom: 10px solid violet;
+  /* border-bottom: 10px solid violet; */
   width: 20rem;
   color: #a5a5a5;
   resize: vertical;
@@ -51,11 +51,14 @@ export const Label = styled.label`
 export const Submit = styled.input`
   background-color: #5a69b5;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 25px;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
+  font-size: 20px;
+  margin-top: 15px;
 `;
 export const Input = styled.input`
   padding: 5px;
@@ -65,7 +68,7 @@ export const Input = styled.input`
   border-top: 0;
   border-left: 0;
   border-right: 0;
-  border-botom: 10px solid violet;
+  /* border-bottom: 10px solid violet; */
   width: 20rem;
   color: #a5a5a5;
 `;
@@ -78,7 +81,7 @@ export const Select = styled.select`
   border-top: 0;
   border-left: 0;
   border-right: 0;
-  border-botom: 10px solid violet;
+  /* border-bottom: 10px solid violet; */
   width: 20rem;
   color: "#a5a5a5";
 `;
@@ -91,6 +94,6 @@ export const Option = styled.option`
   border-top: 0;
   border-left: 0;
   border-right: 0;
-  border-botom: 10px solid violet;
+  /* border-bottom: 10px solid violet; */
   width: 20rem;
 `;

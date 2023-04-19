@@ -49,3 +49,16 @@ z-index: 1;
 .currentLoc:hover .tooltip1 {
 visibility: visible;
 }
+
+.titleReportDisaster {
+  margin-bottom: 30px; 
+}
+
+.sub-heading {
+  font-size: 20px;
+}
+
+.submit-btn:hover {
+  background-color: rgb(83 105 214);
+  color: #fefefe;
+}

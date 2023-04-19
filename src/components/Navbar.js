@@ -41,7 +41,6 @@ function Navbar() {
 					<h3>DISASTRO</h3>
 					<nav ref={navRef}>
 						<a href="/#" className="active">Home</a>
-						<a href="/login">Logout</a>
 						<a href="/maps">Map</a>
 						<a href="/faq">FAQ</a>
 						<a href="/report-disaster">Report Disaster</a>
@@ -49,6 +48,7 @@ function Navbar() {
 						<a href="/disaster-information">Disaster Information</a>
 						<a href="/activate-response">Activate Response</a>
 						<a href="/send-resources">Send Resources</a>
+						<a href="/login">Logout</a>
 						<button
 							className="nav-btn nav-close-btn"
 							onClick={showNavbar}>
@@ -70,11 +70,11 @@ function Navbar() {
 					<h3>DISASTRO</h3>
 					<nav ref={navRef}>
 						<a href="/#" className="active">Home</a>
-						<a href="/login">Logout</a>
 						<a href="/maps">Map</a>
 						<a href="/faq">FAQ</a>
 						<a href="/report-disaster">Report Disaster</a>
 						<a href="/view-reports">View Reports</a>
+						<a href="/login">Logout</a>
 						<button
 							className="nav-btn nav-close-btn"
 							onClick={showNavbar}>
@@ -97,10 +97,10 @@ function Navbar() {
 				<h3>DISASTRO</h3>
 				<nav ref={navRef}>
 					<a href="/#" className="active">Home</a>
-					<a href="/login">Login</a>
 					<a href="/maps">Map</a>
 					<a href="/faq">FAQ</a>
 					<a href="/report-disaster">Report Disaster</a>
+					<a href="/login">Login</a>
 					<button
 						className="nav-btn nav-close-btn"
 						onClick={showNavbar}>

@@ -19,7 +19,7 @@ import {
 	createGardaMarkers,
 	createFirestationMarkers,
 	clearMarkers,
-} from "./Markers";
+} from "./markers";
 
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');

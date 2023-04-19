@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./LoginScreen.css";
-import {login,logout} from "../../api/Auth";
+import {login,logout} from "../../api/auth";
 import {useNavigate } from 'react-router-dom';
 
 import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
