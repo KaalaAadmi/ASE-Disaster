@@ -31,7 +31,7 @@ const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
 const { addRoute_garda} = require('./reroute');
 const { addRoute_firestation} = require('./reroute');
-
+const { addRoute_bus} = require('./reroute');
 
 
 // mapbox token
@@ -248,7 +248,7 @@ const Map = (props) => {
 					const loc_hospitals = await getResourses(disaster._id, 'ambulance');
 					const loc_gardi = await getResourses(disaster._id, 'garda');
 					const loc_firestations = await getResourses(disaster._id, 'fire');
-					const loc_bus = await getResourses(disaster._id, 'bus');
+					const loc_bus = await getResourses(disaster._id, 'buses');
 					console.log(disaster._id)
 					console.log(loc_bus)
 					const disasterLocation = {
@@ -279,6 +279,7 @@ const Map = (props) => {
 					
 					if(loc_bus !== null && loc_bus.length !=0 ){
 						createBusMarker([loc_bus[loc_bus.length - 1]], map);
+						addRoute_bus(map.current, disasterLocation, loc_bus[loc_bus.length - 1]);
 					}
 				  }
 				}

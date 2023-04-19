@@ -266,10 +266,65 @@ export function addRoute_firestation(map, disasterLocation, fire_station) {
 		});
 }
 
+export function addRoute_bus(map, disasterLocation, bus_station) {
+	// get the nearest hospital from the disaster location
+	//const nearestFireStation= getNearestSafehouse(disasterLocation, fire_stations);
+	const nearestBusStation = bus_station;
+	//console.log(nearestBusStation);
+	// use the Mapbox Directions API to get the route from the disaster location to the nearest garda
+	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearestBusStation.Location.lng},${nearestBusStation.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+
+	map.addSource('bs_route', {
+		type: 'geojson',
+		data: {
+			type: 'Feature'
+		}
+	});
+
+	map.addLayer({
+		id: "bs_route",
+		type: "line",
+		source: "bs_route",
+		layout: {
+			"line-join": "round",
+			"line-cap": "round",
+		},
+		paint: {
+			'line-color': 'red',
+			'line-opacity': 0.5,
+			'line-width': 8,
+			'line-blur': 0.5
+		}
+	});
+	
+	axios.get(directionsUrl)
+		.then(response => {
+			const route = response.data.routes[0].geometry;
+			const routeLine = polyline.toGeoJSON(route);
+			//console.log(routeLine)
+
+			// check if the "garda_route" layer exists and update it if it does, otherwise add a new layer
+			const layerExists = map.getLayer("bs_route");
+			if (layerExists) {
+				map.getSource('bs_route').setData(routeLine);
+			} else {
+				//map.addSource('bs_route', sourceObj);
+
+			}
+
+			// make the "bs_route" layer visible
+			map.setLayoutProperty('bs_route', 'visibility', 'visible');
+			console.log(map)
+		})
+		.catch(error => {
+			console.log(error);
+		});
+}
+
 // mapUtils.js
 export const clearRoutes = (map) => {
   // Resource types and their corresponding layer IDs
-  const resourceTypes = ['hospital', 'evacuation', 'garda', 'fs'];
+  const resourceTypes = ['hospital', 'evacuation', 'garda', 'fs','bs'];
 
   // Remove layers and sources for each resource type
   resourceTypes.forEach((resourceType) => {
