@@ -22,6 +22,7 @@
 /* --------------------------------NEW-NAVBAR------------------------- */
 
 @import url("https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 * {
   padding: 0;
@@ -46,11 +47,8 @@ header {
   background-color: #11101b;
   color: #fefefe;
   z-index: 10000;
-  /* position: relative; */
+  position: relative;
   box-shadow: 0px 3px 6px 3px rgba(0, 0, 0, 0.25);
-  /* make navbar stick to the top */
-  position: sticky; 
-  top: 0;
 }
 
 nav a {
@@ -249,6 +247,15 @@ nav {
 
 /* -----------------------------BULLETIN------------------------------ */
 
+.bulletin-container {
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .bulletin-page {
   width: 100%;
   max-width: 1400px;
@@ -275,7 +282,7 @@ nav {
   color: #fefefe;
   text-align: left;
   margin-bottom: 50px;
-  width: 100%;
+  width: 70%;
   max-width: 1400px;
   line-height: 28px;
 }
@@ -284,6 +291,10 @@ nav {
   background-color: #333333;
   padding: 5px 20px;
   border-bottom: 1px solid #fefefe;
+}
+
+.bulletin__item .title {
+  margin-top: 10px;
 }
 
 .bulletin__wrapper {
@@ -295,18 +306,33 @@ nav {
   /* border-top: 1px solid #fefefe; */
 }
 
+/* changed */
+.bulletin__wrapper > .accordion {
+  width: 100%;
+  margin-top: 30px;
+  border-top: 1px solid #fff;
+}
+
 .bulletin__filter {
-  border: 1px solid #fefefe;
-  padding: 10px;
+  border: 3px solid #fefefe;
+  padding: 10px 25px;
   border-radius: 50px;
   align-items: center;
   margin-left: 10px;
   margin-right: 10px;
   cursor: pointer;
+  font-weight: 700;
 }
+
+.bulletin__filter:hover {
+  background: #fff;
+  color: black;
+  font-weight: 700;
+}
+
 .bulletin__selected_filter{
   border: 1px solid #fefefe;
-  padding: 10px;
+  padding: 10px 25px;
   border-radius: 50px;
   align-items: center;
   margin-left: 10px;
@@ -314,34 +340,13 @@ nav {
   background-color: #fefefe;
   color: #11101b;
   cursor: pointer;
+  font-weight: 700;
 }
 
-#filter-bubble {
-    
-  -webkit-transition: all 0.1s;
-	-moz-transition: all 0.1s;
-	transition: all 0.1s;
-	
-  -webkit-box-shadow: 0px 6px 0px #333333;
-  -moz-box-shadow: 0px 6px 0px #333333;
-  box-shadow: 0px 6px 0px #333333;
-}
-/* 
-#filter-bubble:hover {
-  background-color: #fefefe;
-  color: #11101b;
-  transition: all 0.3s ease-in-out;
-} */
-
-#filter-bubble:active {
-  -webkit-box-shadow: 0px 2px 0px #fefefe;
-  -moz-box-shadow: 0px 2px 0px #fefefe;
-  box-shadow: 0px 2px 0px #fefefe;
-  position:relative;
-  top:4px;
-}
 
 /* -----------------------------TABLE------------------------------ */
+
+
 .table-header {
   color: #fefefe;
   border: 1px solid #fefefe;
