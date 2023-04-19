@@ -19,6 +19,7 @@
     "react-map-gl": "^7.0.21",
     "react-router-dom": "^6.6.2",
     "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.8",
     "styled-components": "^5.3.9",
     "web-vitals": "^2.1.4"
   },
@@ -26,12 +27,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-	"jest": {
-		"transform": {
-			"^.+\\.(js|ts)$": "babel-jest"
-		},
-		"transformIgnorePatterns": []
-	},
+    "jest": {
+      "transform": {
+        "^.+\\.(js|ts)$": "babel-jest"
+      },
+      "transformIgnorePatterns": []
+    },
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

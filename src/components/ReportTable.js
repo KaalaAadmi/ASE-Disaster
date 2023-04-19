@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { updateReport, getReports } from "../api/Report";
 
-import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../screens/style"
+import { Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option } from "../screens/style"
 import { getRelevantDisasters, addReportToDisaster } from "../api/Disaster";
 import "./Table.css";
 
@@ -16,10 +16,13 @@ function ReportTable(props) {
   const [isResponderFilter, setIsResponderFilter] = useState(false);
   const [isSpamFilter, setIsSpamFilter] = useState(false);
   const [selectedDisaster, setSelectedDisaster] = useState("");
+  const [isCoordinator, setIsCoordinator] = useState(
+    localStorage.getItem("isAdmin") === "true"
+  ); // check if the user is a coordinator on page load
 
   const handleDisasterFilterChange = (e) => {
     setSelectedDisaster(e.target.value);
-  };  
+  };
 
   const handleResponderFilterClick = () => {
     setIsResponderFilter(!isResponderFilter);
@@ -33,7 +36,7 @@ function ReportTable(props) {
     const sortedData = [...data].sort((a, b) => {
       let aValue;
       let bValue;
-  
+
       if (key === 'disaster') {
         aValue = a.disaster?.disasterName ?? '';
         bValue = b.disaster?.disasterName ?? '';
@@ -50,7 +53,7 @@ function ReportTable(props) {
         aValue = a[key];
         bValue = b[key];
       }
-  
+
       if (aValue < bValue) {
         return direction === "asc" ? -1 : 1;
       }
@@ -59,10 +62,10 @@ function ReportTable(props) {
       }
       return 0;
     });
-  
+
     return sortedData;
   };
-  
+
 
   async function fetchDisasterData() {
     try {
@@ -99,7 +102,7 @@ function ReportTable(props) {
     }
     if (selectedDisaster) {
       filteredData = filteredData.filter((row) => row.disaster?._id === selectedDisaster);
-    }    
+    }
 
     if (sortConfig.key) {
       const sortedData = sortData(filteredData, sortConfig.key, sortConfig.direction);
@@ -144,93 +147,96 @@ function ReportTable(props) {
     const url = `${baseUrl}/${disasterId}`;
     window.location.href = url;
   };
-  
 
-  const getOptionBackgroundColor  = (disaster) => {
+
+  const getOptionBackgroundColor = (disaster) => {
     const isActive = disaster.status === "active";
     return isActive ? "#b3e5d1" : "white";
-  };  
+  };
 
-  const getDropdownBackgroundColor   = (disaster) => {
+  const getDropdownBackgroundColor = (disaster) => {
     const isActive = disaster.status === "active";
     return isActive ? "#b3e5d1" : "white";
-  };  
+  };
 
   return (
     <>
-    <Submit type="submit" value={isResponderFilter ? "Show All" : "Show Only Responder Messages"} onClick={handleResponderFilterClick}/>
-    <Submit type="submit" value={isSpamFilter ? "Show All" : "Remove Spam"} onClick={handleSpamFilterClick}/>
-    <Select value={selectedDisaster} onChange={handleDisasterFilterChange} style={{background: "white"}}>
-      <Option value="">All Disasters</Option>
-      {disasters.map((disaster) => (
-        <Option key={disaster._id} value={disaster._id} style={{background: getOptionBackgroundColor (disaster)}}>
-          {disaster.disasterName}
-        </Option>
-      ))}
-    </Select>
-    
-    <table>
-      <thead>
-        <tr>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("detail")}>Description</th>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("type")}>Type</th>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("isSpam")}>Spam</th>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("reports")}>Related Reports</th>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("created_at")}>Creation Time</th>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("disaster")}>Assign to Disaster</th>
-          <th className="table-header" onClick={() => handleColumnHeaderClick("disasterStatus")}>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {reports.map((row, index) => (
-          <tr key={index} className={row.isResponder ? "highlighted-row" : ""}>
-            <td className="table-cell">{row.detail}</td>
-            <td className="table-cell">{row.type}</td>
-            <td className="table-cell">
-              <input
-                type="checkbox"
-                checked={row.isSpam}
-                onChange={() => handleSpamChange(index)}
-              />
-            </td>
-            <td className="table-cell">{row.disaster?.reports?.length ?? "0"}</td>
-            <td className="table-cell">
-              {formatDistanceToNow(parseISO(row.created_at), { addSuffix: true })}
-            </td>
-            <td className="table-cell">
-              <select
-                value={row.disaster?._id ?? ""}
-                onChange={(e) => handleDisasterChange(index, e.target.value)}
-                style={{
-                  backgroundColor: getDropdownBackgroundColor(row.disaster),
-                }}
-              >
-                <option value="" disabled>
-                  No Disaster Assigned
-                </option>
-                {disasters.map((disaster) => (
-                  <option key={disaster._id} value={disaster._id} style={{background: getOptionBackgroundColor (disaster),
-                  }}>
-                    {disaster.disasterName}
-                  </option>
-                ))}
-              </select>
-            </td> 
-            <td className="table-cell">
-              {row.disaster ? (
-                row.disaster.status === "active" ? (
-                  <Submit type="submit" value="View Disaster" onClick={() => viewReport(row.disaster._id)}/>
-                ) : (
-                  <Submit type="submit" value="Activate Disaster" onClick={() => goToDisasterUrl(row.disaster._id)}/>
-                )
-              ) : (
-                <span>No Disaster Assigned</span>
-              )}
-            </td>
-          </tr>
+      <Submit type="submit" value={isResponderFilter ? "Show All" : "Show Only Responder Messages"} onClick={handleResponderFilterClick} />
+      <Submit type="submit" value={isSpamFilter ? "Show All" : "Remove Spam"} onClick={handleSpamFilterClick} />
+      <Select value={selectedDisaster} onChange={handleDisasterFilterChange} style={{ background: "white" }}>
+        <Option value="">All Disasters</Option>
+        {disasters.map((disaster) => (
+          <Option key={disaster._id} value={disaster._id} style={{ background: getOptionBackgroundColor(disaster) }}>
+            {disaster.disasterName}
+          </Option>
         ))}
-      </tbody>
-    </table>
+      </Select>
+
+      <table>
+        <thead>
+          <tr>
+            <th className="table-header" onClick={() => handleColumnHeaderClick("detail")}>Description</th>
+            <th className="table-header" onClick={() => handleColumnHeaderClick("type")}>Type</th>
+            <th className="table-header" onClick={() => handleColumnHeaderClick("isSpam")}>Spam</th>
+            <th className="table-header" onClick={() => handleColumnHeaderClick("reports")}>Related Reports</th>
+            <th className="table-header" onClick={() => handleColumnHeaderClick("created_at")}>Creation Time</th>
+            {isCoordinator && <th className="table-header" onClick={() => handleColumnHeaderClick("disaster")}>Assign to Disaster</th>}
+            {isCoordinator && <th className="table-header" onClick={() => handleColumnHeaderClick("disasterStatus")}>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {reports.map((row, index) => (
+            <tr key={index} className={row.isResponder ? "highlighted-row" : ""}>
+              <td className="table-cell">{row.detail}</td>
+              <td className="table-cell">{row.type}</td>
+              <td className="table-cell">
+                <input
+                  type="checkbox"
+                  checked={row.isSpam}
+                  onChange={() => handleSpamChange(index)}
+                />
+              </td>
+              <td className="table-cell">{row.disaster?.reports?.length ?? "0"}</td>
+              <td className="table-cell">
+                {formatDistanceToNow(parseISO(row.created_at), { addSuffix: true })}
+              </td>
+              {isCoordinator && <td className="table-cell">
+                <select
+                  value={row.disaster?._id ?? ""}
+                  onChange={(e) => handleDisasterChange(index, e.target.value)}
+                  style={{
+                    backgroundColor: getDropdownBackgroundColor(row.disaster),
+                  }}
+                >
+                  <option value="" disabled>
+                    No Disaster Assigned
+                  </option>
+                  {disasters.map((disaster) => (
+                    <option key={disaster._id} value={disaster._id} style={{
+                      background: getOptionBackgroundColor(disaster),
+                    }}>
+                      {disaster.disasterName}
+                    </option>
+                  ))}
+                </select>
+              </td>
+              }
+              {isCoordinator && <td className="table-cell">
+                {row.disaster ? (
+                  row.disaster.status === "active" ? (
+                    <Submit type="submit" value="View Disaster" onClick={() => viewReport(row.disaster._id)} />
+                  ) : (
+                    <Submit type="submit" value="Activate Disaster" onClick={() => goToDisasterUrl(row.disaster._id)} />
+                  )
+                ) : (
+                  <span>No Disaster Assigned</span>
+                )}
+              </td>
+              }
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

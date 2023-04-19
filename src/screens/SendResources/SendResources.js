@@ -8,6 +8,8 @@ import { requestResponders } from "../../api/Order";
 import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
 import { useParams, useNavigate } from 'react-router-dom';
+import { ClipLoader } from "react-spinners";
+
 
 export default function SendResources() {
   const { id } = useParams();
@@ -24,12 +26,13 @@ export default function SendResources() {
   const [isCoordinator, setIsCoordinator] = useState(
     localStorage.getItem("isAdmin")
   ); // check if the user is a coordinator on page load
+  const [submitting, setSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(helicopter);
+    setSubmitting(true);
     await requestResponders(
       selectedDisaster,
       ambulances,
@@ -39,6 +42,7 @@ export default function SendResources() {
       helicopter,
       evacuation
     );
+    setSubmitting(false);
     navigate(`/disaster-information/${selectedDisaster}`);
   };
 
@@ -149,7 +153,12 @@ export default function SendResources() {
               />
             </div>
           )}
-          <Submit type="submit" value="Send Resources" onClick={handleSubmit} />
+          <Submit type="submit" value="Send Resources" onClick={handleSubmit} disabled={submitting} />
+          {submitting && (
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+              <ClipLoader color="#4A90E2" />
+            </div>
+          )}
         </Form>
         <div>
           {selectedDisaster !== "" &&
