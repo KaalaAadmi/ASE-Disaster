@@ -8,8 +8,8 @@ let firestationMarkers = [];
 export function createDisasterMarker(orderData, map) {
 	console.log(orderData);
 	const disaster = new mapboxgl.Marker({ color: "yellow" })
-		.setLngLat([orderData.locationLongitude, orderData.locationLatitude])
-		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(orderData.disaster))
+		.setLngLat([orderData[0].Location.lat, orderData[0].Location.lng])
+		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(orderData[0].disaster))
 		.addTo(map.current);
 }
 
@@ -20,21 +20,22 @@ export function createSafeHouseMarker(safehouseData, map) {
 	el.className = "marker_safehouse";
 
 	const marker_sh = new mapboxgl.Marker(el)
-		.setLngLat([safehouseData.latitude, safehouseData.longitude])
-		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(safehouseData.Name))
+		.setLngLat([safehouseData[0].Location.lat, safehouseData[0].Location.lng])
+		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(safehouseData[0].Name))
 		.addTo(map.current)
 		.togglePopup();
 	safehouseMarkers.push(marker_sh);
 }
 
 export function createHospitalMarker(hospitalData, map) {
-	console.log(hospitalData);
+	console.log("hospital", hospitalData);
+	console.log("map", map);
 	const el = document.createElement("div");
 	el.className = "marker_hospital";
 
 	const marker_hs = new mapboxgl.Marker(el)
-		.setLngLat([hospitalData.latitude, hospitalData.longitude])
-		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(hospitalData.Name))
+		.setLngLat([hospitalData[0].Location.lat, hospitalData[0].Location.lng])
+		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(hospitalData[0].Name))
 		.addTo(map.current)
 		.togglePopup();
 	hospitalMarkers.push(marker_hs);
@@ -46,8 +47,8 @@ export function createGardaMarker(gardaData, map) {
 	el.className = "marker_garda";
 
 	const maker_garda = new mapboxgl.Marker(el)
-		.setLngLat([gardaData.latitude, gardaData.longitude])
-		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(gardaData.Name))
+		.setLngLat([gardaData[0].Location.lat, gardaData[0].Location.lng])
+		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(gardaData[0].Name))
 		.addTo(map.current)
 		.togglePopup();
 	gardaMarkers.push(maker_garda);
@@ -59,8 +60,8 @@ export function createFirestationMarker(firestationData, map) {
 	el.className = "marker_firestation";
 
 	const marker_fs = new mapboxgl.Marker(el)
-		.setLngLat([firestationData.latitude, firestationData.longitude])
-		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(firestationData.Name))
+		.setLngLat([firestationData[0].Location.lat, firestationData[0].Location.lng])
+		.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(firestationData[0].Name))
 		.addTo(map.current)
 		.togglePopup();
 	firestationMarkers.push(marker_fs);

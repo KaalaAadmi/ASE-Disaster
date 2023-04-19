@@ -37,6 +37,7 @@ export function createSafeHouseMarkers(safehouse_loc, map) {
 }
 //https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
 export function createHospitalMarkers(loc_hospitals, map) {
+	console.log("ray hospital", loc_hospitals);
 	for (var i = 0; i < loc_hospitals.length; i++) {
 		// Create a DOM element for each marker.
 		const el = document.createElement('div');

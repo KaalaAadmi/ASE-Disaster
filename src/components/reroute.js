@@ -17,66 +17,66 @@ const REACT_APP_MAPBOX_TOKEN =
 const { getNearestSafehouse } = require('./haversine');
 
 export function addCard(id, element, clear, detail) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  // Add the response to the individual report created above
-  const heading = document.createElement('div');
-  // Set the class type based on clear value
-  heading.className =
-    clear === true ? 'card-header route-found' : 'card-header obstacle-found';
-  heading.innerHTML =
-    id === 0
-      ? `${emoji} The route ${collision}`
-      : `${emoji} Route ${id} ${collision}`;
+	const card = document.createElement('div');
+	card.className = 'card';
+	// Add the response to the individual report created above
+	const heading = document.createElement('div');
+	// Set the class type based on clear value
+	heading.className =
+		clear === true ? 'card-header route-found' : 'card-header obstacle-found';
+	heading.innerHTML =
+		id === 0
+			? `${emoji} The route ${collision}`
+			: `${emoji} Route ${id} ${collision}`;
 
-  const details = document.createElement('div');
-  details.className = 'card-details';
-  details.innerHTML = `This ${detail} obstacles.`;
+	const details = document.createElement('div');
+	details.className = 'card-details';
+	details.innerHTML = `This ${detail} obstacles.`;
 
-  card.appendChild(heading);
-  card.appendChild(details);
-  element.insertBefore(card, element.firstChild);
+	card.appendChild(heading);
+	card.appendChild(details);
+	element.insertBefore(card, element.firstChild);
 }
 
 export function noRoutes(element) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  // Add the response to the individual report created above
-  const heading = document.createElement('div');
-  heading.className = 'card-header no-route';
-  emoji = '🛑';
-  heading.innerHTML = `${emoji} Ending search.`;
+	const card = document.createElement('div');
+	card.className = 'card';
+	// Add the response to the individual report created above
+	const heading = document.createElement('div');
+	heading.className = 'card-header no-route';
+	emoji = '🛑';
+	heading.innerHTML = `${emoji} Ending search.`;
 
-  // Add details to the individual report
-  const details = document.createElement('div');
-  details.className = 'card-details';
-  details.innerHTML = `No clear route found in ${counter} tries.`;
+	// Add details to the individual report
+	const details = document.createElement('div');
+	details.className = 'card-details';
+	details.innerHTML = `No clear route found in ${counter} tries.`;
 
-  card.appendChild(heading);
-  card.appendChild(details);
-  element.insertBefore(card, element.firstChild);
+	card.appendChild(heading);
+	card.appendChild(details);
+	element.insertBefore(card, element.firstChild);
 }
 
 
 function mapJSONArray(inputArray, resource_name_backend) {
-  const outputArray = [];
+	const outputArray = [];
 
-  inputArray.forEach(input => {
-    if (input.resource === resource_name_backend) {
-      outputArray.push({
-        Name: input._id,
-        Location: {
-          lat: parseFloat(input.locationLatitude),
-          lng: parseFloat(input.locationLongitude)
-        },
-        Quantity: parseInt(input.quantity),
-        Instructions: input.instructions,
-        Status: input.status,
-      });
-    }
-  });
+	inputArray.forEach(input => {
+		if (input.resource === resource_name_backend) {
+			outputArray.push({
+				Name: input._id,
+				Location: {
+					lat: parseFloat(input.locationLatitude),
+					lng: parseFloat(input.locationLongitude)
+				},
+				Quantity: parseInt(input.quantity),
+				Instructions: input.instructions,
+				Status: input.status,
+			});
+		}
+	});
 
-  return outputArray;
+	return outputArray;
 }
 
 // resource_name, use name defined in backend
@@ -85,7 +85,7 @@ function mapJSONArray(inputArray, resource_name_backend) {
 // 'rest centre'
 // 'ambulance'
 
-export function getResourses(disasterId, resource_name){
+export function getResourses(disasterId, resource_name) {
 	const orderUrl = `http://127.0.0.1:8000/api/v1/disaster-orders/${disasterId}`;
 	return axios.get(orderUrl)
 		.then(response => {
@@ -100,11 +100,11 @@ export function getResourses(disasterId, resource_name){
 export function addRoute_hospital(map, disasterLocation, hospital) {
 	// get the nearest hospital from the disaster location
 	//const nearesthospital = getNearestSafehouse(disasterLocation, hospitals);
-
+	console.log("this", hospital);
+	console.log("tahat", disasterLocation);
 	const nearesthospital = hospital;
-	console.log(nearesthospital);
 	// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
-	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.Location.lng},${nearesthospital.Location.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
+	const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.lng},${nearesthospital.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 
 	map.addSource('hospital_route', {
 		type: 'geojson',
@@ -128,7 +128,7 @@ export function addRoute_hospital(map, disasterLocation, hospital) {
 			'line-blur': 0.5
 		}
 	});
-	
+
 	axios.get(directionsUrl)
 		.then(response => {
 			const route = response.data.routes[0].geometry;
@@ -156,6 +156,7 @@ export function addRoute_hospital(map, disasterLocation, hospital) {
 export function addRoute_garda(map, disasterLocation, garda) {
 	// get the nearest hospital from the disaster location
 	//const nearestGarda = getNearestSafehouse(disasterLocation, gardi);
+	console.log("garda", garda);
 	const nearestGarda = garda;
 	//console.log(nearestGarda);
 	//console.log(disasterLocation);
@@ -184,7 +185,7 @@ export function addRoute_garda(map, disasterLocation, garda) {
 			'line-blur': 0.5
 		}
 	});
-	
+
 	axios.get(directionsUrl)
 		.then(response => {
 			const route = response.data.routes[0].geometry;
@@ -240,7 +241,7 @@ export function addRoute_firestation(map, disasterLocation, fire_station) {
 			'line-blur': 0.5
 		}
 	});
-	
+
 	axios.get(directionsUrl)
 		.then(response => {
 			const route = response.data.routes[0].geometry;
@@ -267,21 +268,21 @@ export function addRoute_firestation(map, disasterLocation, fire_station) {
 
 // mapUtils.js
 export const clearRoutes = (map) => {
-  // Resource types and their corresponding layer IDs
-  const resourceTypes = ['hospital', 'evacuation', 'garda', 'fs'];
+	// Resource types and their corresponding layer IDs
+	const resourceTypes = ['hospital', 'evacuation', 'garda', 'fs'];
 
-  // Remove layers and sources for each resource type
-  resourceTypes.forEach((resourceType) => {
-    // Check if the route layer exists and remove it
-    if (map.getLayer(`${resourceType}_route`)) {
-		//console.log('getLayer');
-      map.removeLayer(`${resourceType}_route`);
-    }
+	// Remove layers and sources for each resource type
+	resourceTypes.forEach((resourceType) => {
+		// Check if the route layer exists and remove it
+		if (map.getLayer(`${resourceType}_route`)) {
+			//console.log('getLayer');
+			map.removeLayer(`${resourceType}_route`);
+		}
 
-    // Check if the route source exists and remove it
-    if (map.getSource(`${resourceType}_route`)) {
-      map.removeSource(`${resourceType}_route`);
-    }
-  });
+		// Check if the route source exists and remove it
+		if (map.getSource(`${resourceType}_route`)) {
+			map.removeSource(`${resourceType}_route`);
+		}
+	});
 };
 

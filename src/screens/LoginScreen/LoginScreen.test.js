@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import LoginScreen from './LoginScreen';
-import { login, logout } from '../../api/auth';
+import { login, logout } from '../../api/Auth';
 
 // Mock the login and logout functions from the auth API
 jest.mock('../../api/auth', () => ({

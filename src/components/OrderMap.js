@@ -8,6 +8,7 @@ import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-direct
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
 import axios from "axios";
+import "./styles.css"
 import { markerData } from "../assets/data";
 import { rr_create_obstacle, rr_avoid_obstacle } from "./direction_rr";
 import { getResourses, clearRoutes } from "./reroute";
@@ -55,9 +56,9 @@ const OrderMap = (props) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const order = await getOrder(id);
-				console.log(order);
-				setOrderData(order.order);
+				const response = await getOrder(id);
+				console.log(response);
+				setOrderData(response.order);
 			} catch (error) {
 				console.log(error);
 			}
@@ -204,8 +205,6 @@ const OrderMap = (props) => {
 						'fill-outline-color': '#FFC300'
 					}
 				});
-
-				//generateRoutesForDisasters(disasterJson);
 			});
 
 			directions_rr.on('clear', () => {
@@ -227,42 +226,57 @@ const OrderMap = (props) => {
 		console.log('clearMarkersAndRoutes');
 		clearRoutes(map.current);
 	};
-
 	const generateOrderRoute = async (orderData) => {
 		if (orderData && orderData.location) {
+			const location = [
+				{
+					"Instructions": orderData.instructions,
+					"Location": {
+						"lat": parseFloat(orderData.location.latitude),
+						"lng": parseFloat(orderData.location.longitude)
+					},
+					"Name": orderData._id,
+					"Quantity": parseInt(orderData.quantity),
+					"Status": orderData.status
+				}
+			];
+
 			clearMarkersAndRoutes();
-			clearMarker();
+			// clearMarker();
 
 			const resourceLocation = {
-				lat: parseFloat(orderData.latitude),
-				lng: parseFloat(orderData.longitude),
+				lat: parseFloat(orderData.location.latitude),
+				lng: parseFloat(orderData.location.longitude),
 				id: orderData.location._id,
 			};
 
 			const disasterLocation = {
-				lat: parseFloat(orderData.location.latitude),
-				lng: parseFloat(orderData.location.longitude),
-				id: orderData.disaster._id,
+				lat: parseFloat(orderData.disaster.latitude),
+				lng: parseFloat(orderData.disaster.longitude),
+				name: orderData.disasterName,
 			};
+
+			createDisasterMarker([orderData.disaster], map);
 
 			switch (orderData.resource) {
 				case 'rest centre':
-					createSafeHouseMarker([orderData.location], map);
+					createGenericMarker(location, map);
 					addRoute_safehouse(map.current, disasterLocation, resourceLocation);
 					break;
 
 				case 'ambulance':
-					createHospitalMarker([orderData.location], map);
-					addRoute_hospital(map.current, disasterLocation, resourceLocation);
+					console.log(orderData.location);
+					createGenericMarker(location, map);
+					console.log("now adding routes")
 					break;
 
 				case 'garda':
-					createGardaMarker([orderData.location], map);
+					createGenericMarker(location, map);
 					addRoute_garda(map.current, disasterLocation, resourceLocation);
 					break;
 
 				case 'fire':
-					createFirestationMarker([orderData.location], map);
+					createGenericMarker(location, map);
 					addRoute_firestation(map.current, disasterLocation, resourceLocation);
 					break;
 
@@ -270,8 +284,50 @@ const OrderMap = (props) => {
 					console.log('Resource type not recognized');
 					break;
 			}
+
 		}
 	};
+
+	const createDisasterMarker = (locationData, map) => {
+		locationData.forEach((location) => {
+			const markerElement = document.createElement('div');
+			markerElement.className = 'marker-generic';
+			console.log(location);
+			const marker = new mapboxgl.Marker(markerElement)
+				.setLngLat([location.longitude, location.latitude])
+				.addTo(map.current);
+
+			// Add popup with information
+			const popup = new mapboxgl.Popup({ offset: 25 })
+				.setHTML(`
+			  <h3>${location.name}</h3>
+			  <p>${location.description}</p>
+			`);
+
+			marker.setPopup(popup);
+		});
+	};
+
+	const createGenericMarker = (locationData, map) => {
+		locationData.forEach((location) => {
+			const markerElement = document.createElement('div');
+			markerElement.className = 'marker-generic';
+
+			const marker = new mapboxgl.Marker(markerElement)
+				.setLngLat([location.Location.lng, location.Location.lat])
+				.addTo(map.current);
+
+			// Add popup with information
+			const popup = new mapboxgl.Popup({ offset: 25 })
+				.setHTML(`
+			  <h3>${location.Name}</h3>
+			  <p>Instructions: ${location.Instructions}</p>
+			`);
+
+			marker.setPopup(popup);
+		});
+	};
+
 
 	React.useEffect(() => {
 		if (map.current && orderData) {
@@ -292,9 +348,9 @@ const OrderMap = (props) => {
 						{/* Add a sidebar to display the list of disasters */}
 						<div className="disaster-sidebar">
 							<h3>Instructions</h3>
-							<ul>
-								{orderData.instuctions}
-							</ul>
+							<div>
+								{orderData.instructions}
+							</div>
 						</div>
 
 						{/* Add the map to the screen */}
