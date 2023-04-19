@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./ActivateResponse.css";
-import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
+import { Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option } from "../style"
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
-import { getAddressFromLatLng, getPosition} from "../../components/Addresses"
+import { getAddressFromLatLng, getPosition } from "../../components/Addresses"
 import {
   activateDisaster,
   getPendingDisasters,
@@ -10,7 +10,7 @@ import {
 } from "../../api/Disaster";
 import Table from "../../components/Table";
 import { useParams, useNavigate } from 'react-router-dom';
- 
+
 
 export default function ActivateResponse() {
   const { id } = useParams();
@@ -29,6 +29,10 @@ export default function ActivateResponse() {
   ); // check if the user is a coordinator on page load
 
   const fetchData = async () => {
+    getPendingDisasters().then((response) => {
+      const pendingDisasters = response;
+      setDisasters(pendingDisasters);
+    });
     if (selectedDisaster) {
       const disasterInfo = await getIndividualDisaster(selectedDisaster);
       setSelectedDisaster(selectedDisaster);
@@ -36,28 +40,24 @@ export default function ActivateResponse() {
       setRadius(disasterInfo.disasterData.radius ?? "0");
       setSite(disasterInfo.disasterData.site ?? "");
       setSize(disasterInfo.disasterData.size ?? "0");
+      console.log("reports ", disasterInfo.disasterData.reports)
       setReports(disasterInfo.disasterData.reports ?? []);
       setDisasterName(disasterInfo.disasterData.disasterName ?? "");
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
-      getAddressFromLatLng(disasterInfo.disasterData.latitude,disasterInfo.disasterData.longitude, setAddress);
-    } else {
-      getPendingDisasters().then((response) => {
-        const pendingDisasters = response;
-        setDisasters(pendingDisasters);
-      });
+      getAddressFromLatLng(disasterInfo.disasterData.latitude, disasterInfo.disasterData.longitude, setAddress);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedDisaster]);
 
   const handleDropdownChange = async (event) => {
     if (event.target.value !== "") {
       setSelectedDisaster(event.target.value);
     }
   };
-  
+
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -76,33 +76,33 @@ export default function ActivateResponse() {
   if (isCoordinator) {
     return (
       <Container>
-        <Title style={{marginBottom: "20px"}}>Activate A Disaster Response</Title>
+        <Title style={{ marginBottom: "20px" }}>Activate A Disaster Response</Title>
         <Form>
-          { selectedDisaster == "" &&
-          <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label>Select Report Grouping</Label>
-            <Select
-              id="disaster"
-              value={selectedDisaster || ""}
-              onChange={handleDropdownChange}
-              style={{
-                color: "#a5a5a5",
-              }}
-            >
-              <Option value="" disabled>
-                Select a Options
-              </Option>
-              {disasters.map((disaster) => (
-                <Option
-                  key={disaster._id}
-                  value={disaster._id}
-                  style={{ color: "black" }}
-                >
-                  {disaster.disasterName}
+          {selectedDisaster == "" &&
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Select Report Grouping</Label>
+              <Select
+                id="disaster"
+                value={selectedDisaster || ""}
+                onChange={handleDropdownChange}
+                style={{
+                  color: "#a5a5a5",
+                }}
+              >
+                <Option value="" disabled>
+                  Select a Options
                 </Option>
-              ))}
-            </Select>
-          </div>
+                {disasters.map((disaster) => (
+                  <Option
+                    key={disaster._id}
+                    value={disaster._id}
+                    style={{ color: "black" }}
+                  >
+                    {disaster.disasterName}
+                  </Option>
+                ))}
+              </Select>
+            </div>
           }
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label htmlFor="disasterType">Select Disaster Type</Label>
@@ -181,15 +181,15 @@ export default function ActivateResponse() {
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
-          <Submit type="submit" className="activate-response-btn" onClick={handleSubmit} value="Activate Response"/>
+          <Submit type="submit" className="activate-response-btn" onClick={handleSubmit} value="Activate Response" />
         </Form>
         <div>
-            {selectedDisaster !== "" && 
-              <Subtitle>Related reports</Subtitle> 
-            }
-            {selectedDisaster !== "" && 
-              <Table data={reports} />
-            }
+          {selectedDisaster !== "" &&
+            <Subtitle>Related reports</Subtitle>
+          }
+          {selectedDisaster !== "" &&
+            <Table data={reports} />
+          }
         </div>
       </Container>
     );
