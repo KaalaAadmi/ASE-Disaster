@@ -17,3 +17,19 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+.view-report-top-btn:hover {
+  background-color: rgb(83 105 214);
+}
+
+.report-table-submit-btn:hover {
+  background-color: rgb(83 105 214);
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+select {
+  cursor: pointer;
+}
