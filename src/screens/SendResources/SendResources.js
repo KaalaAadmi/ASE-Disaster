@@ -35,11 +35,11 @@ export default function SendResources() {
     setSubmitting(true);
     await requestResponders(
       selectedDisaster,
-      ambulances,
-      police,
-      fire,
-      bus,
-      helicopter,
+      parseInt(ambulances),
+      parseInt(police),
+      parseInt(fire),
+      parseInt(bus),
+      parseInt(helicopter),
       evacuation
     );
     setSubmitting(false);
