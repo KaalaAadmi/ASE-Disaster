@@ -68,6 +68,7 @@ export default function Bulletin() {
     setDisplayData(filteredData);
   }, [selectedFilters]);
   return (
+    <div className="bulletin-container">
     <div className="bulletin-page">
       {/* Headers and details */}
       <div className="bulletin__header">
@@ -84,7 +85,7 @@ export default function Bulletin() {
       <div  style={{ display: "flex" }}>
         {types.length > 0 ?
           (types.map((item, index) => (
-            <p id = "filter-bubble"
+            <p
               key={index}
               name={item}
               className={
@@ -171,30 +172,33 @@ export default function Bulletin() {
                   >
                     {!(selected === index) && (
                       <p 
-                        id="filter-bubble"
                         style={{
-                          border: "1px solid #fefefe",
-                          padding: "10px",
+                          border: "3px solid #fefefe",
+                          padding: "10px 25px",
                           borderRadius: "50px",
                           alignItems: "center",
+                          display: "flex",
+                          justifyContent: "center",
+                          marginRight: "25px",
                         }}
                       >
-                        <CgCalendarDates size={20} />{" "}
+                        <CgCalendarDates size={20} style={{marginRight: "10px"}} />{" "}
                         {format(parseISO(item.created_at), "dd MMM, yyyy")}
                       </p>
                     )}
                     {!(selected === index) && (
                       <p
-                        id="filter-bubble"
                         style={{
-                          border: "1px solid #fefefe",
-                          padding: "10px",
+                          border: "3px solid #fefefe",
+                          padding: "10px 25px",
                           borderRadius: "50px",
-                          // alignItems: "center",
+                          alignItems: "center",
                           alignContent: "center",
+                          display: "flex",
+                          justifyContent: "center",
                         }}
                       >
-                        <HiOutlineLocationMarker size={20} /> {item.location}
+                        <HiOutlineLocationMarker size={20} style={{marginRight: "10px"}}/> {item.location}
                         {/* {console.log(item.location)} */}
                       </p>
                     )}
@@ -266,6 +270,7 @@ export default function Bulletin() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }
