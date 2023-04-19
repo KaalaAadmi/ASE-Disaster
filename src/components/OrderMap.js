@@ -11,15 +11,16 @@ import axios from "axios";
 import { markerData } from "../assets/data";
 import { rr_create_obstacle, rr_avoid_obstacle } from "./direction_rr";
 import { getResourses, clearRoutes } from "./reroute";
-
+import { useParams, useNavigate } from 'react-router-dom';
+import { getOrder } from "../api/Order";
 import {
-	createDisasterMarkers,
-	createSafeHouseMarkers,
-	createHospitalMarkers,
-	createGardaMarkers,
-	createFirestationMarkers,
-	clearMarkers,
-} from "./Markers";
+	createDisasterMarker,
+	createSafeHouseMarker,
+	createHospitalMarker,
+	createGardaMarker,
+	createFirestationMarker,
+	clearMarker,
+} from "./OrderMarkers";
 
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
@@ -42,28 +43,26 @@ let disasterJson = null;
 let obstacle = null;
 //let disasterLocation = null;
 
-const Map = (props) => {
+const OrderMap = (props) => {
+	const { id } = useParams();
 	// create references for the map
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 
-	const [selectedDisaster, setSelectedDisaster] = React.useState(null);
-	const [disasterData, setDisasterData] = React.useState();
+	const [selectedOrder, setSelectedOrder] = React.useState(id || "");
+	const [orderData, setOrderData] = React.useState({});
 
 	useEffect(() => {
-		const getData = async () => {
+		const fetchData = async () => {
 			try {
-				const res = await axios.get("http://127.0.0.1:8000/api/v1/active-disaster-data");
-				disasterJson = res.data
-				//console.log(disasterJson)
-				obstacle = rr_create_obstacle(disasterJson);
-				setDisasterData(res.data);
-
+				const order = await getOrder(id);
+				console.log(order);
+				setOrderData(order.order);
 			} catch (error) {
 				console.log(error);
 			}
 		};
-		getData();
+		fetchData();
 	}, []);
 
 
@@ -229,54 +228,56 @@ const Map = (props) => {
 		clearRoutes(map.current);
 	};
 
-	const generateRoutesForSelectedDisaster = async (disasters, selectedDisaster) => {
-		if (selectedDisaster) {
+	const generateOrderRoute = async (orderData) => {
+		if (orderData && orderData.location) {
 			clearMarkersAndRoutes();
-			clearMarkers();
-			const disaster = disasters.find(d => d._id === selectedDisaster);
-			if (disaster) {
+			clearMarker();
 
-				// Fetch resources for the current disaster
-				const loc_safehouses = await getResourses(disaster._id, 'rest centre');
-				console.log(disaster._id)
-				console.log(loc_safehouses)
-				const loc_hospitals = await getResourses(disaster._id, 'ambulance');
-				const loc_gardi = await getResourses(disaster._id, 'garda');
-				const loc_firestations = await getResourses(disaster._id, 'fire');
+			const resourceLocation = {
+				lat: parseFloat(orderData.latitude),
+				lng: parseFloat(orderData.longitude),
+				id: orderData.location._id,
+			};
 
-				const disasterLocation = {
-					lat: disaster.latitude,
-					lng: disaster.longitude,
-					id: disaster._id,
-				};
-				// Call the route creation functions for each type of resource and disaster
-				if (loc_safehouses !== null && loc_safehouses.length !== 0) {
-					createSafeHouseMarkers([loc_safehouses[loc_safehouses.length - 1]], map);
-					addRoute_safehouse(map.current, disasterLocation, loc_safehouses[loc_safehouses.length - 1]);
-				}
+			const disasterLocation = {
+				lat: parseFloat(orderData.location.latitude),
+				lng: parseFloat(orderData.location.longitude),
+				id: orderData.disaster._id,
+			};
 
-				if (loc_hospitals !== null && loc_hospitals.length !== 0) {
-					createHospitalMarkers([loc_hospitals[loc_hospitals.length - 1]], map);
-					addRoute_hospital(map.current, disasterLocation, loc_hospitals[loc_hospitals.length - 1]);
-				}
+			switch (orderData.resource) {
+				case 'rest centre':
+					createSafeHouseMarker([orderData.location], map);
+					addRoute_safehouse(map.current, disasterLocation, resourceLocation);
+					break;
 
-				if (loc_gardi !== null && loc_gardi.length !== 0) {
-					createGardaMarkers([loc_gardi[loc_gardi.length - 1]], map);
-					addRoute_garda(map.current, disasterLocation, loc_gardi[loc_gardi.length - 1]);
-				}
+				case 'ambulance':
+					createHospitalMarker([orderData.location], map);
+					addRoute_hospital(map.current, disasterLocation, resourceLocation);
+					break;
 
-				if (loc_firestations !== null && loc_firestations.length !== 0) {
-					createFirestationMarkers([loc_firestations[loc_firestations.length - 1]], map);
-					addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
-				}
+				case 'garda':
+					createGardaMarker([orderData.location], map);
+					addRoute_garda(map.current, disasterLocation, resourceLocation);
+					break;
+
+				case 'fire':
+					createFirestationMarker([orderData.location], map);
+					addRoute_firestation(map.current, disasterLocation, resourceLocation);
+					break;
+
+				default:
+					console.log('Resource type not recognized');
+					break;
 			}
 		}
 	};
+
 	React.useEffect(() => {
-		if (map.current && disasterJson && selectedDisaster) {
-			generateRoutesForSelectedDisaster(disasterJson, selectedDisaster);
+		if (map.current && orderData) {
+			generateOrderRoute(orderData);
 		}
-	}, [selectedDisaster]);
+	}, [orderData]);
 
 	if ((viewState.latitude && viewState.longitude)) {
 		return (
@@ -290,14 +291,9 @@ const Map = (props) => {
             </div> */}
 						{/* Add a sidebar to display the list of disasters */}
 						<div className="disaster-sidebar">
-							<h3>Disasters</h3>
+							<h3>Instructions</h3>
 							<ul>
-								{disasterData &&
-									disasterData.map((disaster) => (
-										<li key={disaster._id} onClick={() => setSelectedDisaster(disaster._id)}>
-											{disaster.disasterName}
-										</li>
-									))}
+								{orderData.instuctions}
 							</ul>
 						</div>
 
@@ -317,4 +313,4 @@ const Map = (props) => {
 	}
 };
 
-export default Map;
+export default OrderMap;

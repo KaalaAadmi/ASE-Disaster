@@ -3,7 +3,7 @@ import axios from "axios";
 const accessToken =
   "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
 
-export const getAddressFromLatLng = (latitude, longitude, setAddress) => {
+export const getAddressFromLatLng = (latitude, longitude, setAddress = () => {}, setAddresses = () => {}, index = () => {}) => {
   const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`;
 
   axios.get(apiUrl)
@@ -11,7 +11,9 @@ export const getAddressFromLatLng = (latitude, longitude, setAddress) => {
       const features = response.data.features;
       if (features.length > 0) {
         const address = features[0].place_name;
+        console.log(address);
         setAddress(address ?? "");
+        setAddresses(prevAddresses => ({ ...prevAddresses, [index]: address }));
       } else {
         console.log('No address found');
       }
@@ -19,7 +21,7 @@ export const getAddressFromLatLng = (latitude, longitude, setAddress) => {
     .catch((error) => {
       console.log(error);
       console.log('Error retrieving data');
-    });
+    })
 };  
 
 export const getCurrentLoc = (setLatitude, setLongitude) => {
@@ -51,11 +53,11 @@ export const getCurrentLoc = (setLatitude, setLongitude) => {
     }
   };
 
-const validAddressRegex = /^(\d+)[\s\S]*$/;
+const validAddressRegex = /^(\d+[\s\S]*$|^[^\d].*$)/;
 
 export const getPosition = async (address, setAddress, setLatitude, setLongitude) => {
     if (!validAddressRegex.test(address)) {
-        alert("Invalid address format. Please provide a single building number.");
+        alert("Invalid address format.");
         return;
     }
     setAddress(address);

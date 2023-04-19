@@ -5,10 +5,12 @@ import { typeOptions, siteOptions } from "../../components/DropdownOptions";
 import {disasterOrders} from "../../api/Order";
 import { getAddressFromLatLng, getPosition} from "../../components/Addresses"
 import { BiSearchAlt } from "react-icons/bi";
-import {activateDisaster, getAllDisasters, getIndividualDisaster} from "../../api/Disaster";
+import {getAllDisasters, getIndividualDisaster, updateDisaster} from "../../api/Disaster";
 import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+
+const FRONTEND = "http://localhost:3000";
 
 export default function DisasterInformation() {
   const { id } = useParams();
@@ -22,13 +24,13 @@ export default function DisasterInformation() {
   const [disasterDetails, setDisasterDetails] = useState("");
   const [evacuation, setEvacuation] = useState(false);
   const [reports, setReports] = useState([]);
-  const [status, setStatus] = useState("active");
+  const [status, setStatus] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [address, setAddress] = useState("");
   const [orders, setOrders] = useState([]);
   const [isCoordinator, setIsCoordinator] = useState(
-      localStorage.getItem("isAdmin") === "true"
+    localStorage.getItem("isAdmin") === "true"
   ); // check if the user is a coordinator on page load
 
   const fetchData = async () => {
@@ -37,7 +39,8 @@ export default function DisasterInformation() {
       console.log("All disasters:", allDisasters);
       setDisasters(allDisasters);
     });
-    if (selectedDisaster) {
+    console.log(selectedDisaster);
+    if (selectedDisaster !== "") {
       const disasterInfo = await getIndividualDisaster(selectedDisaster);
       setSelectedDisaster(selectedDisaster);
       const currentOrders = await disasterOrders(selectedDisaster);
@@ -48,7 +51,7 @@ export default function DisasterInformation() {
       setSite(disasterInfo.disasterData.site ?? "");
       setSize(disasterInfo.disasterData.size ?? "0");
       setReports(disasterInfo.disasterData.reports ?? []);
-      setStatus(disasterInfo.disasterData.status ?? "Active");
+      setStatus(disasterInfo.disasterData.status ?? "Pending");
       setDisasterName(disasterInfo.disasterData.disasterName ?? "");
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
       setLatitude(disasterInfo.disasterData.latitude ?? "");
@@ -59,17 +62,19 @@ export default function DisasterInformation() {
 
   useEffect(() => {
     fetchData();
-  }, [selectedDisaster, latitude, longitude, address]);
+  }, [selectedDisaster]);
 
   const getOptionBackgroundColor  = (disaster) => {
     const isActive = disaster.status === "active";
     return isActive ? "#b3e5d1" : "white";
   };  
 
-  const getDropdownBackgroundColor = async(selectedDisaster) => {
-    const disasterInfo = await getIndividualDisaster(selectedDisaster);
-    const isActive = disasterInfo.disasterData.status === "active";
-    return isActive ? "#b3e5d1" : "white";
+  const getDropdownBackgroundColor = async(disaster) => {
+    if (disaster !== ""){
+      const disasterInfo = await getIndividualDisaster(disaster);
+      const isActive = disasterInfo.disasterData.status === "active";
+      return isActive ? "#b3e5d1" : "white";
+    }
   };  
 
   const handleCheckboxChange = (event) => {
@@ -92,7 +97,8 @@ export default function DisasterInformation() {
                 value={selectedDisaster || ""}
                 onChange={handleDropdownChange}
                 style={{
-                  backgroundColor: getDropdownBackgroundColor(selectedDisaster),
+                  color: "#a5a5a5",
+                  backgroundColor: getDropdownBackgroundColor(selectedDisaster || ""),
                 }}
               >
                 <Option value="" disabled>
@@ -121,11 +127,13 @@ export default function DisasterInformation() {
               }}
             >
               <Label>Address:</Label>
-              <Input id="location" type="text" value={address}
-                    onChange={(event) => setAddress(event.target.value)}/>
+              <Input id="location" type="text" 
+                value={address}
+                onChange={(event) => setAddress(event.target.value)}
+              />
               <div
                 className="searchLoc"
-                onClick={() => getPosition(address, setLatitude, setLongitude)}
+                onClick={() => getPosition(address, setAddress, setLatitude, setLongitude)}
                 style={{
                   height: 22,
                   width: 22,
@@ -175,6 +183,7 @@ export default function DisasterInformation() {
                 value={status}
                 onChange={(event) => setStatus(event.target.value)}
               >
+              <Option value="pending" label="Pending"></Option>
               <Option value="active" label="Active"></Option>
               <Option value="resolved" label="Resolved"></Option>
               </Select>
@@ -243,11 +252,14 @@ export default function DisasterInformation() {
             </div>
             <div style={{ display: "flex", flexDirection:"row", alignItems: "center" }}>
               <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
-              <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
+              <input type="checkbox" checked={evacuation} readOnly />
             </div>
-            <button type="submit" onClick={() => activateDisaster(selectedDisaster, type, radius, size, site, disasterName, disasterDetails)}>
-            Save Information
-            </button>
+            <Submit type="submit" value="Save Information" onClick={() => updateDisaster(selectedDisaster, {"latitude":latitude, "longitude":longitude, "status":status, "type":type, "radius":radius, "size":size, "site":site, "disasterName":disasterName, "disasterDetails":disasterDetails})}/>
+            {status =="active" && (
+              <Link to={`/send-resources/${selectedDisaster}`}>
+                <Submit type="submit" value="Send Resources" />
+              </Link>
+            )}
           </Form>
           <div>
             {selectedDisaster !== "" && 

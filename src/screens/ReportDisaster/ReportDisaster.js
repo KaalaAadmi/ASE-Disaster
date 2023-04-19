@@ -95,6 +95,7 @@ export default function ReportDisaster() {
         <Submit
           type="submit"
           onClick={handleSubmit}
+          value="Submit Report"
         />
       </Form>
     </Container>

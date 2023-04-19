@@ -1,9 +1,12 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 // import { useParams } from 'react-router-dom';
 import "./SendResources.css";
-import {Container, Title, Form, Label, Submit, Input, Select, Option} from "../style"
-import {getActiveDisasters, getIndividualDisaster} from "../../api/Disaster";
-import {requestResponders} from "../../api/Order";
+import { Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option } from "../style"
+import { getActiveDisasters, getIndividualDisaster } from "../../api/Disaster";
+import { disasterOrders } from "../../api/Order";
+import { requestResponders } from "../../api/Order";
+import Table from "../../components/Table";
+import OrderTable from "../../components/OrderTable";
 import { useParams, useNavigate } from 'react-router-dom';
 
 export default function SendResources() {
@@ -16,6 +19,8 @@ export default function SendResources() {
   const [bus, setBus] = useState("0");
   const [helicopter, setHelicopter] = useState("0");
   const [evacuation, setEvacuation] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [reports, setReports] = useState([]);
   const [isCoordinator, setIsCoordinator] = useState(
     localStorage.getItem("isAdmin")
   ); // check if the user is a coordinator on page load
@@ -24,9 +29,18 @@ export default function SendResources() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await requestResponders(selectedDisaster, ambulances, fire, police, helicopter, bus, evacuation)
-    navigate.push(`/disaster-information/${selectedDisaster}`); 
-  }
+    console.log(helicopter);
+    await requestResponders(
+      selectedDisaster,
+      ambulances,
+      police,
+      fire,
+      bus,
+      helicopter,
+      evacuation
+    );
+    navigate(`/disaster-information/${selectedDisaster}`);
+  };
 
   const fetchData = async () => {
     getActiveDisasters().then((response) => {
@@ -36,28 +50,33 @@ export default function SendResources() {
     });
     if (selectedDisaster) {
       const disasterInfo = await getIndividualDisaster(selectedDisaster);
+      setReports(disasterInfo.disasterData.reports ?? []);
+      const currentOrders = await disasterOrders(selectedDisaster);
+      setOrders(currentOrders);
       setAmbulances(disasterInfo.disasterData.ambulance ?? "0");
       setFire(disasterInfo.disasterData.fire ?? "0");
       setPolice(disasterInfo.disasterData.police ?? "0");
       setBus(disasterInfo.disasterData.bus ?? "0");
       setHelicopter(disasterInfo.disasterData.helicopter ?? "0");
+      console.log("disasterInfo", disasterInfo.disasterData.helicopter)
+      console.log(helicopter);
       setEvacuation(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedDisaster]);
 
   const handleDropdownChange = async (event) => {
-    if (event.target.value !== ""){
+    if (event.target.value !== "") {
       setSelectedDisaster(event.target.value);
     }
   };
   const handleCheckboxChange = (event) => {
     setEvacuation(event.target.checked);
   };
-  if (isCoordinator){
+  if (isCoordinator) {
     return (
       <Container>
         <Title>Send Resources</Title>
@@ -72,37 +91,37 @@ export default function SendResources() {
                 color: "#a5a5a5",
               }}
             >
-            <Option value="" disabled>Select a Options</Option>
-            {disasters.map((disaster) => (
-              <Option key={disaster._id} value={disaster._id}>
-                {disaster.disasterName}
-              </Option>
-            ))}
+              <Option value="" disabled>Select a Options</Option>
+              {disasters.map((disaster) => (
+                <Option key={disaster._id} value={disaster._id}>
+                  {disaster.disasterName}
+                </Option>
+              ))}
             </Select>
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Number of Ambulances to send</Label>
-            <Input 
+            <Input
               type="number"
-              style={{ boxShadow: "none !important" }} 
+              style={{ boxShadow: "none !important" }}
               value={ambulances}
               onChange={(event) => setAmbulances(event.target.value)}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Number of Fire Engines to send</Label>
-            <Input 
+            <Input
               type="number"
-              style={{ boxShadow: "none !important" }} 
+              style={{ boxShadow: "none !important" }}
               value={fire}
               onChange={(event) => setFire(event.target.value)}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Number of Garda Units to send</Label>
-            <Input 
-              type="number" 
-              style={{ boxShadow: "none !important" }} 
+            <Input
+              type="number"
+              style={{ boxShadow: "none !important" }}
               value={police}
               onChange={(event) => setPolice(event.target.value)}
             />
@@ -110,31 +129,46 @@ export default function SendResources() {
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Number of Helicopters to sent:</Label>
             <Input
+              type="number"
               value={helicopter}
               onChange={(event) => setHelicopter(event.target.value)}
             />
           </div>
-          <div style={{ display: "flex", flexDirection:"row", alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
             <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
             <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
           </div>
 
           {evacuation && (
-          <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label>Number of Buses</Label>
-            <Input
-            type="number"
-            value={bus}
-            onChange={(event) => setBus(event.target.value)}
-            />
-          </div>
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+              <Label>Number of Buses</Label>
+              <Input
+                type="number"
+                value={bus}
+                onChange={(event) => setBus(event.target.value)}
+              />
+            </div>
           )}
-          <Submit type="submit" onClick={handleSubmit}/>
+          <Submit type="submit" value="Send Resources" onClick={handleSubmit} />
         </Form>
+        <div>
+          {selectedDisaster !== "" &&
+            <Subtitle>Related reports</Subtitle>
+          }
+          {selectedDisaster !== "" &&
+            <Table data={reports} />
+          }
+        </div>
+        <div>
+          {orders.length !== 0 &&
+            <Subtitle>Requested Resources</Subtitle> &&
+            <OrderTable data={orders}
+            />}
+        </div>
       </Container>
     );
   } else {
-    return(
+    return (
       <Container>
         <Title>ACCESS DENIED</Title>
       </Container>

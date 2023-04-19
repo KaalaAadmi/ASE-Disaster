@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { updateReport } from "../api/Report";
 import axios from "axios";
+
+import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../screens/style"
 import "./Table.css";
 
 function Table(props) {
@@ -109,12 +111,8 @@ function Table(props) {
 
   return (
     <>
-    <button onClick={handleResponderFilterClick}>
-        {isResponderFilter ? "Show All" : "Show Only Responder Messages"}
-    </button>
-    <button onClick={handleSpamFilterClick}>
-        {isSpamFilter ? "Show All" : "Remove Spam"}
-    </button>
+    <Submit type="submit" value={isResponderFilter ? "Show All" : "Show Only Responder Messages"} onClick={handleResponderFilterClick}/>
+    <Submit type="submit" value={isSpamFilter ? "Show All" : "Remove Spam"} onClick={handleSpamFilterClick}/>
     <div>
     <table>
       <thead>
