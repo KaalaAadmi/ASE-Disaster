@@ -24,7 +24,7 @@ export const addReport = async (type, latitude, longitude, details, token) => {
         console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not submit report.");
     }
 };
 
@@ -40,7 +40,7 @@ export const getReports = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get report records.");
     }
 };
 
@@ -56,7 +56,7 @@ export const getIndividualReport = async (id) => {
         return JSON.stringify(response.data);
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get individual report record.");
     }
 };
 
@@ -76,6 +76,6 @@ export const updateReport = async (id, details) => {
         console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not update report record.");
     }
 };

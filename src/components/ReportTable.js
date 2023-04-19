@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { format, parseISO } from "date-fns";
-import { updateReport } from "../api/Report";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import { updateReport, getReports } from "../api/Report";
 import { getRelevantDisasters, addReportToDisaster } from "../api/Disaster";
 import "./Table.css";
 
@@ -8,12 +8,12 @@ const FRONTEND = "http://localhost:3000";
 
 function ReportTable(props) {
   const [reports, setReports] = useState(props.data);
-  const [disasters, setDisasters] = useState(props.data);
+  // const [disasters, setDisasters] = useState(props.data);
+  const [disasters, setDisasters] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [isResponderFilter, setIsResponderFilter] = useState(false);
   const [isSpamFilter, setIsSpamFilter] = useState(false);
   const [selectedDisaster, setSelectedDisaster] = useState("");
-  const [assignedDisaster, setAssignedDisaster] = useState("");
 
   const handleDisasterFilterChange = (e) => {
     setSelectedDisaster(e.target.value);
@@ -38,6 +38,9 @@ function ReportTable(props) {
       } else if (key === 'isResponder') {
         aValue = a.isResponder ? 1 : 0;
         bValue = b.isResponder ? 1 : 0;
+      } else if (key === 'disasterStatus') {
+        aValue = a.disaster?.status ?? '';
+        bValue = b.disaster?.status ?? '';
       } else {
         aValue = a[key];
         bValue = b[key];
@@ -54,6 +57,31 @@ function ReportTable(props) {
   
     return sortedData;
   };  
+
+  async function fetchDisasterData() {
+    try {
+      const response = await getRelevantDisasters();
+      // Process the response data here, if necessary
+      const relevantDisasters = response;
+      setDisasters(relevantDisasters);
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(disasters);
+  }
+
+  async function fetchReportData() {
+    try {
+      const response = await getReports();
+      // Process the response data here, if necessary
+      const relevantReports = response;
+      setReports(relevantReports);
+    } catch (error) {
+      console.log(error);
+    }
+    console.log("REFRESH REPORTS");
+    console.log(reports);
+  }
 
   useEffect(() => {
     let filteredData = props.data;
@@ -74,15 +102,9 @@ function ReportTable(props) {
       setReports(filteredData);
     }
 
-    async function fetchData() {
-      getRelevantDisasters().then((response) => {
-        // Process the response data here, if necessary
-        const relevantDisasters = response;
-        setDisasters(relevantDisasters);
-      });
-    }
-    fetchData();
-  }, [props, sortConfig, isResponderFilter, isSpamFilter, selectedDisaster, assignedDisaster]);
+    fetchDisasterData();
+    // fetchReportData();
+  }, [props, sortConfig, isResponderFilter, isSpamFilter, selectedDisaster]);
 
   const handleSpamChange = (index) => {
     const newData = [...reports];
@@ -91,9 +113,10 @@ function ReportTable(props) {
     updateReport(newData[index]._id, newData[index]);
   };
 
-  const handleDisasterChange = (index, disasterID) => {
-    addReportToDisaster(disasterID, reports[index]._id);
-    setAssignedDisaster(disasterID);
+  const handleDisasterChange = async (index, disasterID) => {
+    await addReportToDisaster(disasterID, reports[index]._id);
+    console.log("REFRESH REPORTS");
+    fetchReportData();
   };
 
   const handleColumnHeaderClick = (key) => {
@@ -110,6 +133,23 @@ function ReportTable(props) {
     window.location.href = url;
   };
 
+  const viewReport = (disasterId) => {
+    const baseUrl = `${FRONTEND}/disaster-information`; // Replace with the desired base URL for viewing reports
+    const url = `${baseUrl}/${disasterId}`;
+    window.location.href = url;
+  };
+  
+
+  const getOptionBackgroundColor  = (disaster) => {
+    const isActive = disaster.status === "active";
+    return isActive ? "#b3e5d1" : "white";
+  };  
+
+  const getDropdownBackgroundColor   = (disaster) => {
+    const isActive = disaster.status === "active";
+    return isActive ? "#b3e5d1" : "white";
+  };  
+
   return (
     <>
     <button onClick={handleResponderFilterClick}>
@@ -121,12 +161,11 @@ function ReportTable(props) {
     <select value={selectedDisaster} onChange={handleDisasterFilterChange}>
       <option value="">All Disasters</option>
       {disasters.map((disaster) => (
-        <option key={disaster._id} value={disaster._id}>
+        <option key={disaster._id} value={disaster._id} style={{background: getOptionBackgroundColor (disaster)}}>
           {disaster.disasterName}
         </option>
       ))}
     </select>
-
     
     <table>
       <thead>
@@ -137,7 +176,7 @@ function ReportTable(props) {
           <th className="table-header" onClick={() => handleColumnHeaderClick("reports")}>Related Reports</th>
           <th className="table-header" onClick={() => handleColumnHeaderClick("created_at")}>Creation Time</th>
           <th className="table-header" onClick={() => handleColumnHeaderClick("disaster")}>Assign to Disaster</th>
-          <th className="table-header"></th>
+          <th className="table-header" onClick={() => handleColumnHeaderClick("disasterStatus")}>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -154,28 +193,36 @@ function ReportTable(props) {
             </td>
             <td className="table-cell">{row.disaster?.reports?.length ?? "0"}</td>
             <td className="table-cell">
-              {format(parseISO(row.created_at), "dd MMM, yyyy")}
+              {formatDistanceToNow(parseISO(row.created_at), { addSuffix: true })}
             </td>
             <td className="table-cell">
               <select
                 value={row.disaster?._id ?? ""}
                 onChange={(e) => handleDisasterChange(index, e.target.value)}
+                style={{
+                  backgroundColor: getDropdownBackgroundColor(row.disaster),
+                }}
               >
                 <option value="" disabled>
                   No Disaster Assigned
                 </option>
                 {disasters.map((disaster) => (
-                  <option key={disaster._id} value={disaster._id}>
+                  <option key={disaster._id} value={disaster._id} style={{background: getOptionBackgroundColor (disaster),
+                  }}>
                     {disaster.disasterName}
                   </option>
                 ))}
               </select>
-            </td>
+            </td> 
             <td className="table-cell">
               {row.disaster ? (
-                <button onClick={() => goToDisasterUrl(row.disaster._id)}>
-                  Activate Disaster
-                </button>
+                row.disaster.status === "active" ? (
+                  <button onClick={() => viewReport(row.disaster._id)}>View Disaster</button>
+                ) : (
+                  <button onClick={() => goToDisasterUrl(row.disaster._id)}>
+                    Activate Disaster
+                  </button>
+                )
               ) : (
                 <span>No Disaster Assigned</span>
               )}

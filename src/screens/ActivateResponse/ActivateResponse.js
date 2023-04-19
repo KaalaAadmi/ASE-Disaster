@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./ActivateResponse.css";
-import {Container, Title, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
+import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
+import { getAddressFromLatLng, getPosition} from "../../components/Addresses"
 import {
   activateDisaster,
-  getPendingDisasters,
+  getActiveDisasters,
   getIndividualDisaster,
 } from "../../api/Disaster";
+import Table from "../../components/Table";
 import { useParams, useNavigate } from 'react-router-dom';
+
 
 export default function ActivateResponse() {
   const { id } = useParams();
@@ -19,36 +22,40 @@ export default function ActivateResponse() {
   const [size, setSize] = useState("0");
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
+  const [reports, setReports] = useState([]);
+  const [address, setAddress] = useState("");
   const [isCoordinator, setIsCoordinator] = useState(
     localStorage.getItem("isAdmin") === "true"
   ); // check if the user is a coordinator on page load
 
-  useEffect(() => {
-    async function fetchData() {
-      getPendingDisasters().then((response) => {
-        // Process the response data here, if necessary
-        const pendingDisasters = response;
-        console.log("Pending disasters:", pendingDisasters);
-        setDisasters(pendingDisasters);
+  const fetchData = async () => {
+    if (selectedDisaster) {
+      const disasterInfo = await getIndividualDisaster(selectedDisaster);
+      setSelectedDisaster(selectedDisaster);
+      setType(disasterInfo.disasterData.type ?? "");
+      setRadius(disasterInfo.disasterData.radius ?? "0");
+      setSite(disasterInfo.disasterData.site ?? "");
+      setSize(disasterInfo.disasterData.size ?? "0");
+      setReports(disasterInfo.disasterData.reports ?? []);
+      setDisasterName(disasterInfo.disasterData.disasterName ?? "");
+      setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
+      getAddressFromLatLng(disasterInfo.disasterData.latitude,disasterInfo.disasterData.longitude, setAddress);
+    } else {
+      getActiveDisasters().then((response) => {
+        const activeDisasters = response;
+        console.log("Active disasters:", activeDisasters);
+        setDisasters(activeDisasters);
       });
     }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
   const handleDropdownChange = async (event) => {
     if (event.target.value !== "") {
       setSelectedDisaster(event.target.value);
-      const selectedDisasterId = event.target.value;
-      console.log(`selected disaster: ${selectedDisasterId}`);
-      const disasterInfo = await getIndividualDisaster(selectedDisasterId);
-      console.log(disasterInfo);
-
-      setType(disasterInfo.disasterData.type ?? "");
-      setRadius(disasterInfo.disasterData.radius ?? "0");
-      setSite(disasterInfo.disasterData.site ?? "");
-      setSize(disasterInfo.disasterData.size ?? "0");
-      setDisasterName(disasterInfo.disasterData.disasterName ?? "");
-      setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
     }
   };
   
@@ -65,7 +72,7 @@ export default function ActivateResponse() {
       disasterName,
       disasterDetails
     );
-    navigate.push(`http://localhost:3000/send-resources/${selectedDisaster}`); 
+    navigate(`/send-resources/${selectedDisaster}`);
   };
   if (isCoordinator) {
     return (
@@ -177,6 +184,14 @@ export default function ActivateResponse() {
           </div>
           <Submit type="submit" onClick={handleSubmit} />
         </Form>
+        <div>
+            {selectedDisaster !== "" && 
+              <Subtitle>Related reports</Subtitle> 
+            }
+            {selectedDisaster !== "" && 
+              <Table data={reports} />
+            }
+        </div>
       </Container>
     );
   } else {

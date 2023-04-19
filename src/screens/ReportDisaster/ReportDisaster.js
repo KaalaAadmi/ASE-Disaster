@@ -2,68 +2,22 @@ import React, { useState } from "react";
 import "./ReportDisaster.css";
 import {Container, Title, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 import { BiCurrentLocation, BiSearchAlt } from "react-icons/bi";
-import axios from "axios";
+import { getCurrentLoc, getPosition} from "../../components/Addresses"
 import { addReport } from "../../api/Report";
 import { typeOptions } from "../../components/DropdownOptions";
-
-const accessToken =
-  "pk.eyJ1IjoiZ29yYWFhZG1pIiwiYSI6ImNsY3l1eDF4NjAwbGozcm83OXBiZjh4Y2oifQ.oJTDxjpSUZT5CHQOtsjjSQ";
-
 export default function ReportDisaster() {
   const [type, setType] = useState("");
   const [details, setDetails] = useState("");
-  const [latitude, setLatitude] = useState([]);
-  const [longitude, setLongitude] = useState([]);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [address, setAddress] = useState([]);
   const token = localStorage.getItem("token");
   // check if the user is authenticated on page load
-
-  const getCurrentLoc = (setLatitude, setLongitude) => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        console.log("Latitude is :", position.coords.latitude);
-        setLatitude(position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-        setLongitude(position.coords.longitude);
-        axios
-          .get(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?access_token=${accessToken}`
-          )
-          .then((response) => {
-            if (response.data.features.length > 0) {
-              document.getElementById("location").value =
-                response.data.features[0].place_name;
-            } else {
-              alert("No results found");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            alert("Error retrieving data");
-          });
-      });
-    } else {
-      console.log("Not Available");
-    }
-  };
-
-  const getPosition = (setLatitude, setLongitude) => {
-    const address = document.getElementById("location").value;
-    axios
-      .get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${accessToken}`
-      )
-      .then((response) => {
-        if (response.data.features.length > 0) {
-          setLatitude(response.data.features[0].center[1]);
-          setLongitude(response.data.features[0].center[0]);
-        } else {
-          alert("Location Not Found");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Error retrieving data");
-      });
+  const handleSubmit = async () => {
+    await getPosition(address, setAddress, setLatitude, setLongitude);
+    console.log(latitude);
+    addReport(type, latitude, longitude, details, token);
+    console.log("Submission Success")
   };
   return (
     <Container>
@@ -100,7 +54,8 @@ export default function ReportDisaster() {
           }}
         >
           <Label>Location:</Label>
-          <Input id="location" type="text" />
+          <Input id="location" type="text" value={address}
+                onChange={(event) => setAddress(event.target.value)}/>
           <div
             className="currentLoc"
             onClick={() => getCurrentLoc(setLatitude, setLongitude)}
@@ -117,7 +72,7 @@ export default function ReportDisaster() {
           </div>
           <div
             className="searchLoc"
-            onClick={() => getPosition(setLatitude, setLongitude)}
+            onClick={() => getPosition(address, setAddress, setLatitude, setLongitude)}
             style={{
               height: 22,
               width: 22,
@@ -139,7 +94,7 @@ export default function ReportDisaster() {
         </div>
         <Submit
           type="submit"
-          onClick={() => addReport(type, latitude, longitude, details, token)}
+          onClick={handleSubmit}
         />
       </Form>
     </Container>

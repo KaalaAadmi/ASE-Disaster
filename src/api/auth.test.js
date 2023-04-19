@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { login, logout } from './auth';
+import { login, logout } from './Auth';
 
 const mock = new MockAdapter(axios);
 

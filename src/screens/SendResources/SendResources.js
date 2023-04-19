@@ -4,8 +4,7 @@ import "./SendResources.css";
 import {Container, Title, Form, Label, Submit, Input, Select, Option} from "../style"
 import {getActiveDisasters, getIndividualDisaster} from "../../api/Disaster";
 import {requestResponders} from "../../api/Order";
-import { useParams } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function SendResources() {
   const { id } = useParams();
@@ -21,30 +20,38 @@ export default function SendResources() {
     localStorage.getItem("isAdmin")
   ); // check if the user is a coordinator on page load
 
-  useEffect(() => {
-    async function fetchData() {
-      getActiveDisasters().then((response) => {
-        // Process the response data here, if necessary
-        const activeDisasters = response;
-        console.log("Active disasters:", activeDisasters);
-        setDisasters(activeDisasters);
-      });
-    }
-    fetchData();
-  }, []);
+  const navigate = useNavigate();
 
-  const handleDropdownChange = async (event) => {
-    if (event.target.value !== ""){
-      const selectedDisasterID = event.target.value;
-      setSelectedDisaster(event.target.value);
-      const disasterInfo = await getIndividualDisaster(selectedDisasterID);
-      console.log(disasterInfo);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await requestResponders(selectedDisaster, ambulances, fire, police, helicopter, bus, evacuation)
+    navigate.push(`/disaster-information/${selectedDisaster}`); 
+  }
+
+  const fetchData = async () => {
+    getActiveDisasters().then((response) => {
+      // Process the response data here, if necessary
+      const activeDisasters = response;
+      setDisasters(activeDisasters);
+    });
+    if (selectedDisaster) {
+      const disasterInfo = await getIndividualDisaster(selectedDisaster);
       setAmbulances(disasterInfo.disasterData.ambulance ?? "0");
       setFire(disasterInfo.disasterData.fire ?? "0");
       setPolice(disasterInfo.disasterData.police ?? "0");
       setBus(disasterInfo.disasterData.bus ?? "0");
       setHelicopter(disasterInfo.disasterData.helicopter ?? "0");
       setEvacuation(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleDropdownChange = async (event) => {
+    if (event.target.value !== ""){
+      setSelectedDisaster(event.target.value);
     }
   };
   const handleCheckboxChange = (event) => {
@@ -55,7 +62,6 @@ export default function SendResources() {
       <Container>
         <Title>Send Resources</Title>
         <Form>
-          { selectedDisaster == "" &&
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Disaster:</Label>
             <Select
@@ -74,7 +80,6 @@ export default function SendResources() {
             ))}
             </Select>
           </div>
-          }
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Number of Ambulances to send</Label>
             <Input 
@@ -124,7 +129,7 @@ export default function SendResources() {
             />
           </div>
           )}
-          <Submit type="submit" onClick={() => requestResponders("64298e50ab316b690c196dd9", ambulances, fire, police, helicopter, bus, evacuation)}/>
+          <Submit type="submit" onClick={handleSubmit}/>
         </Form>
       </Container>
     );

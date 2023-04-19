@@ -1,5 +1,13 @@
 import styled from "styled-components";
 
+export const Subtitle = styled.div`
+  color: #e5e5e5;
+  font-size: 2rem;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  // align-items:center;
+`;
 export const Container = styled.div`
   color: #e5e5e5;
   display: flex;

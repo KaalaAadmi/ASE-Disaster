@@ -26,16 +26,16 @@ export const login = async (email, password, setIsAuthenticated) => {
         localStorage.setItem("token", response.data.accessToken);
         localStorage.setItem("isAdmin", response.data.isAdmin);
         window.dispatchEvent(storageEvent);
-        console.log(`HELP: ${response.data.isAdmin}`);
         setIsAuthenticated(true);
-        console.log(JSON.stringify(response.data));
-        console.log("Successful Login!")
+        console.log("Successful Login!");
     } catch (error) {
         if (error.response.status === 401) {
             console.log("Incorrect email or password");
+            alert("Incorrect email or password");      
         // Display an error message to the user here
         } else {
             console.log("An error occurred: " + error.message);
+            alert("An error occured.");       
         }
     }
 }
@@ -59,6 +59,6 @@ export const logout = async () => {
         console.log("Successful Logout!")
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("An error occured.");     
     }
 };

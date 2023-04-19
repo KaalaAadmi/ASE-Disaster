@@ -23,10 +23,13 @@ export const requestResponders = async (id, ambulance, police, fireTruck, buses,
             data : data
         };
         const response = await axios.request(config);
+        if (response.data.message !== "Resources Requested."){
+            alert(response.data.message);
+        }
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not request resources.");
     }
 };
 
@@ -42,7 +45,7 @@ export const disasterOrders = async (id) => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get order records.");
     }
 };
 
@@ -58,7 +61,7 @@ export const getAllOrders = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get order records.");
     }
 };
 
@@ -75,6 +78,6 @@ export const getOrder = async (id) => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get order record.");
     }
 };
