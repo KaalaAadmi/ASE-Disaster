@@ -21,7 +21,7 @@ import {
 	createGardaMarker,
 	createFirestationMarker,
 	clearMarker,
-} from "./Markers";
+} from "./markers";
 
 import polyline from '@mapbox/polyline';
 
