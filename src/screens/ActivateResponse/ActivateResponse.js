@@ -10,7 +10,7 @@ import {
 } from "../../api/Disaster";
 import Table from "../../components/Table";
 import { useParams, useNavigate } from 'react-router-dom';
-
+ 
 
 export default function ActivateResponse() {
   const { id } = useParams();
@@ -76,11 +76,11 @@ export default function ActivateResponse() {
   if (isCoordinator) {
     return (
       <Container>
-        <Title>Activate A Disaster Response</Title>
+        <Title style={{marginBottom: "20px"}}>Activate A Disaster Response</Title>
         <Form>
           { selectedDisaster == "" &&
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label>Select Report Grouping:</Label>
+            <Label>Select Report Grouping</Label>
             <Select
               id="disaster"
               value={selectedDisaster || ""}
@@ -105,7 +105,7 @@ export default function ActivateResponse() {
           </div>
           }
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label htmlFor="disasterType">Select Disaster Type:</Label>
+            <Label htmlFor="disasterType">Select Disaster Type</Label>
             <Select
               id="disasterType"
               style={{
@@ -146,7 +146,7 @@ export default function ActivateResponse() {
             />
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label htmlFor="disasterSite">Select Disaster Site:</Label>
+            <Label htmlFor="disasterSite">Select Disaster Site</Label>
             <Select
               id="disasterSite"
               style={{
@@ -174,14 +174,14 @@ export default function ActivateResponse() {
               onChange={(event) => setDisasterName(event.target.value)}
             />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "row", width: "100%", alignItems: "center" }}>
             <Label>Description</Label>
             <TextArea
               value={disasterDetails}
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
-          <Submit type="submit" onClick={handleSubmit} value="Activate Response"/>
+          <Submit type="submit" className="activate-response-btn" onClick={handleSubmit} value="Activate Response"/>
         </Form>
         <div>
             {selectedDisaster !== "" && 

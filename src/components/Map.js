@@ -12,20 +12,26 @@ import { markerData } from "../assets/data";
 import { rr_create_obstacle, rr_avoid_obstacle } from "./direction_rr";
 import { getResourses, clearRoutes } from "./reroute";
 
+//import loc_safehouses from './locs_safehouse.json';
+//import loc_hospitals from './locs_hospital.json';
+//import loc_gardi from './locs_garda.json';
+//import loc_firestations from './locs_firestation.json';
+
 import {
 	createDisasterMarker,
 	createSafeHouseMarker,
 	createHospitalMarker,
 	createGardaMarker,
 	createFirestationMarker,
-	clearMarker,
+	createBusMarker,
+	clearMarkers,
 } from "./Markers";
 
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');
 const { addRoute_garda } = require('./reroute');
 const { addRoute_firestation } = require('./reroute');
-
+const { addRoute_bus } = require('./reroute');
 
 
 // mapbox token
@@ -38,6 +44,7 @@ let loc_hospitals = null;
 let loc_firestations = null;
 let loc_safehouses = null;
 let loc_gardi = null;
+let loc_bus = null;
 let disasterJson = null;
 let obstacle = null;
 //let disasterLocation = null;
@@ -50,10 +57,10 @@ const Map = (props) => {
 	const [selectedDisaster, setSelectedDisaster] = React.useState(null);
 	const [disasterData, setDisasterData] = React.useState();
 
-	useEffect(() => {
+	React.useEffect(() => {
 		const getData = async () => {
 			try {
-				const res = await axios.get("http://127.0.0.1:8000/api/v1/active-disaster-data");
+				const res = await axios.get("https://disaster-backend.onrender.com/api/v1/active-disaster-data");
 				disasterJson = res.data
 				//console.log(disasterJson)
 				obstacle = rr_create_obstacle(disasterJson);
@@ -79,7 +86,7 @@ const Map = (props) => {
 	});
 
 	// Getting the actual user location through gps
-	useEffect(() => {
+	React.useEffect(() => {
 		if (!viewState.latitude && !viewState.longitude) {
 			navigator.geolocation.getCurrentPosition((position) => {
 				setViewState((prev) => ({
@@ -232,18 +239,18 @@ const Map = (props) => {
 	const generateRoutesForSelectedDisaster = async (disasters, selectedDisaster) => {
 		if (selectedDisaster) {
 			clearMarkersAndRoutes();
-			clearMarker();
+			clearMarkers();
 			const disaster = disasters.find(d => d._id === selectedDisaster);
 			if (disaster) {
 
 				// Fetch resources for the current disaster
 				const loc_safehouses = await getResourses(disaster._id, 'rest centre');
-				console.log(disaster._id)
-				console.log(loc_safehouses)
 				const loc_hospitals = await getResourses(disaster._id, 'ambulance');
 				const loc_gardi = await getResourses(disaster._id, 'garda');
 				const loc_firestations = await getResourses(disaster._id, 'fire');
-
+				const loc_bus = await getResourses(disaster._id, 'buses');
+				console.log(disaster._id)
+				console.log(loc_bus)
 				const disasterLocation = {
 					lat: disaster.latitude,
 					lng: disaster.longitude,
@@ -268,6 +275,11 @@ const Map = (props) => {
 				if (loc_firestations !== null && loc_firestations.length !== 0) {
 					createFirestationMarker([loc_firestations[loc_firestations.length - 1]], map);
 					addRoute_firestation(map.current, disasterLocation, loc_firestations[loc_firestations.length - 1]);
+				}
+
+				if (loc_bus !== null && loc_bus.length != 0) {
+					createBusMarker([loc_bus[loc_bus.length - 1]], map);
+					addRoute_bus(map.current, disasterLocation, loc_bus[loc_bus.length - 1]);
 				}
 			}
 		}
@@ -295,7 +307,7 @@ const Map = (props) => {
 								{disasterData &&
 									disasterData.map((disaster) => (
 										<li key={disaster._id} onClick={() => setSelectedDisaster(disaster._id)}>
-											{disaster.disasterName}
+											{disaster.disasterName} ({disaster._id})
 										</li>
 									))}
 							</ul>

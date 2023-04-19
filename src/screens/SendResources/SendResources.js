@@ -9,7 +9,7 @@ import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from "react-spinners";
-
+ 
 
 export default function SendResources() {
   const { id } = useParams();
@@ -85,10 +85,10 @@ export default function SendResources() {
   if (isCoordinator) {
     return (
       <Container>
-        <Title>Send Resources</Title>
+        <Title style={{marginBottom: "20px"}}>Send Resources</Title>
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label>Select Disaster:</Label>
+            <Label>Select Disaster</Label>
             <Select
               id="disaster"
               value={selectedDisaster}
@@ -133,7 +133,7 @@ export default function SendResources() {
             />
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-            <Label>Number of Helicopters to sent:</Label>
+            <Label>Number of Helicopters to sent</Label>
             <Input
               type="number"
               value={helicopter}
@@ -155,7 +155,7 @@ export default function SendResources() {
               />
             </div>
           )}
-          <Submit type="submit" value="Send Resources" onClick={handleSubmit} disabled={submitting} />
+          <Submit type="submit" className="send-resources-btn" value="Send Resources" onClick={handleSubmit} disabled={submitting} style={{marginTop: "20px"}} />
           {submitting && (
             <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
               <ClipLoader color="#4A90E2" />

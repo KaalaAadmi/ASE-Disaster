@@ -254,7 +254,7 @@ const OrderMap = (props) => {
 			};
 
 			createDisasterMarker([orderData.disaster], map);
-			createGenericMarker([location], map);
+			createGenericMarker(location, map);
 			addRoute(map.current, disasterLocation, resourceLocation);
 		}
 	};
@@ -286,7 +286,7 @@ const OrderMap = (props) => {
 		// use the Mapbox Directions API to get the route from the disaster location to the nearest safehouse
 		const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${disasterLocation.lng},${disasterLocation.lat};${nearesthospital.lng},${nearesthospital.lat}?access_token=${REACT_APP_MAPBOX_TOKEN}`;
 
-		map.addSource('hospital_route', {
+		map.addSource('resource_route', {
 			type: 'geojson',
 			data: {
 				type: 'Feature'
@@ -294,9 +294,9 @@ const OrderMap = (props) => {
 		});
 		console.log("add source");
 		map.addLayer({
-			id: "hospital_route",
+			id: "order_layer",
 			type: "line",
-			source: "hospital_route",
+			source: "resource_route",
 			layout: {
 				"line-join": "round",
 				"line-cap": "round",
@@ -317,16 +317,16 @@ const OrderMap = (props) => {
 				//console.log(routeLine)
 
 				// check if the "hospital_route" layer exists and update it if it does, otherwise add a new layer
-				const layerExists = map.getLayer("hospital_route");
+				const layerExists = map.getLayer("order_layer");
 				if (layerExists) {
-					map.getSource('hospital_route').setData(routeLine);
+					map.getSource('resource_route').setData(routeLine);
 				} else {
 					//map.addSource('hospital_route', sourceObj);
 
 				}
 
 				// make the "hospital_route" layer visible
-				map.setLayoutProperty('hospital_route', 'visibility', 'visible');
+				map.setLayoutProperty('resource_route', 'visibility', 'visible');
 				//console.log(map)
 			})
 			.catch(error => {
@@ -340,7 +340,7 @@ const OrderMap = (props) => {
 		if (map.current && orderData) {
 			generateOrderRoute(orderData);
 		}
-	}, [orderData]);
+	}, []);
 
 	if ((viewState.latitude && viewState.longitude)) {
 		return (

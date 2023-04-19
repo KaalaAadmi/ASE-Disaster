@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReportTable from "../../components/ReportTable";
 import { Container, Title } from "../style"
+import './ViewReports.css';
 import styled from "styled-components";
 import { getReports } from "../../api/Report";
 
@@ -22,7 +23,7 @@ export default function ViewReports() {
   if (isAuthenticated) {
     return (
       <Container>
-        <Title>VIEW REPORTS</Title>
+        <Title className="view-report-heading">VIEW REPORTS</Title>
         <div>
           <ReportTable data={reportData} />
         </div>
@@ -40,3 +41,4 @@ export default function ViewReports() {
     );
   }
 }
+

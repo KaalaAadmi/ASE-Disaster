@@ -27,10 +27,10 @@ export default function ReportDisaster() {
 
   return (
     <Container>
-      <Title>Report Disaster</Title>
+      <Title className="titleReportDisaster">Report Disaster</Title>
       <Form>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label htmlFor="disasterType">Select Disaster Type:</Label>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: "20px"}}>
+          <Label htmlFor="disasterType" className="sub-heading">Select Disaster Type:</Label>
           <Select
             id="disasterType"
             value={type}
@@ -57,9 +57,10 @@ export default function ReportDisaster() {
             flexDirection: "row",
             width: "100%",
             justifyContent: "space-between",
+            marginBottom: "20px"
           }}
         >
-          <Label>Location:</Label>
+          <Label className="sub-heading">Location:</Label>
           <Input id="location" type="text" value={address}
             onChange={(event) => setAddress(event.target.value)} />
           <div
@@ -91,8 +92,8 @@ export default function ReportDisaster() {
             <div class="tooltip2">Convert to Lat Long</div>
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          <Label>Description:</Label>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%", alignItems: 'center', marginBottom: "20px" }}>
+          <Label className="sub-heading">Description:</Label>
           <TextArea
             value={details}
             onChange={(event) => setDetails(event.target.value)}
@@ -102,6 +103,7 @@ export default function ReportDisaster() {
           type="submit"
           onClick={(event) => handleSubmit(event)}
           value="Submit Report"
+          className="submit-btn"
         />
       </Form>
     </Container>
