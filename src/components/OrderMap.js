@@ -9,8 +9,9 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import "mapbox-gl/dist/mapbox-gl.css"; // Updating node module will keep css up to date.
 import axios from "axios";
 import "./styles.css"
-import { markerData } from "../assets/data";
+import { disasterData, markerData } from "../assets/data";
 import { rr_create_obstacle, rr_avoid_obstacle } from "./direction_rr";
+import { getActiveDisasters } from "../api/Disaster";
 import { getResourses, clearRoutes } from "./reroute";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOrder } from "../api/Order";
@@ -49,13 +50,16 @@ const OrderMap = (props) => {
 
 	const [selectedOrder, setSelectedOrder] = React.useState(id || "");
 	const [orderData, setOrderData] = React.useState({});
+	const [disasterData, setDisasterData] = React.useState();
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await getOrder(id);
-				console.log(response);
 				setOrderData(response.order);
+				const disastersResponse = await getActiveDisasters();
+				setDisasterData(disastersResponse);
+				obstacle = rr_create_obstacle(disastersResponse);
 			} catch (error) {
 				console.log(error);
 			}
@@ -141,6 +145,9 @@ const OrderMap = (props) => {
 
 			// Add origin and destination to the map direction
 			map.current.on("load", function () {
+				if (map.current && orderData) {
+					generateOrderRoute(orderData);
+				}
 				//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 				//directions.setDestination([-6.25819, 53.344415]);
 
@@ -215,7 +222,7 @@ const OrderMap = (props) => {
 				rr_avoid_obstacle(event, obstacle, directions_rr, map);
 			});
 		}
-	}, [viewState.latitude, viewState.longitude]);
+	}, [viewState.latitude, viewState.longitude, orderData, disasterData]);
 	// New function to clear markers and routes
 	const clearMarkersAndRoutes = () => {
 		// Clear existing markers and routes
@@ -336,12 +343,6 @@ const OrderMap = (props) => {
 		console.log("complete");
 	}
 
-	React.useEffect(() => {
-		if (map.current && orderData) {
-			generateOrderRoute(orderData);
-		}
-	}, []);
-
 	if ((viewState.latitude && viewState.longitude)) {
 		return (
 			<div>
@@ -353,11 +354,49 @@ const OrderMap = (props) => {
               Latitude: {marker.latitude}
             </div> */}
 						{/* Add a sidebar to display the list of disasters */}
-						<div className="disaster-sidebar">
-							<h3>Instructions</h3>
-							<div>
-								{orderData.instructions}
-							</div>
+						{/* <div className="instruction-sidebar">
+							<p>Instructions: {orderData.instructions}</p>
+							<p>Disaster: {orderData.disaster.disasterName}</p>
+							<p>Description: {orderData.disaster.disasterDescription}</p>
+							<p>Type: {orderData.disaster.type}</p>
+							<p>Radius: {orderData.disaster.radius}</p>
+							<p>Number of People Impacted: {orderData.disaster.size}</p>
+							<p>Location Type: {orderData.disaster.site}</p>
+						</div> */}
+						<div className="instruction-sidebar">
+							<h1>INFORMATION</h1>
+							<table>
+								<tbody>
+									<tr>
+										<th>Instructions</th>
+										<td>{orderData.instructions}</td>
+									</tr>
+									<tr>
+										<th>Disaster</th>
+										<td>{orderData.disaster.disasterName}</td>
+									</tr>
+									<tr>
+										<th>Description</th>
+										<td>{orderData.disaster.disasterDescription}</td>
+									</tr>
+									<tr>
+										<th>Type</th>
+										<td>{orderData.disaster.type}</td>
+									</tr>
+									<tr>
+										<th>Radius</th>
+										<td>{orderData.disaster.radius}</td>
+									</tr>
+									<tr>
+										<th># of People Impacted</th>
+										<td>{orderData.disaster.size}</td>
+									</tr>
+									<tr>
+										<th>Location Type</th>
+										<td>{orderData.disaster.site}</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 
 						{/* Add the map to the screen */}
