@@ -60,7 +60,7 @@ const Map = (props) => {
 		React.useEffect(() => {
 			const getData = async () => {
 				try {
-					const res = await axios.get("http://127.0.0.1:8000/api/v1/active-disaster-data");
+					const res = await axios.get("hhttps://disaster-backend.onrender.com/api/v1/active-disaster-data");
 					disasterJson=res.data
 					//console.log(disasterJson)
 					obstacle = rr_create_obstacle(disasterJson);
