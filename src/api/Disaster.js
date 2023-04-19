@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BACKEND = `http://127.0.0.1:8000/api/v1`;
+// const BACKEND = `http://127.0.0.1:8000/api/v1`;
+const BACKEND='https://disaster-backend.onrender.com/api/v1'
 
 export const activateDisaster = async (id, type, radius, size, site, disasterName, disasterDescription) => {
     try {
