@@ -17,6 +17,11 @@ import { getResourses, clearRoutes } from "./reroute";
 //import loc_gardi from './locs_garda.json';
 //import loc_firestations from './locs_firestation.json';
 
+//import loc_safehouses from './locs_safehouse.json';
+//import loc_hospitals from './locs_hospital.json';
+//import loc_gardi from './locs_garda.json';
+//import loc_firestations from './locs_firestation.json';
+
 import {
 	createDisasterMarker,
 	createSafeHouseMarker,
@@ -25,7 +30,7 @@ import {
 	createFirestationMarker,
 	createBusMarker,
 	clearMarkers,
-} from "./Markers";
+} from "./markers";
 
 const { addRoute_safehouse } = require('./evacuation');
 const { addRoute_hospital } = require('./reroute');

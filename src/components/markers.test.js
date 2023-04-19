@@ -1,4 +1,4 @@
-import * as markers from './Markers';
+import * as markers from './markers';
 import mapboxgl from 'mapbox-gl';
 
 jest.mock('mapbox-gl', () => ({
