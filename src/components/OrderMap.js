@@ -354,15 +354,6 @@ const OrderMap = (props) => {
               Latitude: {marker.latitude}
             </div> */}
 						{/* Add a sidebar to display the list of disasters */}
-						{/* <div className="instruction-sidebar">
-							<p>Instructions: {orderData.instructions}</p>
-							<p>Disaster: {orderData.disaster.disasterName}</p>
-							<p>Description: {orderData.disaster.disasterDescription}</p>
-							<p>Type: {orderData.disaster.type}</p>
-							<p>Radius: {orderData.disaster.radius}</p>
-							<p>Number of People Impacted: {orderData.disaster.size}</p>
-							<p>Location Type: {orderData.disaster.site}</p>
-						</div> */}
 						<div className="instruction-sidebar">
 							<h1>INFORMATION</h1>
 							<table>
@@ -370,6 +361,10 @@ const OrderMap = (props) => {
 									<tr>
 										<th>Instructions</th>
 										<td>{orderData.instructions}</td>
+									</tr>
+									<tr>
+										<th>Units Required</th>
+										<td>{orderData.quantity}</td>
 									</tr>
 									<tr>
 										<th>Disaster</th>
