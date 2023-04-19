@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BACKEND = `http://127.0.0.1:8000/api/v1`;
+// const BACKEND = `http://127.0.0.1:8000/api/v1`;
+const BACKEND='https://disaster-backend.onrender.com/api/v1'
 
 export const activateDisaster = async (id, type, radius, size, site, disasterName, disasterDescription) => {
     try {
@@ -26,7 +27,7 @@ export const activateDisaster = async (id, type, radius, size, site, disasterNam
         console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not activate disaster.");
     }
 };
 
@@ -37,7 +38,7 @@ export const updateDisaster = async (id, details) => {
         let config = {
             method: 'put',
             maxBodyLength: Infinity,
-            url: `${BACKEND}/activate-disaster/${id}`,
+            url: `${BACKEND}/update-disaster/${id}`,
             headers: { 
               'Content-Type': 'application/json'
             },
@@ -47,7 +48,7 @@ export const updateDisaster = async (id, details) => {
         console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not update disaster.");
     }
 };
 
@@ -65,7 +66,7 @@ export const resolveDisaster = async (id) => {
         console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not resolve disaster.");
     }
 };
 
@@ -81,7 +82,7 @@ export const getRelevantDisasters = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get relevant disaster records."); 
     }
 };
 
@@ -97,7 +98,7 @@ export const getPendingDisasters = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get pending disaster records."); 
     }
 };
 
@@ -113,7 +114,7 @@ export const getActiveDisasters = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get active disaster records."); 
     }
 };
 
@@ -129,7 +130,7 @@ export const getAllDisasters = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get disaster records."); 
     }
 };
 
@@ -145,7 +146,7 @@ export const getIndividualDisaster = async (id) => {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Could not get disaster record."); 
     }
 };
 
@@ -163,8 +164,9 @@ export const addReportToDisaster = async (disasterID, reportID) => {
         };
         const response = await axios.request(config);
         console.log(JSON.stringify(response.data));
+        return true;
     } catch (error) {
         console.error(error);
-        throw error;
+        alert("ERROR - Report could not be added to disaster.");     
     }
 };

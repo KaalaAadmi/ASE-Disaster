@@ -1,10 +1,9 @@
 import React, {useState} from "react";
-
-// import styled from "styled-components";
-import axios from 'axios'
-
 import "./LoginScreen.css";
 import {login,logout} from "../../api/auth";
+import {useNavigate } from 'react-router-dom';
+
+import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -18,11 +17,18 @@ export default function LoginScreen() {
     logout();
   };
 
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    login(email,password,setIsAuthenticated)
+    navigate.push(`/view-reports`); 
+  }
+
   if (isAuthenticated) {
     return (
       <div>
         <h1>Welcome!</h1>
-        <button onClick={handleLogout}>Logout</button>
+        <Submit type="submit" value="Logout" onClick={handleLogout}/>
       </div>
     );
   } else {
@@ -44,7 +50,7 @@ export default function LoginScreen() {
             <label className="placeholder">Password</label>
           </div>
           {/* <div className="submitContainer"> */}
-          <button className="btnSubmit" type="submit" onClick={() => login(email,password,setIsAuthenticated)}>
+          <button className="btnSubmit" type="submit" onClick={handleLogin}>
             LOGIN
           </button>
           {/* </div> */}

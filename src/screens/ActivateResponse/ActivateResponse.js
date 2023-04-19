@@ -1,54 +1,65 @@
 import React, { useState, useEffect } from "react";
 import "./ActivateResponse.css";
-import styled from "styled-components";
+import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
+import { getAddressFromLatLng, getPosition} from "../../components/Addresses"
 import {
   activateDisaster,
   getPendingDisasters,
   getIndividualDisaster,
 } from "../../api/Disaster";
+import Table from "../../components/Table";
+import { useParams, useNavigate } from 'react-router-dom';
 
-export default function CreateDisaster() {
+
+export default function ActivateResponse() {
+  const { id } = useParams();
   const [disasters, setDisasters] = useState([]);
-  const [selectedDisaster, setSelectedDisaster] = useState("");
+  const [selectedDisaster, setSelectedDisaster] = useState(id || "");
   const [type, setType] = useState("");
   const [site, setSite] = useState("");
   const [radius, setRadius] = useState("0");
   const [size, setSize] = useState("0");
   const [disasterName, setDisasterName] = useState("");
   const [disasterDetails, setDisasterDetails] = useState("");
+  const [reports, setReports] = useState([]);
+  const [address, setAddress] = useState("");
   const [isCoordinator, setIsCoordinator] = useState(
-    localStorage.getItem("isAdmin") 
+    localStorage.getItem("isAdmin") === "true"
   ); // check if the user is a coordinator on page load
 
-  useEffect(() => {
-    async function fetchData() {
+  const fetchData = async () => {
+    if (selectedDisaster) {
+      const disasterInfo = await getIndividualDisaster(selectedDisaster);
+      setSelectedDisaster(selectedDisaster);
+      setType(disasterInfo.disasterData.type ?? "");
+      setRadius(disasterInfo.disasterData.radius ?? "0");
+      setSite(disasterInfo.disasterData.site ?? "");
+      setSize(disasterInfo.disasterData.size ?? "0");
+      setReports(disasterInfo.disasterData.reports ?? []);
+      setDisasterName(disasterInfo.disasterData.disasterName ?? "");
+      setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
+      getAddressFromLatLng(disasterInfo.disasterData.latitude,disasterInfo.disasterData.longitude, setAddress);
+    } else {
       getPendingDisasters().then((response) => {
-        // Process the response data here, if necessary
         const pendingDisasters = response;
-        console.log("Pending disasters:", pendingDisasters);
         setDisasters(pendingDisasters);
       });
     }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
   const handleDropdownChange = async (event) => {
     if (event.target.value !== "") {
       setSelectedDisaster(event.target.value);
-      const selectedDisasterId = event.target.value;
-      console.log(`selected disaster: ${selectedDisasterId}`);
-      const disasterInfo = await getIndividualDisaster(selectedDisasterId);
-      console.log(disasterInfo);
-
-      setType(disasterInfo.disasterData.type ?? "");
-      setRadius(disasterInfo.disasterData.radius ?? "0");
-      setSite(disasterInfo.disasterData.site ?? "");
-      setSize(disasterInfo.disasterData.size ?? "0");
-      setDisasterName(disasterInfo.disasterData.disasterName ?? "");
-      setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
     }
   };
+  
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     await activateDisaster(
@@ -60,12 +71,14 @@ export default function CreateDisaster() {
       disasterName,
       disasterDetails
     );
+    navigate(`/send-resources/${selectedDisaster}`);
   };
   if (isCoordinator) {
     return (
       <Container>
         <Title>Activate A Disaster Response</Title>
         <Form>
+          { selectedDisaster == "" &&
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Report Grouping:</Label>
             <Select
@@ -90,6 +103,7 @@ export default function CreateDisaster() {
               ))}
             </Select>
           </div>
+          }
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label htmlFor="disasterType">Select Disaster Type:</Label>
             <Select
@@ -167,8 +181,16 @@ export default function CreateDisaster() {
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
-          <Submit type="submit" onClick={handleSubmit} />
+          <Submit type="submit" onClick={handleSubmit} value="Activate Response"/>
         </Form>
+        <div>
+            {selectedDisaster !== "" && 
+              <Subtitle>Related reports</Subtitle> 
+            }
+            {selectedDisaster !== "" && 
+              <Table data={reports} />
+            }
+        </div>
       </Container>
     );
   } else {
@@ -179,90 +201,3 @@ export default function CreateDisaster() {
     );
   }
 }
-
-const Container = styled.div`
-  color: #e5e5e5;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-`;
-const Title = styled.div`
-  color: #e5e5e5;
-  font-size: 4rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  display: flex;
-  justify-content: center;
-  // align-items:center;
-`;
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-const TextArea = styled.textarea`
-  padding: 5px;
-  margin-bottom: 10px;
-  background-color: transparent;
-  outline: none;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 1px solid #fefefe;
-  width: 20rem;
-  color: #a5a5a5;
-  resize: vertical;
-`;
-const Label = styled.label`
-  margin-right: 10px;
-  text-align: left;
-  width: 15rem;
-`;
-const Submit = styled.input`
-  background-color: #5a69b5;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-`;
-const Input = styled.input`
-  padding: 5px;
-  margin-bottom: 10px;
-  background-color: transparent;
-  outline: none;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 1px solid #fefefe;
-  width: 20rem;
-  color: #a5a5a5;
-`;
-
-const Select = styled.select`
-  padding: 5px;
-  margin-bottom: 10px;
-  background-color: transparent;
-  outline: none;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 1px solid #fefefe;
-  width: 20rem;
-  color: "#a5a5a5";
-`;
-
-const Option = styled.option`
-  padding: 5px;
-  margin-bottom: 10px;
-  background-color: transparent;
-  outline: none;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 1px solid #fefefe;
-  width: 20rem;
-`;
