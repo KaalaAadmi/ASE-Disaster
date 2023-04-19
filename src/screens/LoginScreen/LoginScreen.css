@@ -94,3 +94,7 @@
 .btnSubmit:hover {
   background: #5a69b5;
 }
+
+.logout-btn:hover {
+  background-color: rgb(83 105 214);
+}
