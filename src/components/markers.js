@@ -40,11 +40,20 @@ export const createSafeHouseMarker = (safehouse_loc, map) => {
 };
 //https://docs.mapbox.com/help/tutorials/custom-markers-gl-js/
 export const createHospitalMarker = (loc_hospitals, map) => {
-  for (var i = 0; i < loc_hospitals.length; i++) {
-    // Create a DOM element for each marker.
-    const el = document.createElement("div");
-    el.className = "marker_hospital";
-  }
+			for (var i = 0; i < loc_hospitals.length; i++) {
+				// Create a DOM element for each marker.
+				const el = document.createElement('div');
+				el.className = 'marker_hospital';
+
+				const marker_hs = new mapboxgl.Marker(el)
+					.setLngLat([loc_hospitals[i].Location.lng, loc_hospitals[i].Location.lat])
+					.setPopup(
+						new mapboxgl.Popup({ offset: 25 }).setText(loc_hospitals[i].Name)
+					)
+					.addTo(map.current)
+					.togglePopup();
+					hospitalMarkers.push(marker_hs);
+			}
 };
 
 export const createGardaMarker = (loc_gardi, map) => {
