@@ -4,24 +4,35 @@ const BACKEND = `http://127.0.0.1:8000/api/v1`;
 
 export const addReport = async (type, latitude, longitude, details, token) => {
     try {
-        let data = JSON.stringify({
-            "detail": details,
-            "latitude": latitude,
-            "longitude": longitude,
-            "type": type.toLowerCase()
-        });
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: `${BACKEND}/add-report-data`,
-            headers: { 
-                'Authorization':`Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            data : data
-        };
-        const response = await axios.request(config);
-        console.log(JSON.stringify(response.data));
+        if(details==""){
+            alert("Please Add Details");
+        }
+        else if(latitude=="" || longitude==""){
+            alert("Please Add Location Data");
+        }
+        else if(type==""){
+            alert("Please Select Type");
+        }
+        else{
+            let data = JSON.stringify({
+                "detail": details,
+                "latitude": latitude,
+                "longitude": longitude,
+                "type": type.toLowerCase()
+            });
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `${BACKEND}/add-report-data`,
+                headers: { 
+                    'Authorization':`Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                data : data
+            };
+            const response = await axios.request(config);
+            console.log(JSON.stringify(response.data));
+        }
     } catch (error) {
         console.error(error);
         alert("ERROR - Could not submit report.");

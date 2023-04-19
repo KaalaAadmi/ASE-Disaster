@@ -3,6 +3,7 @@ import "./LoginScreen.css";
 import {login,logout} from "../../api/Auth";
 import {useNavigate } from 'react-router-dom';
 
+import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ export default function LoginScreen() {
     return (
       <div>
         <h1>Welcome!</h1>
-        <button onClick={handleLogout}>Logout</button>
+        <Submit type="submit" value="Logout" onClick={handleLogout}/>
       </div>
     );
   } else {

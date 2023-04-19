@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { updateReport, getReports } from "../api/Report";
+
+import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../screens/style"
 import { getRelevantDisasters, addReportToDisaster } from "../api/Disaster";
 import "./Table.css";
 
@@ -41,6 +43,9 @@ function ReportTable(props) {
       } else if (key === 'disasterStatus') {
         aValue = a.disaster?.status ?? '';
         bValue = b.disaster?.status ?? '';
+      } else if (key === 'reports') {
+        aValue = a.disaster?.reports?.length ?? 0;
+        bValue = b.disaster?.reports?.length ?? 0;
       } else {
         aValue = a[key];
         bValue = b[key];
@@ -56,7 +61,8 @@ function ReportTable(props) {
     });
   
     return sortedData;
-  };  
+  };
+  
 
   async function fetchDisasterData() {
     try {
@@ -152,20 +158,16 @@ function ReportTable(props) {
 
   return (
     <>
-    <button onClick={handleResponderFilterClick}>
-        {isResponderFilter ? "Show All" : "Show Only Responder Messages"}
-    </button>
-    <button onClick={handleSpamFilterClick}>
-        {isSpamFilter ? "Show All" : "Remove Spam"}
-    </button>
-    <select value={selectedDisaster} onChange={handleDisasterFilterChange}>
-      <option value="">All Disasters</option>
+    <Submit type="submit" value={isResponderFilter ? "Show All" : "Show Only Responder Messages"} onClick={handleResponderFilterClick}/>
+    <Submit type="submit" value={isSpamFilter ? "Show All" : "Remove Spam"} onClick={handleSpamFilterClick}/>
+    <Select value={selectedDisaster} onChange={handleDisasterFilterChange} style={{background: "white"}}>
+      <Option value="">All Disasters</Option>
       {disasters.map((disaster) => (
-        <option key={disaster._id} value={disaster._id} style={{background: getOptionBackgroundColor (disaster)}}>
+        <Option key={disaster._id} value={disaster._id} style={{background: getOptionBackgroundColor (disaster)}}>
           {disaster.disasterName}
-        </option>
+        </Option>
       ))}
-    </select>
+    </Select>
     
     <table>
       <thead>
@@ -217,11 +219,9 @@ function ReportTable(props) {
             <td className="table-cell">
               {row.disaster ? (
                 row.disaster.status === "active" ? (
-                  <button onClick={() => viewReport(row.disaster._id)}>View Disaster</button>
+                  <Submit type="submit" value="View Disaster" onClick={() => viewReport(row.disaster._id)}/>
                 ) : (
-                  <button onClick={() => goToDisasterUrl(row.disaster._id)}>
-                    Activate Disaster
-                  </button>
+                  <Submit type="submit" value="Activate Disaster" onClick={() => goToDisasterUrl(row.disaster._id)}/>
                 )
               ) : (
                 <span>No Disaster Assigned</span>

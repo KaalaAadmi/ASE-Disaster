@@ -5,7 +5,7 @@ import { typeOptions, siteOptions } from "../../components/DropdownOptions";
 import { getAddressFromLatLng, getPosition} from "../../components/Addresses"
 import {
   activateDisaster,
-  getActiveDisasters,
+  getPendingDisasters,
   getIndividualDisaster,
 } from "../../api/Disaster";
 import Table from "../../components/Table";
@@ -41,10 +41,9 @@ export default function ActivateResponse() {
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
       getAddressFromLatLng(disasterInfo.disasterData.latitude,disasterInfo.disasterData.longitude, setAddress);
     } else {
-      getActiveDisasters().then((response) => {
-        const activeDisasters = response;
-        console.log("Active disasters:", activeDisasters);
-        setDisasters(activeDisasters);
+      getPendingDisasters().then((response) => {
+        const pendingDisasters = response;
+        setDisasters(pendingDisasters);
       });
     }
   };
@@ -182,7 +181,7 @@ export default function ActivateResponse() {
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
-          <Submit type="submit" onClick={handleSubmit} />
+          <Submit type="submit" onClick={handleSubmit} value="Activate Response"/>
         </Form>
         <div>
             {selectedDisaster !== "" && 
