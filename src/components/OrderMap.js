@@ -387,7 +387,7 @@ const OrderMap = (props) => {
 										<th>Units Required</th>
 										<td>{orderData.quantity}</td>
 									</tr>
-									{/* <tr>
+									<tr>
 										<th>Disaster</th>
 										<td>{orderData.disaster.disasterName}</td>
 									</tr>
@@ -410,7 +410,7 @@ const OrderMap = (props) => {
 									<tr>
 										<th>Location Type</th>
 										<td>{orderData.disaster.site}</td>
-									</tr> */}
+									</tr>
 								</tbody>
 							</table>
 						</div>
