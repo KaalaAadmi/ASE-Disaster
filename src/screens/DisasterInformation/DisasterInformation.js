@@ -9,6 +9,7 @@ import { getAllDisasters, getIndividualDisaster, updateDisaster } from "../../ap
 import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
 import { useParams, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const FRONTEND = "http://localhost:3000"; 
 
@@ -85,6 +86,20 @@ export default function DisasterInformation() {
       setSelectedDisaster(event.target.value);
     }
   };
+  const handleUpdate=async(event)=>{
+    event.preventDefault()
+    updateDisaster(selectedDisaster, { "latitude": latitude, "longitude": longitude, "status": status, "type": type, "radius": radius, "size": size, "site": site, "disasterName": disasterName, "disasterDetails": disasterDetails })
+    toast.success(`Disaster Updated Successfully`, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+  }
   if (isCoordinator) {
     return (
       <Container style={{justifyContent: "flex-start", padding: "15px", paddingTop: "0"}}>
@@ -254,7 +269,7 @@ export default function DisasterInformation() {
             <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
             <input type="checkbox" checked={evacuation} readOnly />
           </div>
-          <Submit type="submit" value="Save Information" style={{fontSize: "17px", marginTop: "25px"}} className="save-information-btn" onClick={() => updateDisaster(selectedDisaster, { "latitude": latitude, "longitude": longitude, "status": status, "type": type, "radius": radius, "size": size, "site": site, "disasterName": disasterName, "disasterDetails": disasterDetails })} />
+          <Submit type="submit" value="Save Information" style={{fontSize: "17px", marginTop: "25px"}} className="save-information-btn" onClick={(event) => handleUpdate(event)} />
           {status == "active" && (
             <Link to={`/send-resources/${selectedDisaster}`}>
               <Submit type="submit" value="Send Resources" />

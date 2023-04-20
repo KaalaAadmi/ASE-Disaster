@@ -9,6 +9,7 @@ import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from "react-spinners";
+import { toast } from "react-toastify";
  
 
 export default function SendResources() {
@@ -43,6 +44,16 @@ export default function SendResources() {
       evacuation
     );
     setSubmitting(false);
+    toast.success('Resources Sent Successfully', {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
     navigate(`/disaster-information/${selectedDisaster}`);
   };
 
