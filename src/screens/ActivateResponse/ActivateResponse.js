@@ -76,7 +76,7 @@ export default function ActivateResponse() {
   if (isCoordinator) {
     return (
       <Container style={{padding: "15px", paddingTop: "0" }}>
-        <Title style={{ marginBottom: "20px" }} className="activate-title">Activate A Disaster Response</Title>
+        <Title style={{ marginBottom: "20px", marginTop:"30px" }} className="activate-title">Activate A Disaster Response</Title>
         <Form>
           {selectedDisaster == "" &&
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -181,7 +181,7 @@ export default function ActivateResponse() {
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
-          <Submit type="submit" className="activate-response-btn" onClick={handleSubmit} value="Activate Response" />
+          <Submit style={{marginBottom: "30px" }} type="submit" className="activate-response-btn" onClick={handleSubmit} value="Activate Response" />
         </Form>
         <div>
           {selectedDisaster !== "" &&
