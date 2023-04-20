@@ -21,7 +21,7 @@ import {
 	createHospitalMarker,
 	createGardaMarker,
 	createFirestationMarker,
-	clearMarker,
+	clearMarkers,
 } from "./markers";
 
 import polyline from '@mapbox/polyline';
@@ -48,26 +48,20 @@ const OrderMap = (props) => {
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 
-	const [selectedOrder, setSelectedOrder] = React.useState(id || "");
+	const [selectedOrder, setSelectedOrder] = React.useState(id);
 	const [orderData, setOrderData] = React.useState({});
 	const [disasterData, setDisasterData] = React.useState();
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await getOrder(id);
-				setOrderData(response.order);
-				const disastersResponse = await getActiveDisasters();
-				setDisasterData(disastersResponse);
-				obstacle = rr_create_obstacle(disastersResponse);
-			} catch (error) {
-				console.log(error);
-			}
-		};
-		fetchData();
-	}, []);
-
-
+	// const getData = async () => {
+	// 	console.log(id);
+	// 	console.log(selectedOrder);
+	// 	const res = await getOrder(selectedOrder);
+	// 	setOrderData(res.data.order);
+	// 	console.log(res);
+	// }
+	// useEffect(() => {
+	// 	getData();
+	// }, [])
 	const [viewState, setViewState] = React.useState({
 		latitude: 0,
 		longitude: 0,
@@ -98,6 +92,20 @@ const OrderMap = (props) => {
 		}
 	}, [viewState.latitude, viewState.longitude]);
 
+	const fetchData = async () => {
+		try {
+			const disastersResponse = await getActiveDisasters();
+			setDisasterData(disastersResponse);
+			obstacle = await rr_create_obstacle(disastersResponse);
+			const response = await getOrder(selectedOrder);
+			console.log("call", response);
+			// localStorage.setItem("orderData", JSON.stringify(response.order));
+			await setOrderData(response.order);
+			console.log("test", orderData);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	useEffect(() => {
 		if (map.current) return; // initialize map only once
@@ -111,6 +119,12 @@ const OrderMap = (props) => {
 				pitch: 50,
 			});
 
+			// const storedOrderData = localStorage.getItem("orderData");
+			// if (storedOrderData) {
+			// 	setOrderData(JSON.parse(storedOrderData));
+			// } else {
+			// 	fetchData();
+			// }
 
 			// Add NavigationControl to the map
 			const nav = new mapboxgl.NavigationControl();
@@ -145,9 +159,7 @@ const OrderMap = (props) => {
 
 			// Add origin and destination to the map direction
 			map.current.on("load", function () {
-				if (map.current && orderData) {
-					generateOrderRoute(orderData);
-				}
+				fetchData();
 				//directions_rr.setOrigin([marker.longitude, marker.latitude]);
 				//directions.setDestination([-6.25819, 53.344415]);
 
@@ -222,15 +234,24 @@ const OrderMap = (props) => {
 				rr_avoid_obstacle(event, obstacle, directions_rr, map);
 			});
 		}
-	}, [viewState.latitude, viewState.longitude, orderData, disasterData]);
+	}, [viewState.latitude, viewState.longitude, fetchData]);
+	useEffect(() => {
+		console.log("generate", orderData);
+		if (map.current && orderData) {
+			generateOrderRoute(orderData);
+		}
+	}, [orderData])
+
 	// New function to clear markers and routes
 	const clearMarkersAndRoutes = () => {
 		// Clear existing markers and routes
 		// ...
 		console.log('clearMarkersAndRoutes');
 		clearRoutes(map.current);
+		clearMarkers();
 	};
 	const generateOrderRoute = async (orderData) => {
+		console.log("order data ", orderData);
 		if (orderData && orderData.location) {
 			const location = [
 				{
@@ -366,7 +387,7 @@ const OrderMap = (props) => {
 										<th>Units Required</th>
 										<td>{orderData.quantity}</td>
 									</tr>
-									<tr>
+									{/* <tr>
 										<th>Disaster</th>
 										<td>{orderData.disaster.disasterName}</td>
 									</tr>
@@ -389,7 +410,7 @@ const OrderMap = (props) => {
 									<tr>
 										<th>Location Type</th>
 										<td>{orderData.disaster.site}</td>
-									</tr>
+									</tr> */}
 								</tbody>
 							</table>
 						</div>
@@ -399,7 +420,7 @@ const OrderMap = (props) => {
 					</>
 				}
 
-			</div>
+			</div >
 
 		);
 	}
