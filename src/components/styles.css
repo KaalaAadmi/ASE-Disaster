@@ -383,6 +383,8 @@ nav {
   color: #fefefe;
 }
 
+/* -----------------------------MARKER------------------------------ */
+
 .marker-generic {
   background-color: #3498db;
   border: 2px solid #ffffff;
@@ -391,4 +393,3 @@ nav {
   height: 20px;
   width: 20px;
 }
-
