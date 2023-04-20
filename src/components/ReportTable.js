@@ -206,7 +206,7 @@ function ReportTable(props) {
         <Select
           value={selectedDisaster}
           onChange={handleDisasterFilterChange}
-          style={{ background: "white", marginBottom: "0px", borderRadius: "10px", padding:"10px", fontSize: "17px" }}
+          style={{ background: "white", marginBottom: "0px", borderRadius: "10px", padding:"10px", fontSize: "17px", maxWidth:'500px' }}
         >
           <Option value="">All Disasters</Option>
           {disasters.map((disaster) => (
