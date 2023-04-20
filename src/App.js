@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="/order/:id"
+            path="/orders/:id"
             element={
               <OrderMap
                 latitude={location.latitude}
