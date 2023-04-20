@@ -1,9 +1,20 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "./LoginScreen.css";
-import {login,logout} from "../../api/auth";
-import {useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
+import { login, logout } from "../../api/auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  Container,
+  Title,
+  Subtitle,
+  Form,
+  TextArea,
+  Label,
+  Submit,
+  Input,
+  Select,
+  Option,
+} from "../style";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -15,7 +26,7 @@ export default function LoginScreen() {
   const handleLogout = () => {
     setIsAuthenticated(false); // set isAuthenticated to false
     logout();
-    toast.success('Logged Out Successfully', {
+    toast.success("Logged Out Successfully", {
       position: "bottom-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -24,14 +35,14 @@ export default function LoginScreen() {
       draggable: true,
       progress: undefined,
       theme: "dark",
-      });
+    });
   };
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    login(email,password,setIsAuthenticated)
-    toast.success('Logged In Successfully', {
+    login(email, password, setIsAuthenticated);
+    toast.success("Logged In Successfully", {
       position: "bottom-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -40,15 +51,30 @@ export default function LoginScreen() {
       draggable: true,
       progress: undefined,
       theme: "dark",
-      });
-    navigate.push(`/view-reports`); 
-  }
+    });
+    navigate.push(`/view-reports`);
+  };
 
   if (isAuthenticated) {
     return (
-      <div style={{display: "flex", flexDirection: "column", justifyContent: "center", padding: "15px", paddingTop: "0"}}>
-        <h1 style={{color: "#fefefe", textAlign: "center"}}>Click the button to Logout</h1>
-        <Submit type="submit" className="logout-btn" value="Logout" onClick={handleLogout}/>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "15px",
+          paddingTop: "0",
+        }}
+      >
+        <h1 style={{ color: "#fefefe", textAlign: "center" }}>
+          Click the button to Logout
+        </h1>
+        <Submit
+          type="submit"
+          className="logout-btn"
+          value="Logout"
+          onClick={handleLogout}
+        />
       </div>
     );
   } else {
@@ -56,18 +82,57 @@ export default function LoginScreen() {
       <div className="container">
         <div className="loginContainer">
           <div className="input-group">
-            <input type="text" className="input" 
+            <input
+              type="text"
+              className="input"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
-            <label className="placeholder">Email</label>
+            <label
+              className="placeholder"
+              style={
+                email
+                  ? { top: "-10px", color: "#fff", backgroundColor: "#333" }
+                  : {
+                      position: "absolute",
+                      top: "10px",
+                      left: "8px",
+                      fontSize: "14px",
+                      padding: "0px 5px",
+                      /* color: #666; */
+                      transition: "0.3s",
+                      pointerEvents: "none",
+                      color: "#fff",
+                      backgroundColor: "transparent",
+                    }
+              }
+            >
+              Email
+            </label>
           </div>
           <div className="input-group">
-            <input type="text" className="input"
+            <input
+              type="password"
+              className="input"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}  
+              onChange={(event) => setPassword(event.target.value)}
             />
-            <label className="placeholder">Password</label>
+            <label className="placeholder" style={
+                password
+                  ? { top: "-10px", color: "#fff", backgroundColor: "#333" }
+                  : {
+                      position: "absolute",
+                      top: "10px",
+                      left: "8px",
+                      fontSize: "14px",
+                      padding: "0px 5px",
+                      /* color: #666; */
+                      transition: "0.3s",
+                      pointerEvents: "none",
+                      color: "#fff",
+                      backgroundColor: "transparent",
+                    }
+              }>Password</label>
           </div>
           {/* <div className="submitContainer"> */}
           <button className="btnSubmit" type="submit" onClick={handleLogin}>
@@ -75,7 +140,6 @@ export default function LoginScreen() {
           </button>
           {/* </div> */}
         </div>
-
       </div>
     );
   }
