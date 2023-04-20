@@ -257,7 +257,7 @@ const OrderMap = (props) => {
 			const disasterLocation = {
 				lat: parseFloat(orderData.disaster.latitude),
 				lng: parseFloat(orderData.disaster.longitude),
-				name: orderData.disasterName,
+				name: orderData.disaster.disasterName,
 			};
 
 			createDisasterMarker([orderData.disaster], map);
