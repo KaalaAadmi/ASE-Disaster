@@ -142,23 +142,25 @@ export default function DisasterInformation() {
             }}
           >
             <Label>Address:</Label>
-            <Input id="location" type="text"
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-            />
-            <div
-              className="searchLoc"
-              onClick={() => getPosition(address, setAddress, setLatitude, setLongitude)}
-              style={{
-                height: 22,
-                width: 22,
-                backgroundColor: "#e5e5e5",
-                cursor: "pointer",
-                marginLeft: "5px",
-              }}
-            >
-              <BiSearchAlt size={22} color="black" />
-              <div class="tooltip2">Convert to Lat Long</div>
+            <div className="location-field-icons">
+              <Input id="location" type="text"
+                value={address}
+                onChange={(event) => setAddress(event.target.value)}
+              />
+              <div
+                className="searchLoc"
+                onClick={() => getPosition(address, setAddress, setLatitude, setLongitude)}
+                style={{
+                  height: 22,
+                  width: 22,
+                  backgroundColor: "#e5e5e5",
+                  cursor: "pointer",
+                  marginLeft: "5px",
+                }}
+              >
+                <BiSearchAlt size={22} color="black" />
+                <div class="tooltip2">Convert to Lat Long</div>
+              </div>
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
