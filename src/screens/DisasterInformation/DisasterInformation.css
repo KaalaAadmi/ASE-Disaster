@@ -54,6 +54,13 @@ visibility: visible;
   background-color: rgb(83 105 214);
 }
 
+.location-field-icons{
+  width: 68%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 @media only screen and (max-width: 767px) {
   .disaster-info-title {
     font-size: 30px !important;
