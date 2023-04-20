@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "./ActivateResponse.css";
-import { Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option } from "../style"
+import {
+  Container,
+  Title,
+  Subtitle,
+  Form,
+  TextArea,
+  Label,
+  Submit,
+  Input,
+  Select,
+  Option,
+} from "../style";
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
-import { getAddressFromLatLng, getPosition } from "../../components/Addresses"
+import { getAddressFromLatLng, getPosition } from "../../components/Addresses";
 import {
   activateDisaster,
   getPendingDisasters,
   getIndividualDisaster,
 } from "../../api/Disaster";
 import Table from "../../components/Table";
-import { useParams, useNavigate } from 'react-router-dom';
-
+import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function ActivateResponse() {
   const { id } = useParams();
@@ -40,11 +51,15 @@ export default function ActivateResponse() {
       setRadius(disasterInfo.disasterData.radius ?? "0");
       setSite(disasterInfo.disasterData.site ?? "");
       setSize(disasterInfo.disasterData.size ?? "0");
-      console.log("reports ", disasterInfo.disasterData.reports)
+      console.log("reports ", disasterInfo.disasterData.reports);
       setReports(disasterInfo.disasterData.reports ?? []);
       setDisasterName(disasterInfo.disasterData.disasterName ?? "");
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
-      getAddressFromLatLng(disasterInfo.disasterData.latitude, disasterInfo.disasterData.longitude, setAddress);
+      getAddressFromLatLng(
+        disasterInfo.disasterData.latitude,
+        disasterInfo.disasterData.longitude,
+        setAddress
+      );
     }
   };
 
@@ -71,15 +86,28 @@ export default function ActivateResponse() {
       disasterName,
       disasterDetails
     );
+    toast.success("Activated Disaster", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
     navigate(`/send-resources/${selectedDisaster}`);
   };
   if (isCoordinator) {
     return (
+
       <Container style={{padding: "15px", paddingTop: "0" }}>
         <Title style={{ marginBottom: "20px", marginTop:"30px" }} className="activate-title">Activate A Disaster Response</Title>
         <Form>
-          {selectedDisaster == "" &&
-            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          {selectedDisaster == "" && (
+            <div
+              style={{ display: "flex", flexDirection: "row", width: "100%" }}
+            >
               <Label>Select Report Grouping</Label>
               <Select
                 id="disaster"
@@ -103,7 +131,7 @@ export default function ActivateResponse() {
                 ))}
               </Select>
             </div>
-          }
+          )}
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label htmlFor="disasterType">Select Disaster Type</Label>
             <Select
@@ -174,22 +202,27 @@ export default function ActivateResponse() {
               onChange={(event) => setDisasterName(event.target.value)}
             />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", width: "100%", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <Label>Description</Label>
             <TextArea
               value={disasterDetails}
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
+
           <Submit style={{marginBottom: "30px" }} type="submit" className="activate-response-btn" onClick={handleSubmit} value="Activate Response" />
+
         </Form>
         <div>
-          {selectedDisaster !== "" &&
-            <Subtitle>Related reports</Subtitle>
-          }
-          {selectedDisaster !== "" &&
-            <Table data={reports} />
-          }
+          {selectedDisaster !== "" && <Subtitle>Related reports</Subtitle>}
+          {selectedDisaster !== "" && <Table data={reports} />}
         </div>
       </Container>
     );

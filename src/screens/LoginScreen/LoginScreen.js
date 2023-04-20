@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import "./LoginScreen.css";
 import {login,logout} from "../../api/auth";
 import {useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 import {Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option} from "../style"
 
 export default function LoginScreen() {
@@ -15,12 +15,32 @@ export default function LoginScreen() {
   const handleLogout = () => {
     setIsAuthenticated(false); // set isAuthenticated to false
     logout();
+    toast.success('Logged Out Successfully', {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
   };
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     login(email,password,setIsAuthenticated)
+    toast.success('Logged In Successfully', {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
     navigate.push(`/view-reports`); 
   }
 
