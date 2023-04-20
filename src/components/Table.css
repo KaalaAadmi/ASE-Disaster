@@ -33,3 +33,12 @@ input[type="checkbox"] {
 select {
   cursor: pointer;
 }
+
+@media only screen and (max-width: 1099px) {
+  .view-report-table-element {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 100vw;
+    overflow-x: scroll;
+}
+}

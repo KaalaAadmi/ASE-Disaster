@@ -87,8 +87,8 @@ export default function DisasterInformation() {
   };
   if (isCoordinator) {
     return (
-      <Container style={{justifyContent: "flex-start"}}>
-        <Title style={{marginBottom: "20px", marginTop: "30px"}}>Disaster Information</Title>
+      <Container style={{justifyContent: "flex-start", padding: "15px", paddingTop: "0"}}>
+        <Title style={{marginBottom: "20px", marginTop: "30px"}} className="disaster-info-title">Disaster Information</Title>
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Report Grouping:</Label>
@@ -100,7 +100,7 @@ export default function DisasterInformation() {
                 color: "#a5a5a5",
                 backgroundColor: getDropdownBackgroundColor(selectedDisaster || ""),
               }}
-            >
+            > 
               <Option value="" disabled>
                 Select a Options
               </Option>
@@ -250,7 +250,7 @@ export default function DisasterInformation() {
               ))}
             </Select>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
             <input type="checkbox" checked={evacuation} readOnly />
           </div>

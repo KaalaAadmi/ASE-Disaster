@@ -177,13 +177,14 @@ function ReportTable(props) {
   return (
     <>
       <div
+        className="view-report-filters"
         style={{
           width: "100%",
           padding: "10px 30px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-evenly",
-          marginBottom: "20px"
+          marginBottom: "20px",
         }}
       >
         <Submit
@@ -220,6 +221,7 @@ function ReportTable(props) {
         </Select>
       </div>
 
+      <div className="view-report-table-element">
       <table style={{padding: "0 30px 20px 30px"}}>
         <thead>
           <tr>
@@ -354,6 +356,7 @@ function ReportTable(props) {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 }

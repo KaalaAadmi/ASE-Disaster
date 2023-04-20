@@ -26,8 +26,8 @@ export default function LoginScreen() {
 
   if (isAuthenticated) {
     return (
-      <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-        <h1 style={{color: "#fefefe"}}>Click the button to Logout</h1>
+      <div style={{display: "flex", flexDirection: "column", justifyContent: "center", padding: "15px", paddingTop: "0"}}>
+        <h1 style={{color: "#fefefe", textAlign: "center"}}>Click the button to Logout</h1>
         <Submit type="submit" className="logout-btn" value="Logout" onClick={handleLogout}/>
       </div>
     );

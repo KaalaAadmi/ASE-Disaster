@@ -14,7 +14,7 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-`;
+`; 
 export const Title = styled.div`
   color: #e5e5e5;
   font-size: 45px;
@@ -22,6 +22,7 @@ export const Title = styled.div`
   text-transform: uppercase;
   display: flex;
   justify-content: center;
+  text-align: center;
   // align-items:center;
 `;
 export const Form = styled.form`
@@ -29,6 +30,8 @@ export const Form = styled.form`
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
 `;
 export const TextArea = styled.textarea`
   padding: 5px;
@@ -39,14 +42,16 @@ export const TextArea = styled.textarea`
   border-left: 0;
   border-right: 0;
   /* border-bottom: 10px solid violet; */
-  width: 20rem;
+  /* width: 20rem; */
+  width: 68%;
   color: #a5a5a5;
   resize: vertical;
 `;
 export const Label = styled.label`
   margin-right: 10px;
   text-align: left;
-  width: 15rem;
+  /* width: 15rem; */
+  width: 50%;
 `;
 export const Submit = styled.input`
   background-color: #5a69b5;
@@ -69,7 +74,8 @@ export const Input = styled.input`
   border-left: 0;
   border-right: 0;
   /* border-bottom: 10px solid violet; */
-  width: 20rem;
+  /* width: 20rem; */
+  width: 68%;
   color: #a5a5a5;
 `;
 
@@ -82,7 +88,8 @@ export const Select = styled.select`
   border-left: 0;
   border-right: 0;
   /* border-bottom: 10px solid violet; */
-  width: 20rem;
+  /* width: 20rem; */
+  width: 68%;
   color: "#a5a5a5";
 `;
 

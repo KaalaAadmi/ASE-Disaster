@@ -24,7 +24,7 @@ export default function ViewReports() {
     return (
       <Container>
         <Title className="view-report-heading">VIEW REPORTS</Title>
-        <div>
+        <div className="report-table">
           <ReportTable data={reportData} />
         </div>
       </Container>
