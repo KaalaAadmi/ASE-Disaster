@@ -188,6 +188,7 @@ export default function DisasterInformation() {
             <Label>Description</Label>
             <TextArea
               value={disasterDetails}
+              rows={4}
               onChange={(event) => setDisasterDetails(event.target.value)}
             />
           </div>
