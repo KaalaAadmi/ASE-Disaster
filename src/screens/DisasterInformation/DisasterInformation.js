@@ -104,7 +104,7 @@ export default function DisasterInformation() {
     return (
       <Container style={{justifyContent: "flex-start", padding: "15px", paddingTop: "0"}}>
         <Title style={{marginBottom: "20px", marginTop: "30px"}} className="disaster-info-title">Disaster Information</Title>
-        <Form>
+        <Form className="disaster-info-form">
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Report Grouping:</Label>
             <Select
@@ -279,7 +279,7 @@ export default function DisasterInformation() {
             </Link>
           )}
         </Form>
-        <div>
+        <div className="disaster-info-bottom-table">
           {selectedDisaster !== "" &&
             <Subtitle>Related reports</Subtitle>
           }
@@ -287,7 +287,7 @@ export default function DisasterInformation() {
             <Table data={reports} />
           }
         </div>
-        <div>
+        <div className="requested-resources-table">
           {orders.length !== 0 &&
             <Subtitle>Requested Resources</Subtitle>
           }

@@ -96,7 +96,7 @@ export default function SendResources() {
   if (isCoordinator) {
     return (
       <Container style={{width: "100%", maxWidth: "700px !important" }} className="send-resources-container">
-        <Title style={{marginBottom: "20px"}}>Send Resources</Title>
+        <Title style={{marginBottom: "20px", marginTop: "20px"}}>Send Resources</Title>
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Disaster</Label>
@@ -166,7 +166,7 @@ export default function SendResources() {
               />
             </div>
           )}
-          <Submit type="submit" className="send-resources-btn" value="Send Resources" onClick={handleSubmit} disabled={submitting} style={{marginTop: "20px"}} />
+          <Submit type="submit" style={{marginBottom: "30px", marginTop:"20px" }} className="send-resources-btn" value="Send Resources" onClick={handleSubmit} disabled={submitting} />
           {submitting && (
             <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
               <ClipLoader color="#4A90E2" />
