@@ -75,8 +75,8 @@ export default function ActivateResponse() {
   };
   if (isCoordinator) {
     return (
-      <Container>
-        <Title style={{ marginBottom: "20px" }}>Activate A Disaster Response</Title>
+      <Container style={{padding: "15px", paddingTop: "0" }}>
+        <Title style={{ marginBottom: "20px" }} className="activate-title">Activate A Disaster Response</Title>
         <Form>
           {selectedDisaster == "" &&
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>

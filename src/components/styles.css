@@ -22,7 +22,7 @@
 /* --------------------------------NEW-NAVBAR------------------------- */
 
 @import url("https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 * {
   padding: 0;
@@ -144,7 +144,7 @@ nav {
   max-width: 1200px;
 }
 
-.faq-info>h1 {
+.faq-info > h1 {
   font-size: 30px;
   font-weight: 600;
   color: #fefefe;
@@ -152,7 +152,7 @@ nav {
   margin-bottom: 10px;
 }
 
-.faq-info>p {
+.faq-info > p {
   font-size: 17px;
   font-weight: 300;
   width: 100%;
@@ -173,13 +173,13 @@ nav {
 
 .accordion {
   width: 100%;
-  border-top: 1px solid #D6D6D6;
+  border-top: 1px solid #d6d6d6;
   max-width: 1200px;
 }
 
 .item {
   background-color: #333333;
-  border-bottom: 1px solid #D6D6D6;
+  border-bottom: 1px solid #d6d6d6;
   padding: 5px 10px;
 }
 
@@ -194,7 +194,7 @@ nav {
   font-weight: 500;
 }
 
-.title>h2 {
+.title > h2 {
   font-weight: 500;
 }
 
@@ -251,6 +251,24 @@ nav {
 
 .disaster-sidebar li:hover {
   text-decoration: underline;
+}
+
+@media only screen and (max-width: 767px) {
+  .faq-page {
+    padding: 15px;
+  }
+
+  .faq-info > h1 {
+    font-size: 25px;
+  }
+
+  .faq-info > p {
+    font-size: 15px;
+  }
+
+  .title {
+    font-size: 14px;
+  }
 }
 
 /* -----------------------------BULLETIN------------------------------ */
@@ -315,7 +333,7 @@ nav {
 }
 
 /* changed */
-.bulletin__wrapper>.accordion {
+.bulletin__wrapper > .accordion {
   width: 100%;
   margin-top: 30px;
   border-top: 1px solid #fff;
@@ -353,7 +371,6 @@ nav {
 
 /* -----------------------------TABLE------------------------------ */
 
-
 .table-header {
   color: #fefefe;
   border: 1px solid #fefefe;
@@ -375,51 +392,4 @@ nav {
   cursor: pointer;
   height: 20px;
   width: 20px;
-}
-
-/* -----------------------------INSTRUCTION-SIDEBAR------------------------------ */
-.instruction-sidebar {
-  position: absolute;
-  top: 50%;
-  /* Changed top to 50% */
-  right: 0;
-  width: 30%;
-  height: 30%;
-  overflow-y: scroll;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 10px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  transform: translateY(-50%);
-  /* Added transform translateY */
-}
-
-.instruction-sidebar table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.instruction-sidebar th,
-.instruction-sidebar td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-
-.instruction-sidebar h3 {
-  margin-top: 0;
-}
-
-.instruction-sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.instruction-sidebar li {
-  cursor: pointer;
-}
-
-.instruction-sidebar li:hover {
-  text-decoration: underline;
 }

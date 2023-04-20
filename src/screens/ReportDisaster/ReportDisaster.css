@@ -1,64 +1,125 @@
 .searchLoc {
-position: relative;
-display: inline-block;
-border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
-  
-  /* Tooltip text */
-.searchLoc .tooltip2 {
-visibility: hidden;
-width: 120px;
-background-color: black;
-color: #fff;
-text-align: center;
-padding: 5px 0;
-border-radius: 6px;
 
-/* Position the tooltip text - see examples below! */
-position: absolute;
-z-index: 1;
+/* Tooltip text */
+.searchLoc .tooltip2 {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .searchLoc:hover .tooltip2 {
-visibility: visible;
+  visibility: visible;
 }
 
 .currentLoc {
-position: relative;
-display: inline-block;
-border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
-    
-    /* Tooltip text */
-.currentLoc .tooltip1 {
-visibility: hidden;
-width: 120px;
-background-color: black;
-color: #fff;
-text-align: center;
-padding: 5px 0;
-border-radius: 6px;
 
-/* Position the tooltip text - see examples below! */
-position: absolute;
-z-index: 1;
+/* Tooltip text */
+.currentLoc .tooltip1 {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .currentLoc:hover .tooltip1 {
-visibility: visible;
+  visibility: visible;
 }
 
 .titleReportDisaster {
-  margin-bottom: 30px; 
+  margin-bottom: 30px;
 }
 
 .sub-heading {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .submit-btn:hover {
   background-color: rgb(83 105 214);
   color: #fefefe;
+}
+
+.report-form {
+  min-width: 600px;
+  max-width: 800px !important;
+}
+
+#location{
+  width: 82%;
+  margin-right: 5%;
+  padding: 5px;
+
+}
+
+.location-field-icons{
+  width: 68%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@media only screen and (max-width: 767px) {
+  .titleReportDisaster {
+    margin-bottom: 20px;
+    font-size: 30px !important;
+  }
+  .report-form {
+    min-width: 250px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  .submit-btn {
+    width: 70% !important;
+    font-size: 15px !important;
+  }
+  .report-icons {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100px;
+  }
+  .sub-heading {
+    font-size: 15px;
+    margin-right: 0 !important;
+    width: 80% !important;
+  }
+  .value-container {
+    margin-bottom: 30px !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .searchLoc {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  .report-disaster-container{
+    width: 100%;
+    padding: 15px;
+    padding-top: 0;
+  }
 }

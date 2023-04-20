@@ -84,7 +84,7 @@ export default function SendResources() {
   };
   if (isCoordinator) {
     return (
-      <Container>
+      <Container style={{width: "100%", maxWidth: "700px !important" }} className="send-resources-container">
         <Title style={{marginBottom: "20px"}}>Send Resources</Title>
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -140,8 +140,8 @@ export default function SendResources() {
               onChange={(event) => setHelicopter(event.target.value)}
             />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
+          <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required</Label>
             <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
           </div>
 

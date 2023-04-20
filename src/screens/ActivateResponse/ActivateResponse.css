@@ -53,3 +53,9 @@ visibility: visible;
 .activate-response-btn:hover {
   background-color: rgb(83 105 214);
 }
+
+@media only screen and (max-width: 767px) {
+  .activate-title {
+    font-size: 30px !important;
+  }
+}
