@@ -154,6 +154,7 @@ export default function ReportDisaster() {
           <Label className="sub-heading">Description</Label>
           <TextArea
             value={details}
+            rows={4}
             onChange={(event) => setDetails(event.target.value)}
           />
         </div>
