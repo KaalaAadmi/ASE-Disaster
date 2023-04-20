@@ -82,7 +82,7 @@ export default function Bulletin() {
         </p>
       </div>
       {/* Filters */}
-      <div  style={{ display: "flex" }}>
+      <div  style={{ display: "flex" }} className="bulletin-filters">
         {types.length > 0 ?
           (types.map((item, index) => (
             <p
@@ -154,9 +154,10 @@ export default function Bulletin() {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
+                    marginBottom: "10px"
                   }}
                 >
-                  <h2 style={{ marginBottom: "10px" }}>{item.disasterName}</h2>
+                  <h2 style={{ marginBottom: "10px" }} className="bulletin-h2">{item.disasterName}</h2>
                   {/* <p style={{ marginBottom: "10px" }}>
                     {selected === index ? "" : item.disasterDescription}
                   </p> */}
@@ -169,6 +170,7 @@ export default function Bulletin() {
                       width: "100%",
                       gap: "10px",
                     }}
+                    className="date-location-bulletin"
                   >
                     {!(selected === index) && (
                       <p 
@@ -181,6 +183,7 @@ export default function Bulletin() {
                           justifyContent: "center",
                           marginRight: "25px",
                         }}
+                        className="calender-bulletin"
                       >
                         <CgCalendarDates size={20} style={{marginRight: "10px"}} />{" "}
                         {format(parseISO(item.created_at), "dd MMM, yyyy")}
