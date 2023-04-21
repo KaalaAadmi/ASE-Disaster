@@ -2,7 +2,7 @@ import axios from "axios";
 import polyline from "@mapbox/polyline";
 
 // mapbox token
-const REACT_APP_MAPBOX_TOKEN = process.env.MAP_TOKEN;
+const REACT_APP_MAPBOX_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
 const { getNearestSafehouse } = require("./haversine");
 

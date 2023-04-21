@@ -35,7 +35,7 @@ function OrderTable(props) {
     });
   }, [props, sortConfig]);
 
-  const accessToken = process.env.MAP_TOKEN;
+  const accessToken = process.env.REACT_APP_MAP_TOKEN;
   const getAddressFromLatLng = (latitude, longitude, index) => {
     const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`;
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { requestResponders, disasterOrders, getAllOrders, getOrder } from './order';
+import { requestResponders, disasterOrders, getAllOrders, getOrder } from './Order';
 
 const mock = new MockAdapter(axios);
 

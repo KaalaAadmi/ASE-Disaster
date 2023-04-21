@@ -2,7 +2,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const BACKEND = process.env.BACKEND_URL;
+const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
 /**
  * Add a new report to the system.

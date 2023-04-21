@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const accessToken = process.env.MAP_TOKEN;
+const accessToken = process.env.REACT_APP_MAP_TOKEN;
 
 /**
  * Fetches the address from latitude and longitude coordinates using Mapbox API

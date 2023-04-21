@@ -28,7 +28,7 @@ const { addRoute_garda } = require("./reroute");
 const { addRoute_firestation } = require("./reroute");
 
 // mapbox token
-const REACT_APP_MAPBOX_TOKEN = process.env.MAP_TOKEN;
+const REACT_APP_MAPBOX_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_TOKEN;
 
