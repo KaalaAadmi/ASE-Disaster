@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 const AUTH_URL = `${BACKEND}/auth`;
 const storageEvent = new Event("storageEvent");
-console.log("Auth URL", AUTH_URL)
+
 /**
  * Attempts to log in the user with the given email and password.
  * If the login is successful, stores the access token and isAdmin flag in local storage,
