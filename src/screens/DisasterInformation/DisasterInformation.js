@@ -11,7 +11,7 @@ import OrderTable from "../../components/OrderTable";
 import { useParams, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
-const FRONTEND = "http://localhost:3000"; 
+const FRONTEND = "http://localhost:3000";
 
 export default function DisasterInformation() {
   const { id } = useParams();
@@ -102,8 +102,13 @@ export default function DisasterInformation() {
   }
   if (isCoordinator) {
     return (
+<<<<<<< Updated upstream
       <Container style={{justifyContent: "flex-start", padding: "15px", paddingTop: "0"}}>
         <Title style={{marginBottom: "20px", marginTop: "30px"}} className="disaster-info-title">Disaster Information</Title>
+=======
+      <Container style={{ justifyContent: "flex-start" }}>
+        <Title style={{ marginBottom: "20px", marginTop: "30px" }}>Disaster Information</Title>
+>>>>>>> Stashed changes
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Report Grouping:</Label>
@@ -268,11 +273,15 @@ export default function DisasterInformation() {
               ))}
             </Select>
           </div>
+<<<<<<< Updated upstream
           <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required:</Label>
             <input type="checkbox" checked={evacuation} readOnly />
           </div>
           <Submit type="submit" value="Save Information" style={{fontSize: "17px", marginTop: "25px"}} className="save-information-btn" onClick={(event) => handleUpdate(event)} />
+=======
+          <Submit type="submit" value="Save Information" style={{ fontSize: "17px", marginTop: "25px" }} className="save-information-btn" onClick={() => updateDisaster(selectedDisaster, { "latitude": latitude, "longitude": longitude, "status": status, "type": type, "radius": radius, "size": size, "site": site, "disasterName": disasterName, "disasterDetails": disasterDetails })} />
+>>>>>>> Stashed changes
           {status == "active" && (
             <Link to={`/send-resources/${selectedDisaster}`}>
               <Submit type="submit" value="Send Resources" />
