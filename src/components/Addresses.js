@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const accessToken = process.env.MAP_TOKEN;
 
