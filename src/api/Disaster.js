@@ -57,9 +57,7 @@ export const activateDisaster = async (
         progress: undefined,
         theme: "dark",
       });
-      console.log(response)
-    }else{
-      console.log(response)
+    } else {
     }
   } catch (error) {
     toast.error("Could Not Fetch Disaster Data", {
@@ -342,7 +340,6 @@ export const addReportToDisaster = async (disasterID, reportID) => {
       data: data,
     };
     const response = await axios.request(config);
-    console.log(JSON.stringify(response.data));
     return true;
   } catch (error) {
     toast.error("Error Occurred! Try Again Later", {

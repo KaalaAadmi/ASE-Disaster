@@ -31,7 +31,6 @@ export default function Bulletin() {
           return { ...item, location: data.locality + ", " + data.city };
         })
       );
-      console.log(finalData);
       setDisasters(finalData);
       setDisplayData(finalData);
     };
