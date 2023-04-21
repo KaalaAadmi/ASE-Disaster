@@ -6,7 +6,6 @@ import {
   BottomNavigationAction,
 } from "@mui/material";
 import { LocationOn } from "@mui/icons-material";
-// import {Bed} from '@mui/icons-material'
 import { Newspaper } from "@mui/icons-material";
 import News from "./News";
 import Maps from "./Map";
@@ -18,11 +17,7 @@ export default function BottomNav(props) {
       {
         {
           0: <News />,
-          1: <Maps
-          // latitude={props.location.latitude}
-          // longitude={props.location.longitude}
-          // onChange={props.onChange}
-        />,
+          1: <Maps />,
         }[value]
       }
       <Paper

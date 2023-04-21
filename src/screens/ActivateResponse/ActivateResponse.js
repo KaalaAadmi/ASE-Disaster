@@ -21,7 +21,6 @@ import {
 } from "../../api/Disaster";
 import Table from "../../components/Table";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 
 export default function ActivateResponse() {
   const { id } = useParams();
@@ -46,13 +45,11 @@ export default function ActivateResponse() {
     });
     if (selectedDisaster) {
       const disasterInfo = await getIndividualDisaster(selectedDisaster);
-      console.log(disasterInfo);
       setSelectedDisaster(selectedDisaster);
       setType(disasterInfo.disasterData.type ?? "");
       setRadius(disasterInfo.disasterData.radius ?? "0");
       setSite(disasterInfo.disasterData.site ?? "");
       setSize(disasterInfo.disasterData.size ?? "0");
-      console.log("reports ", disasterInfo.disasterData.reports);
       setReports(disasterInfo.disasterData.reports ?? []);
       setDisasterName(disasterInfo.disasterData.disasterName ?? "");
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
@@ -87,16 +84,6 @@ export default function ActivateResponse() {
       disasterName,
       disasterDetails
     );
-    toast.success("Activated Disaster", {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
     navigate(`/send-resources/${selectedDisaster}`);
   };
   if (isCoordinator) {

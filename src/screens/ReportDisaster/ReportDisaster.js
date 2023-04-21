@@ -19,7 +19,6 @@ import {
 } from "../../components/Addresses";
 import { addReport } from "../../api/Report";
 import { typeOptions } from "../../components/DropdownOptions";
-import { ToastContainer, toast } from 'react-toastify';
 
 export default function ReportDisaster() {
   const [type, setType] = useState("");
@@ -32,19 +31,7 @@ export default function ReportDisaster() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await getPosition(address, setAddress, setLatitude, setLongitude);
-    console.log(latitude);
     addReport(type, latitude, longitude, details, token);
-    toast.success('Report Submitted Successfully', {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      });
-    // alert("Submission Success");
   };
 
   useEffect(() => {
@@ -110,7 +97,6 @@ export default function ReportDisaster() {
             <div
               className="currentLoc"
               onClick={() => getCurrentLoc(setLatitude, setLongitude)}
-              // onValueChange={(itemValue) => setType(itemValue)} CHECK DATA OUTPUTS
               style={{
                 height: 22,
                 width: 22,

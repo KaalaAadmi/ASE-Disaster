@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReportTable from "../../components/ReportTable";
-import { Container, Title } from "../style"
-import './ViewReports.css';
+import { Container, Title } from "../style";
+import "./ViewReports.css";
 import styled from "styled-components";
 import { getReports } from "../../api/Report";
 
@@ -28,7 +28,6 @@ export default function ViewReports() {
           <ReportTable data={reportData} />
         </div>
       </Container>
-
     );
   } else {
     console.log("ACCESS DENIED");
@@ -41,4 +40,3 @@ export default function ViewReports() {
     );
   }
 }
-
