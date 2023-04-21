@@ -14,7 +14,7 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-`; 
+`;
 export const Title = styled.div`
   color: #e5e5e5;
   font-size: 45px;
@@ -102,5 +102,5 @@ export const Option = styled.option`
   border-left: 0;
   border-right: 0;
   /* border-bottom: 10px solid violet; */
-  width: 20rem;
+  width: 20rem;
 `;

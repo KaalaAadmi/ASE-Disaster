@@ -1,17 +1,31 @@
 import React, { useState, useEffect } from "react";
 import "./DisasterInformation.css";
-import { Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option } from "../style"
+import {
+  Container,
+  Title,
+  Subtitle,
+  Form,
+  TextArea,
+  Label,
+  Submit,
+  Input,
+  Select,
+  Option,
+} from "../style";
 import { typeOptions, siteOptions } from "../../components/DropdownOptions";
 import { disasterOrders } from "../../api/Order";
-import { getAddressFromLatLng, getPosition } from "../../components/Addresses"
+import { getAddressFromLatLng, getPosition } from "../../components/Addresses";
 import { BiSearchAlt } from "react-icons/bi";
-import { getAllDisasters, getIndividualDisaster, updateDisaster } from "../../api/Disaster";
+import {
+  getAllDisasters,
+  getIndividualDisaster,
+  updateDisaster,
+} from "../../api/Disaster";
 import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
-import { useParams, Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { useParams, Link } from "react-router-dom";
 
-const FRONTEND = "http://localhost:3000";
+const FRONTEND = process.env.FRONTEND;
 
 export default function DisasterInformation() {
   const { id } = useParams();
@@ -37,10 +51,8 @@ export default function DisasterInformation() {
   const fetchData = async () => {
     getAllDisasters().then((response) => {
       const allDisasters = response;
-      console.log("All disasters:", allDisasters);
       setDisasters(allDisasters);
     });
-    console.log(selectedDisaster);
     if (selectedDisaster !== "") {
       const disasterInfo = await getIndividualDisaster(selectedDisaster);
       setSelectedDisaster(selectedDisaster);
@@ -57,7 +69,11 @@ export default function DisasterInformation() {
       setDisasterDetails(disasterInfo.disasterData.disasterDescription ?? "");
       setLatitude(disasterInfo.disasterData.latitude ?? "");
       setLongitude(disasterInfo.disasterData.longitude ?? "");
-      getAddressFromLatLng(disasterInfo.disasterData.latitude, disasterInfo.disasterData.longitude, setAddress);
+      getAddressFromLatLng(
+        disasterInfo.disasterData.latitude,
+        disasterInfo.disasterData.longitude,
+        setAddress
+      );
     }
   };
 
@@ -86,24 +102,21 @@ export default function DisasterInformation() {
       setSelectedDisaster(event.target.value);
     }
   };
-  const handleUpdate = async (event) => {
-    event.preventDefault()
-    updateDisaster(selectedDisaster, { "latitude": latitude, "longitude": longitude, "status": status, "type": type, "radius": radius, "size": size, "site": site, "disasterName": disasterName, "disasterDetails": disasterDetails })
-    toast.success(`Disaster Updated Successfully`, {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
-  }
   if (isCoordinator) {
     return (
-      <Container style={{ justifyContent: "flex-start", padding: "15px", paddingTop: "0" }}>
-        <Title style={{ marginBottom: "20px", marginTop: "30px" }} className="disaster-info-title">Disaster Information</Title>
+      <Container
+        style={{
+          justifyContent: "flex-start",
+          padding: "15px",
+          paddingTop: "0",
+        }}
+      >
+        <Title
+          style={{ marginBottom: "20px", marginTop: "30px" }}
+          className="disaster-info-title"
+        >
+          Disaster Information
+        </Title>
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Report Grouping:</Label>
@@ -113,14 +126,20 @@ export default function DisasterInformation() {
               onChange={handleDropdownChange}
               style={{
                 color: "#a5a5a5",
-                backgroundColor: getDropdownBackgroundColor(selectedDisaster || ""),
+                backgroundColor: getDropdownBackgroundColor(
+                  selectedDisaster || ""
+                ),
               }}
             >
               <Option value="" disabled>
                 Select a Options
               </Option>
               {disasters.map((disaster) => (
-                <Option key={disaster._id} value={disaster._id} style={{ background: getOptionBackgroundColor(disaster) }}>
+                <Option
+                  key={disaster._id}
+                  value={disaster._id}
+                  style={{ background: getOptionBackgroundColor(disaster) }}
+                >
                   {disaster.disasterName}
                 </Option>
               ))}
@@ -128,10 +147,7 @@ export default function DisasterInformation() {
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>ID</Label>
-            <Input type="text"
-              value={selectedDisaster}
-              readOnly
-            />
+            <Input type="text" value={selectedDisaster} readOnly />
           </div>
           <div
             style={{
@@ -143,13 +159,17 @@ export default function DisasterInformation() {
           >
             <Label>Address:</Label>
             <div className="location-field-icons">
-              <Input id="location" type="text"
+              <Input
+                id="location"
+                type="text"
                 value={address}
                 onChange={(event) => setAddress(event.target.value)}
               />
               <div
                 className="searchLoc"
-                onClick={() => getPosition(address, setAddress, setLatitude, setLongitude)}
+                onClick={() =>
+                  getPosition(address, setAddress, setLatitude, setLongitude)
+                }
                 style={{
                   height: 22,
                   width: 22,
@@ -165,21 +185,24 @@ export default function DisasterInformation() {
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Latitude</Label>
-            <Input type="number"
+            <Input
+              type="number"
               value={latitude}
               onChange={(event) => setLatitude(event.target.value)}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Longitude</Label>
-            <Input type="number"
+            <Input
+              type="number"
               value={longitude}
               onChange={(event) => setLongitude(event.target.value)}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Name</Label>
-            <Input type="text"
+            <Input
+              type="text"
               value={disasterName}
               onChange={(event) => setDisasterName(event.target.value)}
             />
@@ -216,7 +239,7 @@ export default function DisasterInformation() {
               value={type}
               onChange={(event) => setType(event.target.value)}
             >
-              {typeOptions.map(item => (
+              {typeOptions.map((item) => (
                 <Option
                   key={item.value}
                   value={item.value}
@@ -257,7 +280,7 @@ export default function DisasterInformation() {
               value={site}
               onChange={(event) => setSite(event.target.value)}
             >
-              {siteOptions.map(item => (
+              {siteOptions.map((item) => (
                 <option
                   key={item.value}
                   value={item.value}
@@ -268,7 +291,25 @@ export default function DisasterInformation() {
               ))}
             </Select>
           </div>
-          <Submit type="submit" value="Save Information" style={{ fontSize: "17px", marginTop: "25px" }} className="save-information-btn" onClick={() => updateDisaster(selectedDisaster, { "latitude": latitude, "longitude": longitude, "status": status, "type": type, "radius": radius, "size": size, "site": site, "disasterName": disasterName, "disasterDetails": disasterDetails })} />
+          <Submit
+            type="submit"
+            value="Save Information"
+            style={{ fontSize: "17px", marginTop: "25px" }}
+            className="save-information-btn"
+            onClick={() =>
+              updateDisaster(selectedDisaster, {
+                latitude: latitude,
+                longitude: longitude,
+                status: status,
+                type: type,
+                radius: radius,
+                size: size,
+                site: site,
+                disasterName: disasterName,
+                disasterDetails: disasterDetails,
+              })
+            }
+          />
           {status == "active" && (
             <Link to={`/send-resources/${selectedDisaster}`}>
               <Submit type="submit" value="Send Resources" />
@@ -276,20 +317,12 @@ export default function DisasterInformation() {
           )}
         </Form>
         <div>
-          {selectedDisaster !== "" &&
-            <Subtitle>Related reports</Subtitle>
-          }
-          {selectedDisaster !== "" &&
-            <Table data={reports} />
-          }
+          {selectedDisaster !== "" && <Subtitle>Related reports</Subtitle>}
+          {selectedDisaster !== "" && <Table data={reports} />}
         </div>
         <div>
-          {orders.length !== 0 &&
-            <Subtitle>Requested Resources</Subtitle>
-          }
-          {orders.length !== 0 &&
-            <OrderTable data={orders}
-            />}
+          {orders.length !== 0 && <Subtitle>Requested Resources</Subtitle>}
+          {orders.length !== 0 && <OrderTable data={orders} />}
         </div>
       </Container>
     );

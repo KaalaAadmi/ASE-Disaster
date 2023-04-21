@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./LoginScreen.css";
 import { login, logout } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Container,
   Title,
@@ -26,32 +25,12 @@ export default function LoginScreen() {
   const handleLogout = () => {
     setIsAuthenticated(false); // set isAuthenticated to false
     logout();
-    toast.success("Logged Out Successfully", {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
   };
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     login(email, password, setIsAuthenticated);
-    toast.success("Logged In Successfully", {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
     navigate.push(`/view-reports`);
   };
 
@@ -99,7 +78,6 @@ export default function LoginScreen() {
                       left: "8px",
                       fontSize: "14px",
                       padding: "0px 5px",
-                      /* color: #666; */
                       transition: "0.3s",
                       pointerEvents: "none",
                       color: "#fff",
@@ -117,7 +95,9 @@ export default function LoginScreen() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
-            <label className="placeholder" style={
+            <label
+              className="placeholder"
+              style={
                 password
                   ? { top: "-10px", color: "#fff", backgroundColor: "#333" }
                   : {
@@ -126,19 +106,19 @@ export default function LoginScreen() {
                       left: "8px",
                       fontSize: "14px",
                       padding: "0px 5px",
-                      /* color: #666; */
                       transition: "0.3s",
                       pointerEvents: "none",
                       color: "#fff",
                       backgroundColor: "transparent",
                     }
-              }>Password</label>
+              }
+            >
+              Password
+            </label>
           </div>
-          {/* <div className="submitContainer"> */}
           <button className="btnSubmit" type="submit" onClick={handleLogin}>
             LOGIN
           </button>
-          {/* </div> */}
         </div>
       </div>
     );

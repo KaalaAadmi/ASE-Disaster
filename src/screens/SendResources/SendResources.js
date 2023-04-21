@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
-// import { useParams } from 'react-router-dom';
 import "./SendResources.css";
-import { Container, Title, Subtitle, Form, TextArea, Label, Submit, Input, Select, Option } from "../style"
+import {
+  Container,
+  Title,
+  Subtitle,
+  Form,
+  TextArea,
+  Label,
+  Submit,
+  Input,
+  Select,
+  Option,
+} from "../style";
 import { getActiveDisasters, getIndividualDisaster } from "../../api/Disaster";
 import { disasterOrders } from "../../api/Order";
 import { requestResponders } from "../../api/Order";
 import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import { toast } from "react-toastify";
- 
 
 export default function SendResources() {
   const { id } = useParams();
@@ -44,16 +52,6 @@ export default function SendResources() {
       evacuation
     );
     setSubmitting(false);
-    toast.success('Resources Sent Successfully', {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      });
     navigate(`/disaster-information/${selectedDisaster}`);
   };
 
@@ -73,7 +71,6 @@ export default function SendResources() {
       setPolice(disasterInfo.disasterData.police ?? "0");
       setHelicopter(disasterInfo.disasterData.helicopter ?? "0");
       setBus("0");
-      console.log(helicopter);
       setEvacuation(false);
     }
   };
@@ -90,13 +87,15 @@ export default function SendResources() {
   const handleCheckboxChange = async (event) => {
     setEvacuation(event.target.checked);
     const disasterInfo = await getIndividualDisaster(selectedDisaster);
-    console.log(disasterInfo.disasterData.bus);
     setBus(disasterInfo.disasterData.bus);
   };
   if (isCoordinator) {
     return (
-      <Container style={{width: "100%", maxWidth: "700px !important" }} className="send-resources-container">
-        <Title style={{marginBottom: "20px"}}>Send Resources</Title>
+      <Container
+        style={{ width: "100%", maxWidth: "700px !important" }}
+        className="send-resources-container"
+      >
+        <Title style={{ marginBottom: "20px" }}>Send Resources</Title>
         <Form>
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Disaster</Label>
@@ -108,7 +107,9 @@ export default function SendResources() {
                 color: "#a5a5a5",
               }}
             >
-              <Option value="" disabled>Select a Options</Option>
+              <Option value="" disabled>
+                Select a Options
+              </Option>
               {disasters.map((disaster) => (
                 <Option key={disaster._id} value={disaster._id}>
                   {disaster.disasterName}
@@ -151,13 +152,30 @@ export default function SendResources() {
               onChange={(event) => setHelicopter(event.target.value)}
             />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <Label style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}>Evacuation required</Label>
-            <input type="checkbox" checked={evacuation} onChange={handleCheckboxChange} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Label
+              style={{ marginRight: "10px", textAlign: "left", width: "15rem" }}
+            >
+              Evacuation required
+            </Label>
+            <input
+              type="checkbox"
+              checked={evacuation}
+              onChange={handleCheckboxChange}
+            />
           </div>
 
           {evacuation && (
-            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+            <div
+              style={{ display: "flex", flexDirection: "row", width: "100%" }}
+            >
               <Label>Number of Buses</Label>
               <Input
                 type="number"
@@ -166,26 +184,34 @@ export default function SendResources() {
               />
             </div>
           )}
-          <Submit type="submit" className="send-resources-btn" value="Send Resources" onClick={handleSubmit} disabled={submitting} style={{marginTop: "20px"}} />
+          <Submit
+            type="submit"
+            className="send-resources-btn"
+            value="Send Resources"
+            onClick={handleSubmit}
+            disabled={submitting}
+            style={{ marginTop: "20px" }}
+          />
           {submitting && (
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "1rem",
+              }}
+            >
               <ClipLoader color="#4A90E2" />
             </div>
           )}
         </Form>
         <div>
-          {selectedDisaster !== "" &&
-            <Subtitle>Related reports</Subtitle>
-          }
-          {selectedDisaster !== "" &&
-            <Table data={reports} />
-          }
+          {selectedDisaster !== "" && <Subtitle>Related reports</Subtitle>}
+          {selectedDisaster !== "" && <Table data={reports} />}
         </div>
         <div>
-          {orders.length !== 0 &&
-            <Subtitle>Requested Resources</Subtitle> &&
-            <OrderTable data={orders}
-            />}
+          {orders.length !== 0 && <Subtitle>Requested Resources</Subtitle> && (
+            <OrderTable data={orders} />
+          )}
         </div>
       </Container>
     );

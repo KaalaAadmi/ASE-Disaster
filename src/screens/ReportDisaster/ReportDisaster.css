@@ -68,14 +68,13 @@
   max-width: 800px !important;
 }
 
-#location{
+#location {
   width: 82%;
   margin-right: 5%;
   padding: 5px;
-
 }
 
-.location-field-icons{
+.location-field-icons {
   width: 68%;
   display: flex;
   align-items: center;
@@ -117,7 +116,7 @@
     margin-right: 0 !important;
     margin-left: 0 !important;
   }
-  .report-disaster-container{
+  .report-disaster-container {
     width: 100%;
     padding: 15px;
     padding-top: 0;
