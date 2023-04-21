@@ -25,7 +25,7 @@ import Table from "../../components/Table";
 import OrderTable from "../../components/OrderTable";
 import { useParams, Link } from "react-router-dom";
 
-const FRONTEND = process.env.FRONTEND;
+const FRONTEND = process.env.REACT_APP_FRONTEND;
 
 export default function DisasterInformation() {
   const { id } = useParams();

@@ -5,7 +5,7 @@ import {
   getActiveDisasters,
   getAllDisasters,
   addReportToDisaster,
-} from './disaster';
+} from './Disaster';
 
 const mock = new MockAdapter(axios);
 

@@ -17,7 +17,7 @@ import {
 import { getRelevantDisasters, addReportToDisaster } from "../api/Disaster";
 import "./Table.css";
 
-const FRONTEND = process.env.FRONTEND;
+const FRONTEND = process.env.REACT_APP_FRONTEND;
 
 function ReportTable(props) {
   const [reports, setReports] = useState(props.data);
