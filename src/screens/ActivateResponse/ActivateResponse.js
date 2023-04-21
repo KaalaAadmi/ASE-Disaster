@@ -106,36 +106,6 @@ export default function ActivateResponse() {
           Activate A Disaster Response
         </Title>
         <Form>
-<<<<<<< Updated upstream
-          {selectedDisaster == "" && (
-            <div
-              style={{ display: "flex", flexDirection: "row", width: "100%" }}
-            >
-              <Label>Select Report Grouping</Label>
-              <Select
-                id="disaster"
-                value={selectedDisaster || ""}
-                onChange={handleDropdownChange}
-                style={{
-                  color: "#a5a5a5",
-                }}
-              >
-                <Option value="" disabled>
-                  Select a Options
-                </Option>
-                {disasters.map((disaster) => (
-                  <Option
-                    key={disaster._id}
-                    value={disaster._id}
-                    style={{ color: "black" }}
-                  >
-                    {disaster.disasterName}
-                  </Option>
-                ))}
-              </Select>
-            </div>
-          )}
-=======
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label>Select Report Grouping</Label>
             <Select
@@ -160,7 +130,6 @@ export default function ActivateResponse() {
               ))}
             </Select>
           </div>
->>>>>>> Stashed changes
           <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
             <Label htmlFor="disasterType">Select Disaster Type</Label>
             <Select
