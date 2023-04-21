@@ -46,16 +46,20 @@ export const activateDisaster = async (
       data: data,
     };
     const response = await axios.request(config);
-    toast.success("Disaster Activated Successfully", {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+    if (response.status === 200) {
+      toast.success("Disaster Activated Successfully", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }else{
+      console.log(response)
+    }
   } catch (error) {
     toast.error("Could Not Fetch Disaster Data", {
       position: "bottom-center",
