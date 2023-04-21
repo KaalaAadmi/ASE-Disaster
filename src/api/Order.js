@@ -28,7 +28,6 @@ export const requestResponders = async (
   evacBool
 ) => {
   try {
-    console.log(helicopter);
     let data = JSON.stringify({
       disasterId: id,
       ambulance: ambulance,

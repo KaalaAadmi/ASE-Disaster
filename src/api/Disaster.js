@@ -46,16 +46,19 @@ export const activateDisaster = async (
       data: data,
     };
     const response = await axios.request(config);
-    toast.success("Disaster Activated Successfully", {
-      position: "bottom-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+    if (response.status === 200) {
+      toast.success("Disaster Activated Successfully", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else {
+    }
   } catch (error) {
     toast.error("Could Not Fetch Disaster Data", {
       position: "bottom-center",
@@ -337,7 +340,6 @@ export const addReportToDisaster = async (disasterID, reportID) => {
       data: data,
     };
     const response = await axios.request(config);
-    console.log(JSON.stringify(response.data));
     return true;
   } catch (error) {
     toast.error("Error Occurred! Try Again Later", {
