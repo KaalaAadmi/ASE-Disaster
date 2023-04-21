@@ -14,7 +14,6 @@ export default function ViewReports() {
   useEffect(() => {
     const getData = async () => {
       const res = await getReports();
-      console.log(res);
       setReportData(res);
     };
     getData();
@@ -30,7 +29,6 @@ export default function ViewReports() {
       </Container>
     );
   } else {
-    console.log("ACCESS DENIED");
     return (
       <Container>
         <div>

@@ -57,6 +57,7 @@ export const activateDisaster = async (
         progress: undefined,
         theme: "dark",
       });
+      console.log(response)
     }else{
       console.log(response)
     }
